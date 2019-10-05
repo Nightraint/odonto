@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block head %}
+	<title>Detalle de paciente</title>
+{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+        <div class="col-md-6 col-md-offset-3">
+            <p><b>Nombre y apellido:</b> {{object.nombre_apellido}}</p>
+            <p><b>DNI:</b> {{object.dni}}</p>
+            <p><b>Domicilio:</b> {{object.domicilio}}</p>
+            <p><b>Telefono:</b> {{object.telefono}}</p>
+            <p><b>Odontologos:</b></p>
+            {% if object.odontologos %}
+                <ul>
+                    {% for odo in object.odontologos.all %}
+                        <li>{{odo}}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No tiene odontologos asociados.</p>
+            {% endif %}
+            <p><b>Obras sociales:</b></p>
+            {% if object.obras_sociales %}
+                <ul>
+                    {% for os in object.obras_sociales.all %}
+                        <li>{{os}}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No tiene obras sociales asociados.</p>
+            {% endif %}
+            <p style="text-align:center;">
+                <a href="/paciente" type="submit" name="paciente-submit" class="btn">Volver</a>
+            </p>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

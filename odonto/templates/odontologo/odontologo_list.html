@@ -1,0 +1,13 @@
+{% extends "list.html" %}
+
+{% block encabezados %}
+    <th style="width:100px;">Numero</th>
+    <th>Nombre y apellido</th>
+    <th>Matricula</th>
+{% endblock %}
+
+{% block datos %}                   
+    <td>{{ object.id }}</td>
+    <td>{{ object.nombre_apellido }}</td>
+    <td>{{ object.matricula }}</td>
+{% endblock %}

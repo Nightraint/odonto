@@ -1,0 +1,13 @@
+{% extends "list.html" %}
+
+{% block encabezados %}
+    <th style="width:100px;">Codigo</th>
+    <th>Descripción</th>
+    <th>Obra social</th>
+{% endblock %}
+
+{% block datos %}                   
+    <td>{{ object.codigo }}</td>
+    <td>{{ object.descripcion }}</td>
+    <td>{{ object.obra_social }}</td>
+{% endblock %}

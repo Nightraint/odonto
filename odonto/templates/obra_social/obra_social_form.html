@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block head %}
+	<title>Crear obra social</title>
+{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+    <form method= "POST">
+        {% csrf_token %}
+        <div class="col-md-6 col-md-offset-3">
+            {{form.as_p}}
+            <p style="text-align:center;">
+                <input type="submit" name="obra_social-submit" class="btn" value="Aceptar" />
+            </p>
+        </div>
+    </form>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

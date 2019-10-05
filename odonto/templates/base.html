@@ -1,0 +1,174 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es_ES">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta content="" name="keywords">
+  <meta content="" name="description">
+  {% block head %}
+  {% endblock %}
+  <!-- Favicons -->
+  <link href="img/favicon.png" rel="icon">
+  <link href="img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Bootstrap 4 -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery.validation/1.15.0/jquery.validate.js" ></script>
+  <script type="text/javascript" src="{% static 'js/messages_es_AR.js'%}"></script>
+
+  <!-- Font Awesome -->
+  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+  <!-- Moment.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/moment.min.js" integrity="sha256-VBLiveTKyUZMEzJd6z2mhfxIqz3ZATCuVMawPZGzIfA=" crossorigin="anonymous"></script>
+
+  <!-- Tempus Dominus Bootstrap 4 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/css/tempusdominus-bootstrap-4.min.css" integrity="sha256-XPTBwC3SBoWHSmKasAk01c08M6sIA5gF5+sRxqak2Qs=" crossorigin="anonymous" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/js/tempusdominus-bootstrap-4.min.js" integrity="sha256-z0oKYg6xiLq3yJGsp/LsY9XykbweQlHl42jHv2XTBz4=" crossorigin="anonymous"></script>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,500,600,700,700i|Montserrat:300,400,500,600,700" rel="stylesheet">
+
+  <!-- Bootstrap CSS File -->
+  <!--link href="{%static 'css/bootstrap.min.css'%}" rel="stylesheet"-->
+
+  <!-- Libraries CSS Files -->
+  <link href="{%static 'css/font-awesome.min.css'%}" rel="stylesheet">
+  <link href="{%static 'css/animate.min.css'%}" rel="stylesheet">
+  <link href="{%static 'css/ionicons.min.css'%}" rel="stylesheet">
+  <link href="{%static 'css/owl.carousel.min.css'%}" rel="stylesheet">
+  <link href="{%static 'css/lightbox.min.css'%}" rel="stylesheet">
+
+  <!-- Main Stylesheet File -->
+  <link href="{%static 'css/rapid.css'%}" rel="stylesheet">
+
+  {% block style %}
+  {% endblock %}
+</head>
+<body>
+  <header id="header">
+    <div id="topbar">
+      <div class="container">
+        <div class="social-links">
+          <a href="#" class="twitter"><i class="fa fa-twitter"></i></a>
+          <a href="#" class="facebook"><i class="fa fa-facebook"></i></a>
+          <a href="#" class="linkedin"><i class="fa fa-linkedin"></i></a>
+          <a href="#" class="instagram"><i class="fa fa-instagram"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="logo float-left">
+        <h1 class="text-light"><a href="#" onclick="redir('{%url 'index'%}');"><span>Odonto</span></a></h1>
+        <!-- <a href="#header" class="scrollto"><img src="img/logo.png" alt="" class="img-fluid"></a> -->
+        <!--a class="navbar-brand" href="{%url 'index'%}"><img src="/static/logo.png" class="img-fluid"></a-->
+      </div>
+      <nav class="main-nav float-right d-none d-lg-block">
+        <ul>
+          <li><a href="#" onclick="redir('{%url 'ficha_index'%}');">Fichas</a></li>
+          <li><a href="#" onclick="redir('{%url 'paciente_index'%}');">Pacientes</a></li>
+          <li><a href="#" onclick="redir('{%url 'odontologo_index'%}');">Odontologos</a></li>
+          <li><a href="#" onclick="redir('{%url 'obra_social_index'%}');">Obras sociales</a></li>
+          <li><a href="#" onclick="redir('{%url 'norma_trabajo_index'%}');">Normas de trabajo</a></li>
+          {% if user.is_authenticated %}
+              <li><a href="#" onclick="redir('{%url 'index'%}');">Hola {{ user.username }}!</a></li>
+              <li><a href="#" onclick="redir('{%url 'logout'%}');">Cerrar sesión</a></li>
+          {% else %}
+              <li><a href="#" onclick="redir('{%url 'login'%}');">Iniciar sesión</a></li>
+          {% endif %}
+          <!--li class="drop-down"><a href="">Drop Down</a>
+            <ul>
+              <li><a href="#">Drop Down 1</a></li>
+              <li class="drop-down"><a href="#">Drop Down 2</a>
+                <ul>
+                  <li><a href="#">Deep Drop Down 1</a></li>
+                  <li><a href="#">Deep Drop Down 2</a></li>
+                  <li><a href="#">Deep Drop Down 3</a></li>
+                  <li><a href="#">Deep Drop Down 4</a></li>
+                  <li><a href="#">Deep Drop Down 5</a></li>
+                </ul>
+              </li>
+              <li><a href="#">Drop Down 3</a></li>
+              <li><a href="#">Drop Down 4</a></li>
+              <li><a href="#">Drop Down 5</a></li>
+            </ul>
+          </li-->
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <div class="container" style="margin-top:110px;">
+    {% if messages %}
+      <div class="alert alert-success">
+        {% for message in messages %}
+          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+          <strong>Listo!</strong> {{message}}
+        {% endfor %}
+      </div>
+    {% endif %}
+    {% block content %}
+    {% endblock %}
+  </div>
+
+  <a href="#" class="back-to-top" id="back-to-top"><i class="fa fa-chevron-up"></i></a>
+  <!-- Uncomment below i you want to use a preloader -->
+  <!-- <div id="preloader"></div> -->
+
+  <!-- JavaScript Libraries -->
+  <!--script src="{%static 'js/jquery.min.js'%}"></script-->
+  <!--script src="{%static 'js/jquery-migrate.min.js'%}"></script-->
+  <script src="{%static 'js/bootstrap.bundle.min.js'%}"></script>
+  <script src="{%static 'js/easing.min.js'%}"></script>
+  <script src="{%static 'js/mobile-nav.js'%}"></script>
+  <script src="{%static 'js/wow.min.js'%}"></script>
+  <script src="{%static 'js/waypoints.min.js'%}"></script>
+  <script src="{%static 'js/counterup.min.js'%}"></script>
+  <script src="{%static 'js/owl.carousel.min.js'%}"></script>
+  <script src="{%static 'js/isotope.pkgd.min.js'%}"></script>
+  <script src="{%static 'js/lightbox.min.js'%}"></script>
+  <script src="{%static 'js/main.js'%}"></script>
+
+</body>
+<script>      
+  function load_complete() {
+    $('a[onclick="redir(\''+this.location.pathname+'\');"]').parents('li').addClass('active');
+
+    {% comment %} var elements = document.getElementById("formulario").elements;
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].setCustomValidity('Este campo el obligatorio');
+    } {% endcomment %}
+  }
+  window.addEventListener("load", load_complete, false);
+
+  function redir(url){
+    location.href = url;
+  }
+
+  function limpiar(input_id){
+    document.getElementById(input_id).value = '';
+    window.location = window.location.pathname;
+  }
+
+  function focus(input_id){
+    var input = document.getElementById(input_id);
+    input.focus();
+    var val = input.value;
+    input.value = '';
+    input.value = val;
+  }
+
+  function eliminar() {
+    var x = confirm("¿Está seguro que desea eliminar el registro?");
+    if (x)
+        return true;
+    else
+        return false;
+  }
+</script>
+{% block script %}
+{% endblock %}
+</html>

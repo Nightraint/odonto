@@ -1,0 +1,17 @@
+{% extends "list.html" %}
+
+{% block encabezados %}
+    <th>Fecha</th>
+    <th>Paciente</th>
+    <th>Odontologo</th>
+    <th>Obra social</th>
+    <th>Detallle</th>
+{% endblock %}
+
+{% block datos %}                   
+    <td>{{ object.fecha }}</td>
+    <td>{{ object.paciente }}</td>
+    <td>{{ object.odontologo }}</td>
+    <td>{{ object.obra_social }}</td>
+    <td>{{ object.detalle }}</td>
+{% endblock %}

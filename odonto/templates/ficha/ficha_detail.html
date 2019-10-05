@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block head %}
+	<title>Detalle de ficha</title>
+{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+        <div class="col-md-6 col-md-offset-3">
+            <p><b>Paciente:</b> {{object.paciente}}</p>
+            <p><b>Odontólogo:</b> {{object.odontologo}}</p>
+            <p><b>Obra social:</b> {{object.obra_social}}</p>
+            <p><b>Fecha:</b> {{object.fecha}}</p>
+            <p><b>Norma de trabajo:</b> {{object.norma_trabajo}}</p>
+            <p><b>Detalle:</b> {{object.detalle}}</p>
+            <p style="text-align:center;">
+                <a href="/ficha" name="ficha-submit" class="btn">Volver</a>
+            </p>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

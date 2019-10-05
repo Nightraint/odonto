@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block head %}
+	<title>Detalle de odontologo</title>
+{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+        <div class="col-md-6 col-md-offset-3">
+            <p><b>Nombre y apellido:</b> {{object.nombre_apellido}}</p>
+            <p><b>Matricula:</b> {{object.matricula}}</p>
+            <p><b>DNI:</b> {{object.dni}}</p>
+            <p><b>Domicilio:</b> {{object.domicilio}}</p>
+            <p><b>Telefono:</b> {{object.telefono}}</p>
+            <p><b>Pacientes:</b></p>
+            {% if object.paciente_set %}
+                <ul>
+                    {% for p in object.paciente_set.all %}
+                        <li>{{p}}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No tiene odontologos asociados.</p>
+            {% endif %}
+            <p style="text-align:center;">
+                <a href="/odontologo" type="submit" name="odontologo-submit" class="btn">Volver</a>
+            </p>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

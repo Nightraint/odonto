@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block head %}
+	<title>Detalle de obra social</title>
+{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+        <div class="col-md-6 col-md-offset-3">
+            <p><b>Código:</b> {{object.codigo}}</p>
+            <p><b>Nombre:</b> {{object.nombre}}</p>
+            <p><b>Observaciones:</b> {{object.observaciones}}</p>
+            <p><b>Pacientes:</b></p>
+                <ul>
+                    {% for p in object.paciente_set.all %}
+                        <li>{{p}}</li>
+                    {% empty %}
+                        <p>No tiene pacientes asociados.</p>
+                    {% endfor %}
+                </ul>
+            {% if user.is_superuser%}
+                <p><b>Clinica: </b>{{object.clinica}}</p>
+            {% endif %}
+            <p style="text-align:center;">
+                <a href="/obra_social" name="obra_social-submit" class="btn">Volver</a>
+            </p>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

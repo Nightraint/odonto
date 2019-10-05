@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block head %}
+	<title>{{view.model_name}}</title>
+{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-sm-4">
+            <a href="crear" title="Agregar" class="btn-lila" style="float:left;"><i class="fa fa-plus"></i> Agregar</a>
+        </div>
+        <div class="col-sm-8 filter-col">
+            <form method="get" style="display:inline-block;float:left;" autocomplete="off">
+                    {{filter.form.filtro}}
+            </form>
+            <a href="#" onclick="limpiar('{{filter.form.filtro.auto_id}}');" class="btn-lila" style="margin-left:10px;float:left;"><i class="fa fa-remove"></i> Limpiar</a>
+        </div>
+    </div>
+    <table class="table table-hover" style="margin-top:10px;">
+        <thead>
+            {% block encabezados %}
+            {% endblock %}
+            <th style="width:400px;"></th>
+        </thead>
+        <tbody>
+            {% for object in object_list %}
+                <tr>
+                    {% block datos %}
+                    {% endblock %}
+                    <td style="text-align:right;">
+                        <a href="detalle/{{object.id}}" title="Ver" type="button" class="btn-lila" style="margin-right:10px;"><i class="fa fa-align-left"></i> Ver</a>
+                        <a href="editar/{{object.id}}" title="Editar" type="button" class="btn-lila" style="margin-right:10px;"><i class="fa fa-edit"></i> Editar</a>
+                        <form method="POST" action="eliminar/{{object.id}}"  style="display:inline-block;margin:0px;">
+                            {% csrf_token %}
+                            <a href="#" class="btn-lila" onclick="return eliminar();" type="submit"><i class="fa fa-trash"></i> Eliminar</a>
+                        </form>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr >
+                    <td colspan="100%" style="text-align:center;"> No hay fichas disponibles.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div style="text-align:center;">
+        <div class="pagination">
+            <span class="page-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}" class="btn-lila">Anterior</a>
+                {% endif %}
+                <span class="page-current">
+                    Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.
+                </span>
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" class="btn-lila">Siguiente</a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+     <script type="text/javascript">
+        function list_load_complete() {
+            focus('id_filtro');
+        }
+        window.addEventListener("load", list_load_complete, false);
+    </script>
+{% endblock %}

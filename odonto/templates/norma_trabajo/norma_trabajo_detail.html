@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block head %}
+	<title>Detalle de norma de trabajo</title>
+{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+        <div class="col-md-6 col-md-offset-3">
+            <p><b>Código:</b> {{object.codigo}}</p>
+            <p><b>Descripcion:</b> {{object.descripcion}}</p>
+            <p><b>Vencimiento:</b> {{object.vencimiento}}</p>
+            <p><b>Obra social:</b> {{object.obra_social}}</p>
+            <p style="text-align:center;">
+                <a href="/obra_social" name="obra_social-submit" class="btn">Volver</a>
+            </p>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

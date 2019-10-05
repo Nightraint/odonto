@@ -1,0 +1,112 @@
+{% load static %}
+<!DOCTYPE tml>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% block head %}
+    {% endblock %}
+    <!--link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="{%static 'css/bootstrap.min.css'%}" rel="stylesheet"/>
+    <link href="{%static 'css/font-awesome.min.css'%}" rel="stylesheet"/>
+    <link href="{%static 'css/animate.css'%}" rel="stylesheet"/>
+    <link href="{%static 'css/overwrite.css'%}" rel="stylesheet"/>
+    <link href="{%static 'css/animate.min.css'%}" rel="stylesheet"/>
+    <link href="{%static 'css/style.css'%}" rel="stylesheet"/>
+    
+    {% block style %}
+    {% endblock %}
+    <!--script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script-->
+    <!--script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script-->
+    <!--script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script-->
+
+    <script src="{%static 'js/jquery-2.1.1.min.js'%}" type="text/javascript"></script>
+    <script src="{%static 'js/bootstrap.min.js'%}" type="text/javascript"></script>
+    <script src="{%static 'js/parallax.min.js'%}" type="text/javascript"></script>
+    <script src="{%static 'js/wow.min.js'%}" type="text/javascript"></script>
+    <script src="{%static 'js/jquery.easing.min.js'%}" type="text/javascript"></script>
+    <script src="{%static 'js/fliplightbox.min.js'%}" type="text/javascript"></script>
+    <script src="{%static 'js/functions.js'%}" type="text/javascript"></script>
+    <!--script src="contactform/contactform.js" type="text/javascript"></script-->
+</head>
+<body>
+    <header id="header">
+    <nav class="navbar navbar-fixed-top" role="banner">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+          <a class="navbar-brand" href="{%url 'index'%}"><img src="/static/logo.png" width="150px" style="margin-top:-20px;"></a>
+        </div>
+        <div class="collapse navbar-collapse navbar-right">
+          <ul class="nav navbar-nav">
+            <!--li><a href="{%url 'index'%}">Inicio</a></li-->
+            <li><a onclick="redir('{%url 'index'%}');">Fichas</a></li>
+            <li><a onclick="redir('{%url 'paciente_index'%}');">Pacientes</a></li>
+            <li><a onclick="redir('{%url 'odontologo_index'%}');">Odontologos</a></li>
+            <li><a onclick="redir('{%url 'obra_social_index'%}');">Obras sociales</a></li>
+            <li><a onclick="redir('{%url 'norma_trabajo_index'%}');">Normas de trabajo</a></li>
+            {% if user.is_authenticated %}
+                <li><a onclick="redir('{%url 'index'%}');">Hola {{ user.username }}!</a></li>
+                <li><a onclick="redir('{%url 'logout'%}');">Cerrar sesión</a></li>
+            {% else %}
+                <li><a onclick="redir('{%url 'login'%}');">Iniciar sesión</a></li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+    </header>
+    <div class="container" style="margin-top:100px;">
+        {% if messages %}
+          <div class="alert alert-success">
+            {% for message in messages %}
+              <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+              <strong>Listo!</strong> {{message}}
+            {% endfor %}
+          </div>
+        {% endif %}
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+    <script>      
+      function load_complete() {
+        $('a[onclick="redir(\''+this.location.pathname+'\');"]').parents('li').addClass('active');
+      }
+      window.addEventListener("load", load_complete, false);
+
+      function redir(url){
+        location.href = url;
+      }
+
+      function limpiar(input_id){
+        document.getElementById(input_id).value = '';
+        window.location = window.location.pathname;
+      }
+
+      function focus(input_id){
+        var input = document.getElementById(input_id);
+        input.focus();
+        var val = input.value;
+        input.value = '';
+        input.value = val;
+      }
+
+      function eliminar() {
+        var x = confirm("¿Está seguro que desea eliminar el registro?");
+        if (x)
+            return true;
+        else
+            return false;
+      }
+    </script>
+    {% block script %}
+    {% endblock %}
+</html>
