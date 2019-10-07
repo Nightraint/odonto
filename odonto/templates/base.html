@@ -161,12 +161,10 @@
     input.value = val;
   }
 
-  function eliminar() {
+  function eliminar(id) {
     var x = confirm("¿Está seguro que desea eliminar el registro?");
     if (x)
-        return true;
-    else
-        return false;
+        document.getElementById(id).submit();
   }
 </script>
 {% block script %}

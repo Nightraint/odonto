@@ -1,6 +1,6 @@
 from django.contrib.auth import update_session_auth_hash
 from django import forms
-from .models import Obra_Social, Paciente, Norma_Trabajo, CustomUser, Odontologo, Ficha
+from .models import Obra_Social, Paciente, Norma_Trabajo, CustomUser, Odontologo, Ficha, Clinica
 from django.contrib.auth.forms import AuthenticationForm,UserCreationForm,UserChangeForm,PasswordChangeForm
 from django.forms import DateTimeField
 from .widgets import BootstrapDateTimePickerInput
@@ -49,8 +49,6 @@ class PasswordForm(PasswordChangeForm):
         ),
         label='Repetir la contraseña nueva')
 
-    
-
 class UserRegisterForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super(UserRegisterForm, self).__init__(*args, **kwargs)
@@ -63,6 +61,7 @@ class ObraSocialForm(forms.ModelForm):
         exclude = ('clinica',)
     
     def __init__(self, *args, **kwargs):
+        clinica_id = kwargs.pop('clinica_id')
         super(ObraSocialForm, self).__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
@@ -83,9 +82,12 @@ class PacienteForm(forms.ModelForm):
     class Meta:
         model = Paciente
         exclude = ('clinica',)
-    
+
     def __init__(self, *args, **kwargs):
+        clinica_id = kwargs.pop('clinica_id')
         super(PacienteForm, self).__init__(*args, **kwargs)
+        self.fields['obras_sociales'].queryset = Obra_Social.objects.filter(clinica_id=clinica_id)
+        self.fields['odontologos'].queryset = Odontologo.objects.filter(clinica_id=clinica_id)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
 
@@ -97,7 +99,9 @@ class Norma_TrabajoForm(forms.ModelForm):
         exclude = ('clinica',)
     
     def __init__(self, *args, **kwargs):
+        clinica_id = kwargs.pop('clinica_id')
         super(Norma_TrabajoForm, self).__init__(*args, **kwargs)
+        self.fields['obra_social'].queryset = Obra_Social.objects.filter(clinica_id=clinica_id)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
 
@@ -109,6 +113,7 @@ class OdontologoForm(forms.ModelForm):
         exclude = ('clinica',)
     
     def __init__(self, *args, **kwargs):
+        clinica_id = kwargs.pop('clinica_id')
         super(OdontologoForm, self).__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
@@ -126,7 +131,12 @@ class FichaForm(forms.ModelForm):
     )
 
     def __init__(self, *args, **kwargs):
+        clinica_id = kwargs.pop('clinica_id')
         super(FichaForm, self).__init__(*args, **kwargs)
+        self.fields['obra_social'].queryset = Obra_Social.objects.filter(clinica_id=clinica_id)
+        self.fields['odontologo'].queryset = Odontologo.objects.filter(clinica_id=clinica_id)
+        self.fields['paciente'].queryset = Paciente.objects.filter(clinica_id=clinica_id)
+        self.fields['norma_trabajo'].queryset = Norma_Trabajo.objects.filter(clinica_id=clinica_id)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
 

@@ -56,9 +56,7 @@ td,th {
   vertical-align: middle;
   min-width: 50px;
 }
-/* th, td {
-  word-break: break-all;
-}*/
+
  table{
   table-layout: fixed;
 }  
@@ -67,10 +65,12 @@ td,th {
   .filter-col {
       margin-top: 10px;
   }
-  /* table{
-    width: 800px !important;
-    overflow-y: scroll;
-  } */
+}
+
+@media (max-width: 992px){
+  table{
+    table-layout: initial;
+  }
 }
 
 /* Back to top button */

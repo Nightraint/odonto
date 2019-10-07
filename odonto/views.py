@@ -55,12 +55,18 @@ class FichaList(LoginRequiredMixin,FilterView):
     filterset_class = FichaListFilter
 
     def model_name(self):
-        return self.model._meta.verbose_name.capitalize()
+        return "Fichas"
+    
+    def model_name_minuscula(self):
+        return "fichas"
 
     def get_context_data(self, **kwargs):
         context = super(FichaList, self).get_context_data(**kwargs)
         #Para agregar variables 
         return context
+
+    def get_queryset(self):
+        return Ficha.objects.filter(clinica=self.request.user.clinica)
 
 class FichaDetalle(LoginRequiredMixin,DetailView):
     model = Ficha
@@ -82,6 +88,11 @@ class FichaCrear(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         self.object = form.save()
         return super().form_valid(form)
         #return HttpResponseRedirect(self.get_success_url())
+    
+    def get_form_kwargs(self):
+        kwargs = super(FichaCrear, self).get_form_kwargs()
+        kwargs.update({'clinica_id': self.request.user.clinica.id})
+        return kwargs
 
 class FichaEditar(LoginRequiredMixin, SuccessMessageMixin, UpdateView): 
     model = Ficha
@@ -89,7 +100,12 @@ class FichaEditar(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     success_message = 'Ficha modificada correctamente!'
  
     def get_success_url(self):        
-        return reverse('ficha_index') 
+        return reverse('ficha_index')
+    
+    def get_form_kwargs(self):
+        kwargs = super(FichaEditar, self).get_form_kwargs()
+        kwargs.update({'clinica_id': self.request.user.clinica.id})
+        return kwargs
 
 class FichaEliminar(LoginRequiredMixin, SuccessMessageMixin, DeleteView): 
     model = Ficha 
@@ -124,12 +140,18 @@ class OdontologoList(LoginRequiredMixin,FilterView):
     filterset_class = OdontologoListFilter
 
     def model_name(self):
-        return self.model._meta.verbose_name.capitalize()
+        return "Odontólogos"
+    
+    def model_name_minuscula(self):
+        return "odontólogos"
 
     def get_context_data(self, **kwargs):
         context = super(OdontologoList, self).get_context_data(**kwargs)
         #Para agregar variables 
         return context
+
+    def get_queryset(self):
+        return Odontologo.objects.filter(clinica=self.request.user.clinica)
 
 class OdontologoDetalle(LoginRequiredMixin,DetailView):
     model = Odontologo
@@ -151,6 +173,11 @@ class OdontologoCrear(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         self.object = form.save()
         return super().form_valid(form)
         #return HttpResponseRedirect(self.get_success_url())
+    
+    def get_form_kwargs(self):
+        kwargs = super(OdontologoCrear, self).get_form_kwargs()
+        kwargs.update({'clinica_id': self.request.user.clinica.id})
+        return kwargs
 
 class OdontologoEditar(LoginRequiredMixin, SuccessMessageMixin, UpdateView): 
     model = Odontologo
@@ -158,7 +185,12 @@ class OdontologoEditar(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     success_message = 'Odontologo modificado correctamente!'
  
     def get_success_url(self):        
-        return reverse('odontologo_index') 
+        return reverse('odontologo_index')
+
+    def get_form_kwargs(self):
+        kwargs = super(OdontologoEditar, self).get_form_kwargs()
+        kwargs.update({'clinica_id': self.request.user.clinica.id})
+        return kwargs
 
 class OdontologoEliminar(LoginRequiredMixin, SuccessMessageMixin, DeleteView): 
     model = Odontologo 
@@ -170,19 +202,6 @@ class OdontologoEliminar(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
         return reverse('odontologo_index')
 
 ##################### OBRA SOCIAL #######################
-
-class Obras_Sociales_Listado(LoginRequiredMixin,ListView):
-    model = Obra_Social
-    paginate_by = 10
-
-    def get_context_data(self, **kwargs):
-        context = super(Obras_Sociales_Listado, self).get_context_data(**kwargs)
-        #Para agregar variables 
-        return context
-    
-    def get_queryset(self):
-        queryset = Obra_Social.objects.all()
-        return queryset
 
 class Obra_Social_Filter(django_filters.FilterSet):
     class Meta:
@@ -197,12 +216,18 @@ class Obra_SocialList(LoginRequiredMixin,FilterView):
     filterset_class = Obra_Social_Filter
 
     def model_name(self):
-        return self.model._meta.verbose_name.capitalize()
+        return "Obras sociales"
+    
+    def model_name_minuscula(self):
+        return "obras sociales"
 
     def get_context_data(self, **kwargs):
         context = super(Obra_SocialList, self).get_context_data(**kwargs)
         #Para agregar variables 
         return context
+    
+    def get_queryset(self):
+        return Obra_Social.objects.filter(clinica=self.request.user.clinica)
 
 class Obras_Sociales_Detalle(LoginRequiredMixin,DetailView):
     model = Obra_Social
@@ -225,13 +250,23 @@ class ObraSocialCrear(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         return super().form_valid(form)
         #return HttpResponseRedirect(self.get_success_url())
 
+    def get_form_kwargs(self):
+        kwargs = super(ObraSocialCrear, self).get_form_kwargs()
+        kwargs.update({'clinica_id': self.request.user.clinica.id})
+        return kwargs
+
 class ObraSocialEditar(LoginRequiredMixin, SuccessMessageMixin, UpdateView): 
     model = Obra_Social
     form_class = ObraSocialForm
     success_message = 'Obra social modificada correctamente!'
  
     def get_success_url(self):        
-        return reverse('obra_social_index') 
+        return reverse('obra_social_index')
+    
+    def get_form_kwargs(self):
+        kwargs = super(ObraSocialEditar, self).get_form_kwargs()
+        kwargs.update({'clinica_id': self.request.user.clinica.id})
+        return kwargs
 
 class ObraSocialEliminar(LoginRequiredMixin, SuccessMessageMixin, DeleteView): 
     model = Obra_Social 
@@ -255,7 +290,7 @@ class PacienteListFilter(django_filters.FilterSet):
     def custom_filter(self, queryset, name, value):
          return queryset.filter(
              nombre_apellido__icontains=value
-         )| queryset.filter(
+         ) | queryset.filter(
              odontologos__nombre_apellido__icontains=value
          ) | queryset.filter(
              obras_sociales__nombre__icontains=value
@@ -265,21 +300,28 @@ class PacienteListFilter(django_filters.FilterSet):
              domicilio__icontains=value
          ) | queryset.filter(
              telefono__icontains=value
-         )  
+         )
 
 class PacienteList(LoginRequiredMixin,FilterView):
     model = Paciente
     paginate_by = 10
     context_object_name = 'paciente'
     filterset_class = PacienteListFilter
+    ordering = ['nombre_apellido']
 
     def model_name(self):
-        return self.model._meta.verbose_name.capitalize()
+        return "Pacientes"
+    
+    def model_name_minuscula(self):
+        return "pacientes"
 
     def get_context_data(self, **kwargs):
         context = super(PacienteList, self).get_context_data(**kwargs)
         #Para agregar variables 
         return context
+    
+    def get_queryset(self):
+        return Paciente.objects.filter(clinica=self.request.user.clinica)
 
 class PacienteDetalle(LoginRequiredMixin,DetailView):
     model = Paciente
@@ -301,6 +343,11 @@ class PacienteCrear(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         self.object = form.save()
         return super().form_valid(form)
         #return HttpResponseRedirect(self.get_success_url())
+    
+    def get_form_kwargs(self):
+        kwargs = super(PacienteCrear, self).get_form_kwargs()
+        kwargs.update({'clinica_id': self.request.user.clinica.id})
+        return kwargs
 
 class PacienteEditar(LoginRequiredMixin, SuccessMessageMixin, UpdateView): 
     model = Paciente
@@ -308,7 +355,12 @@ class PacienteEditar(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     success_message = 'Paciente modificado correctamente!'
  
     def get_success_url(self):        
-        return reverse('paciente_index') 
+        return reverse('paciente_index')
+
+    def get_form_kwargs(self):
+        kwargs = super(PacienteEditar, self).get_form_kwargs()
+        kwargs.update({'clinica_id': self.request.user.clinica.id})
+        return kwargs
 
 class PacienteEliminar(LoginRequiredMixin, SuccessMessageMixin, DeleteView): 
     model = Paciente 
@@ -345,12 +397,18 @@ class Norma_TrabajoList(LoginRequiredMixin,FilterView):
     filterset_class = NormaTrabajoListFilter
 
     def model_name(self):
-        return self.model._meta.verbose_name.capitalize()
+        return "Normas de trabajo"
+    
+    def model_name_minuscula(self):
+        return "normas de trabajo"
 
     def get_context_data(self, **kwargs):
         context = super(Norma_TrabajoList, self).get_context_data(**kwargs)
         #Para agregar variables 
         return context
+
+    def get_queryset(self):
+        return Norma_Trabajo.objects.filter(clinica=self.request.user.clinica)
 
 class Norma_TrabajoDetalle(LoginRequiredMixin,DetailView):
     model = Norma_Trabajo
@@ -373,13 +431,23 @@ class Norma_TrabajoCrear(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         return super().form_valid(form)
         #return HttpResponseRedirect(self.get_success_url())
 
+    def get_form_kwargs(self):
+        kwargs = super(Norma_TrabajoCrear, self).get_form_kwargs()
+        kwargs.update({'clinica_id': self.request.user.clinica.id})
+        return kwargs
+
 class Norma_TrabajoEditar(LoginRequiredMixin, SuccessMessageMixin, UpdateView): 
     model = Norma_Trabajo
     form_class = Norma_TrabajoForm
     success_message = 'Norma de trabajo modificada correctamente!'
  
     def get_success_url(self):        
-        return reverse('norma_trabajo_index') 
+        return reverse('norma_trabajo_index')
+
+    def get_form_kwargs(self):
+        kwargs = super(Norma_TrabajoEditar, self).get_form_kwargs()
+        kwargs.update({'clinica_id': self.request.user.clinica.id})
+        return kwargs
 
 class Norma_TrabajoEliminar(LoginRequiredMixin, SuccessMessageMixin, DeleteView): 
     model = Norma_Trabajo 

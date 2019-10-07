@@ -61,9 +61,9 @@ class Obra_Social(models.Model):
 
 class Norma_Trabajo(models.Model):
     codigo = models.CharField(max_length=100)
-    descripcion = models.CharField('Concepto',max_length=2000)
     obra_social = models.ForeignKey('Obra_Social',on_delete=models.CASCADE)
     vencimiento = models.DateField('Vencimiento')
+    descripcion = models.TextField('Concepto',max_length=2000)
     creado = models.DateTimeField(auto_now_add=True)
     actualizado = models.DateTimeField(auto_now=True)
     clinica = models.ForeignKey(Clinica, on_delete=models.CASCADE)
@@ -73,10 +73,10 @@ class Norma_Trabajo(models.Model):
 
 
 class Ficha(models.Model):
+    clinica = models.ForeignKey('Clinica',on_delete=models.PROTECT)
     obra_social = models.ForeignKey('Obra_Social',on_delete=models.PROTECT)
     paciente = models.ForeignKey('Paciente',on_delete=models.PROTECT)
     odontologo = models.ForeignKey('Odontologo',on_delete=models.PROTECT)
-    clinica = models.ForeignKey('Clinica',on_delete=models.PROTECT)
     norma_trabajo = models.ForeignKey('Norma_Trabajo',null=True,on_delete=models.PROTECT)
     detalle = models.TextField(max_length=1000,blank=True)
     fecha = models.DateTimeField()
