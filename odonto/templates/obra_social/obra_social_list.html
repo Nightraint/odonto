@@ -1,74 +1,11 @@
-{% extends "base.html" %}
-{% block head %}
-	<title>Obras Sociales</title>
+{% extends "list.html" %}
+
+{% block encabezados %}
+    <th style="width:100px;">Codigo</th>
+    <th>Nombre</th>
 {% endblock %}
 
-{% block style %}
-{% endblock %}
-
-{% block content %}
-    <div class="row">
-        <div class="col-md-4">
-            <a href="crear" title="Agregar" type="button" class="btn"><i class="fa fa-plus"></i> Agregar</a>
-        </div>
-        <div class="col-md-7 filter-col">
-            <form method="get" style="margin:0;display:inline-block;">
-                <div style="display:inline-block;">
-                    {{filter.form.nombre__contains}}
-                </div>
-            </form>
-            <button onclick="limpiar('{{filter.form.nombre__contains.auto_id}}');" class="btn" style="display:inline-block;margin-left:10px;"><i class="fa fa-remove"></i> Limpiar</button>
-        </div>
-    </div>
-    <table class="table table-striped table-hover" style="margin-top:10px;">
-        <thead>
-            <th style="width:100px;">Codigo</th>
-            <th style="width:auto;">Nombre</th>
-            <th style="width:auto;"></th>
-        </thead>
-        <tbody>
-            {% for obra_social in object_list %}
-                <tr>
-                    <td style="vertical-align: middle;">{{ obra_social.codigo }}</td>
-                    <td style="vertical-align: middle;">{{ obra_social.nombre }}</td>
-                    <td style="text-align:right;">
-                        <a href="detalle/{{obra_social.id}}" title="Ver" type="button" class="btn" style="margin-right:10px;"><i class="fa fa-align-left"></i> Ver</a>
-                        <a href="editar/{{obra_social.id}}" title="Editar" type="button" class="btn" style="margin-right:10px;"><i class="fa fa-edit"></i> Editar</a>
-                        <form method="POST" action="eliminar/{{obra_social.id}}"  style="display:inline-block;margin:0px;">
-                            {% csrf_token %}
-                            <button class="btn" onclick="return eliminar();" type="submit"><i class="fa fa-trash"></i> Eliminar</button>
-                        </form>
-                    </td>
-                </tr>
-            {% empty %}
-                <tr >
-                    <td colspan=100% style="text-align:center;"> No hay obras sociales disponibles.</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <div style="text-align:center;">
-        <div class="pagination">
-            <span class="page-links">
-                {% if page_obj.has_previous %}
-                    <a href="/obra_social/?page={{ page_obj.previous_page_number }}" class="btn">Anterior</a>
-                {% endif %}
-                <span class="page-current">
-                    Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.
-                </span>
-                {% if page_obj.has_next %}
-                    <a href="/obra_social/?page={{ page_obj.next_page_number }}" class="btn">Siguiente</a>
-                {% endif %}
-            </span>
-        </div>
-    </div>
-{% endblock %}
-
-{% block script %}
-     <script type="text/javascript">
-        function list_load_complete() {
-            focus('id_nombre__contains');
-        }
-        window.addEventListener("load", list_load_complete, false);
-    </script>
+{% block datos %}                   
+    <td style="vertical-align: middle;">{{ object.codigo }}</td>
+    <td style="vertical-align: middle;">{{ object.nombre }}</td>
 {% endblock %}

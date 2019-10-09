@@ -4,6 +4,7 @@ from .models import Obra_Social, Paciente, Norma_Trabajo, CustomUser, Odontologo
 from django.contrib.auth.forms import AuthenticationForm,UserCreationForm,UserChangeForm,PasswordChangeForm
 from django.forms import DateTimeField
 from .widgets import BootstrapDateTimePickerInput
+
 ######################## LOGIN ##########################
 
 class UserLoginForm(AuthenticationForm):
@@ -55,7 +56,7 @@ class UserRegisterForm(UserCreationForm):
 
 ######################## OBRA SOCIAL ##########################
 
-class ObraSocialForm(forms.ModelForm):
+class Obra_SocialForm(forms.ModelForm):
     class Meta:
         model = Obra_Social
         exclude = ('clinica',)
@@ -65,17 +66,7 @@ class ObraSocialForm(forms.ModelForm):
         super(ObraSocialForm, self).__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
-
-class ObraSocialFilterForm(forms.Form):
-    class meta:
-        fields = ('nombre')
     
-    def __init__(self, *args, **kwargs):
-        super(ObraSocialFilterForm, self).__init__(*args, **kwargs)
-        for field in self.fields.values():
-             field.widget.attrs['class'] = 'form-control'
-             field.widget.attrs['placeholder'] = 'Ingrese su búsqueda...'
-
 ######################## PACIENTE ##########################
 
 class PacienteForm(forms.ModelForm):
