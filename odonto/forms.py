@@ -63,7 +63,7 @@ class Obra_SocialForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
         clinica_id = kwargs.pop('clinica_id')
-        super(ObraSocialForm, self).__init__(*args, **kwargs)
+        super(Obra_SocialForm, self).__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
     

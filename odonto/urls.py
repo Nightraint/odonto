@@ -34,6 +34,7 @@ urlpatterns = [
     path('odontologo/editar/<int:pk>', odontologo.OdontologoEditar.as_view(template_name = "odontologo/odontologo_form.html"), name='editar'),
     path('odontologo/detalle/<int:pk>', odontologo.OdontologoDetalle.as_view(template_name = "odontologo/odontologo_detail.html"), name='detalle'),
     path('odontologo/', odontologo.OdontologoList.as_view(template_name='odontologo/odontologo_list.html'), name='odontologo_index'),
+    path(r'odontologo/get_all/', odontologo.get_odontologos, name='get_all'),
 
     path('obra_social/crear', obra_social.ObraSocialCrear.as_view(template_name = "obra_social/obra_social_form.html"), name='crear'),
     path('obra_social/eliminar/<int:pk>', obra_social.ObraSocialEliminar.as_view(), name='eliminar'),
