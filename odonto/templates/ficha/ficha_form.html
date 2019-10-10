@@ -19,4 +19,48 @@
 {% endblock %}
 
 {% block script %}
+    <script>
+        var select_odo = document.getElementById('id_paciente');
+        select_odo.addEventListener("change", cargar_odontologos);
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange=function() {
+            console.log(this.responseText);
+            var sel = document.getElementById('id_odontologo');
+            removeOptions(sel);
+            if (this.readyState == 4 && this.status == 200) {
+                var opt = document.createElement('option');
+                opt.appendChild(document.createTextNode('Seleccionar'));
+                opt.value = '';
+                sel.appendChild(opt);
+                var arr = JSON.parse(this.responseText);
+                for (i in arr) {
+                    opt = document.createElement('option');
+                    opt.appendChild(document.createTextNode(arr[i].nombre_apellido));
+                    opt.value = arr[i].id; 
+                    sel.appendChild(opt);
+                }
+            }
+        };
+
+        function cargar_odontologos() {
+            var paciente = parseInt(document.getElementById('id_paciente').value);
+            if (isNaN(paciente) == false){
+                xhttp.open("GET", "/odontologo/get_all?paciente=" + paciente, true);
+                xhttp.send();
+            }
+            else{
+                var sel = document.getElementById('id_odontologo');
+                removeOptions(sel);
+            }
+        }
+        function removeOptions(selectbox)
+        {
+            var i;
+            for(i = selectbox.options.length - 1 ; i >= 0 ; i--)
+            {
+                selectbox.remove(i);
+            }
+        }
+    </script>
 {% endblock %}

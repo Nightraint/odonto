@@ -124,10 +124,24 @@ class FichaForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         clinica_id = kwargs.pop('clinica_id')
         super(FichaForm, self).__init__(*args, **kwargs)
-        self.fields['obra_social'].queryset = Obra_Social.objects.filter(clinica_id=clinica_id)
-        self.fields['odontologo'].queryset = Odontologo.objects.filter(clinica_id=clinica_id)
+        #self.fields['obra_social'].queryset = Obra_Social.objects.filter(clinica_id=clinica_id)
+        #self.fields['odontologo'].queryset = Odontologo.objects.filter(clinica_id=clinica_id)
+        #self.fields['norma_trabajo'].queryset = Norma_Trabajo.objects.filter(clinica_id=clinica_id)
+        self.fields['odontologo'].queryset = Odontologo.objects.none()
+        self.fields['obra_social'].queryset = Obra_Social.objects.none()
+        self.fields['norma_trabajo'].queryset = Norma_Trabajo.objects.none()
+
+        if 'paciente' in self.data:
+            try:
+                paciente_id = int(self.data.get('paciente'))
+                self.fields['odontologo'].queryset = Odontologo.objects.filter(paciente__id=paciente_id).order_by('nombre_apellido')
+            except (ValueError, TypeError):
+                pass  # invalid input from the client; ignore and fallback to empty City queryset
+        elif self.instance.pk:
+            self.fields['odontologo'].queryset = self.instance.paciente.odontologos.order_by('nombre_apellido')
+
         self.fields['paciente'].queryset = Paciente.objects.filter(clinica_id=clinica_id)
-        self.fields['norma_trabajo'].queryset = Norma_Trabajo.objects.filter(clinica_id=clinica_id)
+        
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
 
