@@ -12,6 +12,6 @@
     <td>{{ object.fecha }}</td>
     <td>{{ object.paciente }}</td>
     <td>{{ object.odontologo }}</td>
-    <td>{{ object.obra_social }}</td>
+    <td>{{ object.obra_social|default_if_none:"&nbsp;" }}</td>
     <td>{{ object.detalle }}</td>
 {% endblock %}

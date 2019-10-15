@@ -20,38 +20,100 @@
 
 {% block script %}
     <script>
-        var select_odo = document.getElementById('id_paciente');
-        select_odo.addEventListener("change", cargar_odontologos);
+        var select_paciente = document.getElementById('id_paciente');
+        var select_odontologo = document.getElementById('id_odontologo');
+        var select_obra_social = document.getElementById('id_obra_social');
+        var select_norma_trabajo = document.getElementById('id_norma_trabajo');
 
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange=function() {
-            console.log(this.responseText);
-            var sel = document.getElementById('id_odontologo');
-            removeOptions(sel);
-            if (this.readyState == 4 && this.status == 200) {
-                var opt = document.createElement('option');
-                opt.appendChild(document.createTextNode('Seleccionar'));
-                opt.value = '';
-                sel.appendChild(opt);
-                var arr = JSON.parse(this.responseText);
-                for (i in arr) {
-                    opt = document.createElement('option');
-                    opt.appendChild(document.createTextNode(arr[i].nombre_apellido));
-                    opt.value = arr[i].id; 
-                    sel.appendChild(opt);
-                }
+        function load_complete_ficha() {
+            var paciente = parseInt(select_paciente.value);
+            if (isNaN(paciente) == true){
+                select_odontologo.parentNode.style.display = 'none';
+                removeOptions(select_odontologo);
+                select_obra_social.parentNode.style.display = 'none';
+                removeOptions(select_obra_social);
+                select_norma_trabajo.parentNode.style.display = 'none';
+                removeOptions(select_norma_trabajo);
             }
-        };
+            select_paciente.addEventListener("change", cargar_odontologos);
+            select_paciente.addEventListener("change", cargar_obras_sociales);
+            select_odontologo.addEventListener("change", cargar_obras_sociales);
+            select_obra_social.addEventListener("change", cargar_normas_trabajo);
+        }
+        window.addEventListener("load", load_complete_ficha, false);
+
+        var xhttp_o = new XMLHttpRequest();
+        xhttp_o.onreadystatechange = createCallback(select_odontologo);
+        var xhttp_os = new XMLHttpRequest();
+        xhttp_os.onreadystatechange = createCallback(select_obra_social);
+        var xhttp_nt = new XMLHttpRequest();
+        xhttp_nt.onreadystatechange = createCallback(select_norma_trabajo);
+        
+        function createCallback(select) {
+            console.log('cargando datos en: ' + select.id);
+            return function() {
+                console.log(this.responseText);
+                removeOptions(select);
+                if (this.readyState == 4 && this.status == 200) {
+                    var opt = document.createElement('option');
+                    opt.appendChild(document.createTextNode('Seleccionar'));
+                    opt.value = '';
+                    select.appendChild(opt);
+                    var arr = JSON.parse(this.responseText);
+                    for (i in arr) {
+                        opt = document.createElement('option');
+                        opt.appendChild(document.createTextNode(arr[i].descrip));
+                        opt.value = arr[i].id; 
+                        select.appendChild(opt);
+                    }
+                    select.parentNode.style.display = 'block';
+                }
+            };
+        }
 
         function cargar_odontologos() {
-            var paciente = parseInt(document.getElementById('id_paciente').value);
+            console.log('cargar odontologos');
+            var paciente = parseInt(select_paciente.value);
             if (isNaN(paciente) == false){
-                xhttp.open("GET", "/odontologo/get_all?paciente=" + paciente, true);
-                xhttp.send();
+                xhttp_o.open("GET", "/odontologo/get_for_select?paciente=" + paciente, true);
+                xhttp_o.send();
             }
             else{
-                var sel = document.getElementById('id_odontologo');
-                removeOptions(sel);
+                select_odontologo.parentNode.style.display = 'none';
+                removeOptions(select_odontologo);
+                select_obra_social.parentNode.style.display = 'none';
+                removeOptions(select_obra_social);
+                select_norma_trabajo.parentNode.style.display = 'none';
+                removeOptions(select_norma_trabajo);
+            }
+        }
+
+        function cargar_obras_sociales() {
+            console.log('cargar obras sociales');
+            var paciente = parseInt(select_paciente.value);
+            var odontologo = parseInt(select_odontologo.value);
+            if (isNaN(odontologo) == false && isNaN(paciente) == false){
+                xhttp_os.open("GET", "/obra_social/get_for_select?odontologo=" + odontologo + "&paciente="+ paciente, true);
+                xhttp_os.send();
+            }
+            else{
+                select_obra_social.parentNode.style.display = 'none';
+                removeOptions(select_obra_social);
+                select_norma_trabajo.parentNode.style.display = 'none';
+                removeOptions(select_norma_trabajo);
+            }
+        }
+
+        function cargar_normas_trabajo() {
+            var obra_social = parseInt(select_obra_social.value);
+            console.log('cargar normas de trabajo de la obra social ' + obra_social);
+            if (isNaN(obra_social) == false){
+                xhttp_nt.open("GET", "/norma_trabajo/get_for_select?obra_social=" + obra_social, true);
+                xhttp_nt.send();
+            }
+            else{
+                select_norma_trabajo.parentNode.style.display = 'none';
+                removeOptions(select_norma_trabajo);
             }
         }
         function removeOptions(selectbox)

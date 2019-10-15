@@ -1,5 +1,6 @@
 from django.contrib.auth import update_session_auth_hash
 from django import forms
+from django.db import models
 from .models import Obra_Social, Paciente, Norma_Trabajo, CustomUser, Odontologo, Ficha, Clinica
 from django.contrib.auth.forms import AuthenticationForm,UserCreationForm,UserChangeForm,PasswordChangeForm
 from django.forms import DateTimeField
@@ -124,23 +125,51 @@ class FichaForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         clinica_id = kwargs.pop('clinica_id')
         super(FichaForm, self).__init__(*args, **kwargs)
-        #self.fields['obra_social'].queryset = Obra_Social.objects.filter(clinica_id=clinica_id)
-        #self.fields['odontologo'].queryset = Odontologo.objects.filter(clinica_id=clinica_id)
-        #self.fields['norma_trabajo'].queryset = Norma_Trabajo.objects.filter(clinica_id=clinica_id)
+        
         self.fields['odontologo'].queryset = Odontologo.objects.none()
         self.fields['obra_social'].queryset = Obra_Social.objects.none()
         self.fields['norma_trabajo'].queryset = Norma_Trabajo.objects.none()
+        self.fields['paciente'].queryset = Paciente.objects.filter(clinica_id=clinica_id)
+
+        self.fields['odontologo'].empty_label = 'Seleccionar'
+        self.fields['obra_social'].empty_label = 'Seleccionar'
+        self.fields['norma_trabajo'].empty_label = 'Seleccionar'
+        self.fields['paciente'].empty_label = 'Seleccionar'
 
         if 'paciente' in self.data:
             try:
                 paciente_id = int(self.data.get('paciente'))
-                self.fields['odontologo'].queryset = Odontologo.objects.filter(paciente__id=paciente_id).order_by('nombre_apellido')
+                self.fields['odontologo'].queryset = Odontologo.objects.filter(paciente__id=paciente_id
+                    ).order_by('nombre_apellido')
             except (ValueError, TypeError):
                 pass  # invalid input from the client; ignore and fallback to empty City queryset
         elif self.instance.pk:
             self.fields['odontologo'].queryset = self.instance.paciente.odontologos.order_by('nombre_apellido')
 
-        self.fields['paciente'].queryset = Paciente.objects.filter(clinica_id=clinica_id)
+        if 'odontologo' in self.data:
+            try:
+                odontologo_id = int(self.data.get('odontologo'))
+                self.fields['obra_social'].queryset = Obra_Social.objects.filter(paciente__id=paciente_id
+                    ).filter(odontologo__id = odontologo_id
+                    ).order_by('nombre')
+            except (ValueError, TypeError):
+                pass
+        elif self.instance.pk:
+            self.fields['obra_social'].queryset = Obra_Social.objects.filter(paciente__id=self.instance.paciente.id
+                ).filter(odontologo__id = self.instance.odontologo.id
+                ).order_by('nombre')
+
+        if 'obra_social' in self.data:
+            try:
+                obra_social_id = int(self.data.get('obra_social'))
+                self.fields['norma_trabajo'].queryset = Norma_Trabajo.objects.filter(obra_social__id=obra_social_id
+                    ).order_by('codigo')
+            except (ValueError, TypeError):
+                pass
+        elif self.instance.pk:
+            if self.instance.obra_social:
+                self.fields['norma_trabajo'].queryset = Norma_Trabajo.objects.filter(obra_social=self.instance.obra_social
+                ).order_by('codigo')
         
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'

@@ -23,6 +23,16 @@
             {% else %}
                 <p>No tiene odontologos asociados.</p>
             {% endif %}
+            <p><b>Obras sociales:</b></p>
+            {% if object.obras_sociales %}
+                <ul>
+                    {% for os in object.obras_sociales.all %}
+                        <li>{{os}}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No tiene obras sociales asociados.</p>
+            {% endif %}
             <p style="text-align:center;">
                 <a href="/odontologo" type="submit" name="odontologo-submit" class="btn">Volver</a>
             </p>

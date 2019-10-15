@@ -10,6 +10,9 @@ from django.utils import timezone
 from django.contrib.messages.views import SuccessMessageMixin 
 from django.urls import reverse
 from odonto.vistas.util import CustomErrorList
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.db.models import F
 
 class Obra_SocialListFilter(django_filters.FilterSet):
     filtro = django_filters.CharFilter(method='custom_filter')
@@ -93,3 +96,15 @@ class ObraSocialEliminar(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
         success_message = 'Obra social eliminada correctamente.'
         messages.success (self.request, (success_message))       
         return reverse('obra_social_index')
+
+@login_required
+def get_for_select(request):
+    paciente = int(request.GET.get('paciente'))
+    odontologo = int(request.GET.get('odontologo'))
+    obras_sociales = Obra_Social.objects.filter(clinica = request.user.clinica
+        ).filter(paciente__id = paciente
+        ).filter(odontologo__id = odontologo
+        ).values('id', 'nombre'
+        ).annotate(descrip = F('nombre')) # or simply .values() to get all fields
+    os_list = list(obras_sociales)  # important: convert the QuerySet to a list object
+    return JsonResponse(os_list, safe=False)

@@ -12,6 +12,7 @@ from django.urls import reverse
 from odonto.vistas.util import CustomErrorList
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from django.db.models import F
 
 class OdontologoListFilter(django_filters.FilterSet):
     filtro = django_filters.CharFilter(method='custom_filter')
@@ -99,9 +100,10 @@ class OdontologoEliminar(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
         return reverse('odontologo_index')
 
 @login_required
-def get_odontologos(request):
+def get_for_select(request):
     paciente = int(request.GET.get('paciente'))
-    odoo = Odontologo.objects.filter(paciente__id = paciente)
-    odontologos = Odontologo.objects.filter(clinica = request.user.clinica).filter(paciente__id = paciente).values('id', 'nombre_apellido') # or simply .values() to get all fields
+    odontologos = Odontologo.objects.filter(clinica = request.user.clinica
+        ).filter(paciente__id = paciente).values('id', 'nombre_apellido'
+        ).annotate(descrip = F('nombre_apellido')) # or simply .values() to get all fields
     odo_list = list(odontologos)  # important: convert the QuerySet to a list object
     return JsonResponse(odo_list, safe=False)

@@ -10,6 +10,12 @@ from django.utils import timezone
 from django.contrib.messages.views import SuccessMessageMixin 
 from django.urls import reverse
 from odonto.vistas.util import CustomErrorList
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.db.models import F
+from django.db.models import Value
+from django.db.models.functions import Concat
+from django.db.models import CharField
 
 class NormaTrabajoListFilter(django_filters.FilterSet):
     filtro = django_filters.CharFilter(method='custom_filter')
@@ -97,3 +103,13 @@ class Norma_TrabajoEliminar(LoginRequiredMixin, SuccessMessageMixin, DeleteView)
         success_message = 'Norma de trabajo eliminada correctamente.'
         messages.success (self.request, (success_message))       
         return reverse('norma_trabajo_index')
+
+@login_required
+def get_for_select(request):
+    obra_social = int(request.GET.get('obra_social'))
+    normas_trabajo = Norma_Trabajo.objects.filter(clinica = request.user.clinica
+        ).filter(obra_social__id = obra_social
+        ).values('id', 'codigo', 'descripcion'
+        ).annotate(descrip = Concat('codigo', Value(' - '), 'descripcion',output_field=CharField())) # or simply .values() to get all fields
+    nt_list = list(normas_trabajo)  # important: convert the QuerySet to a list object
+    return JsonResponse(nt_list, safe=False)

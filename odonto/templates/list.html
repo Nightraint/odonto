@@ -49,13 +49,13 @@
         <div class="pagination">
             <span class="page-links">
                 {% if page_obj.has_previous %}
-                    <a href="?page={{ page_obj.previous_page_number }}" class="btn-lila">Anterior</a>
+                    <a href="?page={{ page_obj.previous_page_number }}" class="btn-lila" style="margin-right:10px;">Anterior</a>
                 {% endif %}
                 <span class="page-current">
                     Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.
                 </span>
                 {% if page_obj.has_next %}
-                    <a href="?page={{ page_obj.next_page_number }}" class="btn-lila">Siguiente</a>
+                    <a href="?page={{ page_obj.next_page_number }}" class="btn-lila" style="margin-left:10px;">Siguiente</a>
                 {% endif %}
             </span>
         </div>

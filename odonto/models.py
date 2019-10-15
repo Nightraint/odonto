@@ -21,6 +21,7 @@ class Odontologo(models.Model):
     telefono = models.CharField(max_length=100,blank=True)
     dni = models.CharField(max_length=100,blank=True)
     matricula = models.CharField(max_length=100,blank=True)
+    obras_sociales = models.ManyToManyField('Obra_Social',blank=True)
     creado = models.DateTimeField(auto_now_add=True)
     actualizado = models.DateTimeField(auto_now=True)
     clinica = models.ForeignKey(Clinica, on_delete=models.CASCADE)
@@ -69,7 +70,7 @@ class Norma_Trabajo(models.Model):
     clinica = models.ForeignKey(Clinica, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.codigo
+        return self.codigo + ' - ' + self.descripcion
 
 
 class Ficha(models.Model):

@@ -34,13 +34,14 @@ urlpatterns = [
     path('odontologo/editar/<int:pk>', odontologo.OdontologoEditar.as_view(template_name = "odontologo/odontologo_form.html"), name='editar'),
     path('odontologo/detalle/<int:pk>', odontologo.OdontologoDetalle.as_view(template_name = "odontologo/odontologo_detail.html"), name='detalle'),
     path('odontologo/', odontologo.OdontologoList.as_view(template_name='odontologo/odontologo_list.html'), name='odontologo_index'),
-    path(r'odontologo/get_all/', odontologo.get_odontologos, name='get_all'),
+    path(r'odontologo/get_for_select/', odontologo.get_for_select, name='get_for_select'),
 
     path('obra_social/crear', obra_social.ObraSocialCrear.as_view(template_name = "obra_social/obra_social_form.html"), name='crear'),
     path('obra_social/eliminar/<int:pk>', obra_social.ObraSocialEliminar.as_view(), name='eliminar'),
     path('obra_social/editar/<int:pk>', obra_social.ObraSocialEditar.as_view(template_name = "obra_social/obra_social_form.html"), name='editar'),
     path('obra_social/detalle/<int:pk>', obra_social.Obras_Sociales_Detalle.as_view(template_name = "obra_social/obra_social_detail.html"), name='detalle'),
     path('obra_social/', obra_social.Obra_SocialList.as_view(template_name='obra_social/obra_social_list.html'), name='obra_social_index'),
+    path(r'obra_social/get_for_select/', obra_social.get_for_select, name='get_for_select'),
 
     path('paciente/crear', paciente.PacienteCrear.as_view(template_name = "paciente/paciente_form.html"), name='crear'),
     path('paciente/eliminar/<int:pk>', paciente.PacienteEliminar.as_view(), name='eliminar'),
@@ -53,6 +54,7 @@ urlpatterns = [
     path('norma_trabajo/editar/<int:pk>', norma_trabajo.Norma_TrabajoEditar.as_view(template_name = "norma_trabajo/norma_trabajo_form.html"), name='editar'),
     path('norma_trabajo/detalle/<int:pk>', norma_trabajo.Norma_TrabajoDetalle.as_view(template_name = "norma_trabajo/norma_trabajo_detail.html"), name='detalle'),
     path('norma_trabajo/', norma_trabajo.Norma_TrabajoList.as_view(template_name='norma_trabajo/norma_trabajo_list.html'), name='norma_trabajo_index'),
+    path(r'norma_trabajo/get_for_select/', norma_trabajo.get_for_select, name='get_for_select'),
 
     path('',TemplateView.as_view(template_name='index.html'), name='index'),
     path('admin/', admin.site.urls),
