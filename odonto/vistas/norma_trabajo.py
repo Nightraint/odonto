@@ -16,6 +16,7 @@ from django.db.models import F
 from django.db.models import Value
 from django.db.models.functions import Concat
 from django.db.models import CharField
+from django.db import IntegrityError
 
 class NormaTrabajoListFilter(django_filters.FilterSet):
     filtro = django_filters.CharFilter(method='custom_filter')
@@ -70,10 +71,17 @@ class Norma_TrabajoCrear(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         return reverse('norma_trabajo_index')
     
     def form_valid(self, form):
-        form.instance.clinica = self.request.user.clinica
-        self.object = form.save()
-        return super().form_valid(form)
+        # form.instance.clinica = self.request.user.clinica
+        # self.object = form.save()
+        # return super().form_valid(form)
         #return HttpResponseRedirect(self.get_success_url())
+        form.instance.clinica = self.request.user.clinica
+        try:
+            return super(Norma_TrabajoCrear, self).form_valid(form)
+        except IntegrityError:
+            form.add_error(None,'Ya existe una norma de trabajo con el codigo ingresado')
+            #messages.error(self.request, "Your data has not been saved!")
+            return self.form_invalid(form)
 
     def get_form_kwargs(self):
         kwargs = super(Norma_TrabajoCrear, self).get_form_kwargs()

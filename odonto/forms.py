@@ -94,6 +94,9 @@ class Norma_TrabajoForm(forms.ModelForm):
         clinica_id = kwargs.pop('clinica_id')
         super(Norma_TrabajoForm, self).__init__(*args, **kwargs)
         self.fields['obra_social'].queryset = Obra_Social.objects.filter(clinica_id=clinica_id)
+        self.fields['dias'].widget.attrs['style'] = 'width:100px;display:inline-block;'
+        self.fields['meses'].widget.attrs['style'] = 'width:100px;display:inline-block;'
+        self.fields['años'].widget.attrs['style'] = 'width:100px;display:inline-block;'
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
 

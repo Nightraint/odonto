@@ -63,11 +63,16 @@ class Obra_Social(models.Model):
 class Norma_Trabajo(models.Model):
     codigo = models.CharField(max_length=100)
     obra_social = models.ForeignKey('Obra_Social',on_delete=models.CASCADE)
-    vencimiento = models.DateField('Vencimiento')
+    dias = models.IntegerField()
+    meses = models.IntegerField()
+    años = models.IntegerField()
     descripcion = models.TextField('Concepto',max_length=2000)
     creado = models.DateTimeField(auto_now_add=True)
     actualizado = models.DateTimeField(auto_now=True)
     clinica = models.ForeignKey(Clinica, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = (("codigo", "obra_social", "clinica"),)
 
     def __str__(self):
         return self.codigo + ' - ' + self.descripcion
