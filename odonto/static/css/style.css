@@ -126,7 +126,10 @@ hr {
   margin:0;
 }
 
-
+.datepicker{
+  font-size: 8px !important;
+  color:red !important;
+}
 
 .navbar-header a.navbar-brand {
    color:#fff;

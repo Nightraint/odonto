@@ -48,7 +48,8 @@ urlpatterns = [
     path('paciente/editar/<int:pk>', paciente.PacienteEditar.as_view(template_name = "paciente/paciente_form.html"), name='editar'),
     path('paciente/detalle/<int:pk>', paciente.PacienteDetalle.as_view(template_name = "paciente/paciente_detail.html"), name='detalle'),
     path('paciente/', paciente.PacienteList.as_view(template_name='paciente/paciente_list.html'), name='paciente_index'),
-    
+    path(r'paciente/chequear_norma/', paciente.chequear_norma, name='chequear_norma'),
+
     path('norma_trabajo/crear', norma_trabajo.Norma_TrabajoCrear.as_view(template_name = "norma_trabajo/norma_trabajo_form.html"), name='crear'),
     path('norma_trabajo/eliminar/<int:pk>', norma_trabajo.Norma_TrabajoEliminar.as_view(), name='eliminar'),
     path('norma_trabajo/editar/<int:pk>', norma_trabajo.Norma_TrabajoEditar.as_view(template_name = "norma_trabajo/norma_trabajo_form.html"), name='editar'),

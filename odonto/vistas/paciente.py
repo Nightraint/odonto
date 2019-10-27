@@ -1,7 +1,7 @@
 import django_filters
 from django_filters.views import FilterView
 from odonto.forms import (PacienteForm,CustomFilterForm,)
-from odonto.models import Paciente
+from odonto.models import Paciente, Norma_Trabajo, Ficha
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView 
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -10,6 +10,8 @@ from django.utils import timezone
 from django.contrib.messages.views import SuccessMessageMixin 
 from django.urls import reverse
 from odonto.vistas.util import CustomErrorList
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 
 class PacienteListFilter(django_filters.FilterSet):
     filtro = django_filters.CharFilter(method='custom_filter')
@@ -105,3 +107,27 @@ class PacienteEliminar(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
         success_message = 'Paciente eliminado correctamente.'
         messages.success (self.request, (success_message))       
         return reverse('paciente_index')
+
+@login_required
+def chequear_norma(request):
+    id_paciente = int(request.GET.get('paciente'))
+    id_norma_trabajo = int(request.GET.get('norma_trabajo'))
+
+    paciente = Paciente.objects.get(pk = id_paciente)
+
+    norma_trabajo = Norma_Trabajo.objects.get(pk = id_norma_trabajo)
+    dias = norma_trabajo.dias
+    meses = norma_trabajo.meses
+    años = norma_trabajo.años
+
+    ficha = Ficha.objects.filter(paciente_id = id_paciente).filter(norma_trabajo_id = id_norma_trabajo)
+    
+    response_data = {}
+    
+    if ficha:
+        response_data['result'] = 'Error'
+        response_data['message'] = ''
+    else:
+        response_data['result'] = 'OK'
+
+    return JsonResponse(response_data, safe=False)

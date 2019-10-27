@@ -13,6 +13,7 @@ from odonto.vistas.util import CustomErrorList
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.db.models import F
+from django.db import IntegrityError
 
 class Obra_SocialListFilter(django_filters.FilterSet):
     filtro = django_filters.CharFilter(method='custom_filter')
@@ -64,9 +65,11 @@ class ObraSocialCrear(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     
     def form_valid(self, form):
         form.instance.clinica = self.request.user.clinica
-        self.object = form.save()
-        return super().form_valid(form)
-        #return HttpResponseRedirect(self.get_success_url())
+        try:
+            return super(ObraSocialCrear, self).form_valid(form)
+        except IntegrityError as e:
+            form.add_error(None,'Ya existe una obra social con el codigo ingresado.')
+            return self.form_invalid(form)
 
     def get_form_kwargs(self):
         kwargs = super(ObraSocialCrear, self).get_form_kwargs()

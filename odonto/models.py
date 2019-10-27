@@ -47,7 +47,7 @@ class Paciente(models.Model):
         ordering = ('nombre_apellido',)
 
 class Obra_Social(models.Model):
-    codigo = models.IntegerField(unique=True,error_messages={'unique':"Ya existe una obra social con el codigo ingresado."})
+    codigo = models.IntegerField()
     nombre = models.CharField(max_length=100)    
     observaciones = models.TextField(max_length=1000,blank=True)
     creado = models.DateTimeField(auto_now_add=True)
@@ -58,6 +58,7 @@ class Obra_Social(models.Model):
         return self.nombre
 
     class Meta:
+        unique_together = (("codigo", "clinica"),)
         ordering = ('nombre',)
 
 class Norma_Trabajo(models.Model):
@@ -73,6 +74,7 @@ class Norma_Trabajo(models.Model):
 
     class Meta:
         unique_together = (("codigo", "obra_social", "clinica"),)
+        ordering = ('obra_social__nombre',)
 
     def __str__(self):
         return self.codigo + ' - ' + self.descripcion

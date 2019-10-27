@@ -112,7 +112,7 @@ class OdontologoForm(forms.ModelForm):
         super(OdontologoForm, self).__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
-
+127244
 ##################### FICHAS #################### 
 
 class FichaForm(forms.ModelForm):
