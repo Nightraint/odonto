@@ -12,6 +12,8 @@ from django.urls import reverse
 from odonto.vistas.util import CustomErrorList
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from datetime import datetime
+from django.db.models import Max
 
 class PacienteListFilter(django_filters.FilterSet):
     filtro = django_filters.CharFilter(method='custom_filter')
@@ -112,7 +114,10 @@ class PacienteEliminar(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
 def chequear_norma(request):
     id_paciente = int(request.GET.get('paciente'))
     id_norma_trabajo = int(request.GET.get('norma_trabajo'))
+    fecha = request.GET.get('fecha')
 
+    fecha_ficha = datetime.strptime(fecha , '%d/%m/%Y %H:%M')
+    
     paciente = Paciente.objects.get(pk = id_paciente)
 
     norma_trabajo = Norma_Trabajo.objects.get(pk = id_norma_trabajo)
@@ -120,14 +125,21 @@ def chequear_norma(request):
     meses = norma_trabajo.meses
     años = norma_trabajo.años
 
-    ficha = Ficha.objects.filter(paciente_id = id_paciente).filter(norma_trabajo_id = id_norma_trabajo)
-    
+    ficha = Ficha.objects.filter(paciente_id = id_paciente).filter(norma_trabajo_id = id_norma_trabajo).order_by('fecha').first()
+
     response_data = {}
     
     if ficha:
+        fecha_ultima = ficha.fecha.replace(tzinfo=None)
+        diferencia = (fecha_ficha-fecha_ultima).days
         response_data['result'] = 'Error'
-        response_data['message'] = ''
+        response_data['message'] = 'Diferencia: %s' % diferencia
     else:
         response_data['result'] = 'OK'
 
     return JsonResponse(response_data, safe=False)
+
+def days_between(d1, d2):
+    d1 = datetime.strptime(d1, "%Y-%m-%d")
+    d2 = datetime.strptime(d2, "%Y-%m-%d")
+    return abs((d2 - d1).days)

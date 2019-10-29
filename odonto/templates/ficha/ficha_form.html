@@ -69,8 +69,8 @@
             var paciente = parseInt(select_paciente.value);
             var norma_trabajo = parseInt(select_norma_trabajo.value);
             console.log('chequear norma: paciente: ' + paciente + ". norma: " + norma_trabajo);
-            if (isNaN(paciente) == false && isNaN(norma_trabajo) == false){
-                xhttp_chequear_norma.open("GET", "/paciente/chequear_norma?paciente=" + paciente + "&norma_trabajo=" + norma_trabajo, true);
+            if (isNaN(paciente) == false && isNaN(norma_trabajo) == false && fecha.value){
+                xhttp_chequear_norma.open("GET", "/paciente/chequear_norma?paciente=" + paciente + "&norma_trabajo=" + norma_trabajo + "&fecha=" + fecha.value, true);
                 xhttp_chequear_norma.send();
             }
         }
