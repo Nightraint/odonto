@@ -57,10 +57,40 @@
         function createCallbackChequearNorma() {
             console.log('callback creado para chequear norma');
             return function() {
-                var today = new Date();  
-                console.log(today + ": " + this.readyState + " - " + this.responseText);
                 if (this.readyState == 4 && this.status == 200) {
+                    var today = new Date();  
+                    console.log(today + ": " + this.readyState + " - " + this.responseText);
+                    var r = JSON.parse(this.responseText);
+                    console.log(r);
+
+                    var div_borrar = document.getElementById('mensaje_chequear_norma');
+                    if (div_borrar)
+                        div_borrar.parentNode.removeChild(div_borrar);
                     
+                    div_mensaje = document.createElement('div');
+                    div_mensaje.id = 'mensaje_chequear_norma';
+                    div_mensaje.classList.add('alert');
+                    div_mensaje.style = 'margin-top:5px;'
+                    div_mensaje.innerHTML = '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>';
+                    div_mensaje.innerHTML += '<strong id="resultado_chequear_norma"></strong>';
+                    div_mensaje.innerHTML += '<label id="label_mensaje_chequear_norma"></label>';
+                    var clase = '';
+                    if (r.result == 'OK')
+                        clase = 'alert-success';
+                    else
+                        clase = 'alert-danger';
+                    div_mensaje.classList.add(clase);
+
+                    select_norma_trabajo.parentElement.appendChild(div_mensaje);
+
+                    var label_mensaje_chequear_norma = document.getElementById('label_mensaje_chequear_norma');
+                    var resultado_chequear_norma = document.getElementById('resultado_chequear_norma');
+                    label_mensaje_chequear_norma.innerHTML = r.message;
+                    if(r.result != 'OK')
+                    {
+                        resultado_chequear_norma.innerHTML = r.result;
+                        label_mensaje_chequear_norma.innerHTML += ' <a href="'+r.enlace+'" target="blank">VER FICHA</a>'
+                    }
                 }
             };
         }
