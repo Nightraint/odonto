@@ -33,6 +33,7 @@ class Paciente(models.Model):
     nombre_apellido = models.CharField("Nombre y apellido",max_length=100)
     odontologos = models.ManyToManyField(Odontologo,blank=True)
     domicilio = models.CharField(max_length=100,blank=True)
+    mail = models.EmailField(blank=True)
     telefono = models.CharField(max_length=100,blank=True)
     dni = models.CharField(max_length=100,blank=True)
     obras_sociales = models.ManyToManyField('Obra_Social',blank=True)
@@ -45,6 +46,11 @@ class Paciente(models.Model):
 
     class Meta:
         ordering = ('nombre_apellido',)
+
+class Telefono(models.Model):
+    paciente = models.ForeignKey("Paciente")
+    descripcion = models.CharField(max_length=100)
+    telefono = models.CharField(max_length=100)
 
 class Obra_Social(models.Model):
     codigo = models.IntegerField()

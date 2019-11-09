@@ -1,0 +1,31 @@
+ficha:
+importe
+
+Datos adicionales del paciente
+mail
+telefono
+fecha nacimiento
+plan
+nro afiliado
+
+norma_trabajo:
+coseguro
+bonos
+
+obra_social:
+usa bonos
+usa coseguro
+pedir autorizacion
+
+planes:
+gravado
+no gravado
+exento
+
+
+turnos:
+
+pagos:
+
+cobros:
+ficha cta. cte.
