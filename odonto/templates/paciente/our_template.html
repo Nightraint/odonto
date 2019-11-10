@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block head %}
+	<title>Crear paciente</title>
+{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+{% load staticfiles %}
+    <div class="col-md-6 col-md-offset-3">
+        {% if messages %}
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+
+            {{ paciente_form.as_p }}
+            <label for="id_telefonos">Teléfonos:</label>
+            {{ telefono_formset.management_form }}
+
+            {% for telefono_form in telefono_formset %}
+                <div class="telefono-formset" style="margin-bottom:1em;">
+                    {{ telefono_form.descripcion }}
+                    {% if telefono_form.descripcion.errors %}
+                        {% for error in telefono_form.descripcion.errors %}
+                            {{ error|escape }}
+                        {% endfor %}
+                    {% endif %}
+
+                    {{ telefono_form.telefono }}
+                    {% if telefono_form.telefono.errors %}
+                        {% for error in telefono_form.telefono.errors %}
+                            {{ error|escape }}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            {% if telefono_formset.non_form_errors %}
+                {% for error in telefono_formset.non_form_errors %}
+                    {{ error|escape }}
+                {% endfor %}
+            {% endif %}
+
+             <p style="text-align:center;margin-top:10px;">
+                <input type="submit" name="paciente-submit" class="btn-lila" value="Aceptar" />
+            </p>
+        </form>
+
+        <!-- Include formset plugin - including jQuery dependency -->
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.formset/1.2.2/jquery.formset.js"></script>
+        <!--script src="{% static 'path_to/jquery.formset.js' %}"></script-->
+        <script>
+            $('.telefono-formset').formset({
+                addText: 'Agregar teléfono',
+                deleteText: 'Eliminar'
+            });
+        </script>
+    </div>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

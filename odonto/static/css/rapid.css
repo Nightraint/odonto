@@ -5,13 +5,15 @@ body {
 }
 
 a {
-  color: #1bb1dc;
+  color: #413e66;
   transition: 0.5s;
 }
 
-a:hover,
-a:active,
-a:focus {
+input[type="submit"]:hover {
+  cursor: pointer;
+}
+
+a:hover{
   color: #0a98c0;
   outline: none;
   text-decoration: none;
@@ -19,7 +21,7 @@ a:focus {
 
 p {
   padding: 0;
-  margin: 0 0 30px 0;
+  /*margin: 0 0 30px 0;*/
 }
 
 h1,

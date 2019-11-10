@@ -1,7 +1,7 @@
 import django_filters
 from django_filters.views import FilterView
-from odonto.forms import (PacienteForm,CustomFilterForm,)
-from odonto.models import Paciente, Norma_Trabajo, Ficha
+from odonto.forms import (PacienteForm,CustomFilterForm,TelefonoForm,BaseTelefonoFormSet)
+from odonto.models import Paciente, Norma_Trabajo, Ficha, Telefono
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView 
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -14,6 +14,10 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from datetime import datetime
 from django.db.models import Max
+from django.forms.formsets import formset_factory
+from django.shortcuts import redirect, render
+from django.db import IntegrityError, transaction
+from django.shortcuts import get_object_or_404
 
 class PacienteListFilter(django_filters.FilterSet):
     filtro = django_filters.CharFilter(method='custom_filter')
@@ -86,7 +90,6 @@ class PacienteCrear(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         kwargs.update({'error_class': CustomErrorList})
         return kwargs
 
-
 class PacienteEditar(LoginRequiredMixin, SuccessMessageMixin, UpdateView): 
     model = Paciente
     form_class = PacienteForm
@@ -149,3 +152,91 @@ def days_between(d1, d2):
     d1 = datetime.strptime(d1, "%Y-%m-%d")
     d2 = datetime.strptime(d2, "%Y-%m-%d")
     return abs((d2 - d1).days)
+
+@login_required
+def editar(request, pk):
+    TelefonoFormSet = formset_factory(TelefonoForm, formset=BaseTelefonoFormSet)
+    instance = get_object_or_404(Paciente, pk=pk)
+    if request.method == 'GET':
+        paciente_form = PacienteForm(instance = instance,clinica_id = request.user.clinica.id)
+        telefonos = Telefono.objects.filter(paciente = instance).order_by('id')
+        telefonos_data = [{'descripcion': l.descripcion, 'telefono': l.telefono}
+                            for l in telefonos]
+        telefonos_formset = TelefonoFormSet(initial=telefonos_data)
+        context = {
+            'paciente_form': paciente_form,
+            'telefono_formset': telefonos_formset,
+        }
+        return render(request, 'paciente/our_template.html', context)
+    else:
+        paciente_form = PacienteForm(request.POST,instance=instance,clinica_id = request.user.clinica.id)
+        telefonos_formset = TelefonoFormSet(request.POST)
+
+        paciente_form.instance.clinica = request.user.clinica
+
+        if paciente_form.is_valid() and telefonos_formset.is_valid():
+            paciente_form.save()
+            nuevos_telefonos = []
+            for telefono_form in telefonos_formset:
+                descripcion = telefono_form.cleaned_data.get('descripcion')
+                telefono = telefono_form.cleaned_data.get('telefono')
+                if telefono:
+                    nuevos_telefonos.append(Telefono(descripcion=descripcion, telefono=telefono, paciente = instance))
+            try:
+                with transaction.atomic():
+                    #Replace the old with the new
+                    Telefono.objects.filter(paciente=instance).delete()
+                    Telefono.objects.bulk_create(nuevos_telefonos)
+
+                    # And notify our users that it worked
+                    messages.success(request, 'Paciente actualizado.')
+                    return redirect(reverse('paciente_index'))
+            except IntegrityError: #If the transaction failed
+                messages.error(request, 'Ocurrio un error guardando el paciente')
+                return redirect(reverse('paciente_index'))
+
+@login_required
+def agregar(request):
+    TelefonoFormSet = formset_factory(TelefonoForm, formset=BaseTelefonoFormSet)
+
+    paciente_form = PacienteForm(request.POST,clinica_id = request.user.clinica.id)
+    instance = paciente_form.instance
+
+    telefonos = Telefono.objects.filter(paciente = paciente_form.instance).order_by('descripcion')
+    telefonos_data = [{'descripcion': l.descripcion, 'telefono': l.telefono}
+                    for l in telefonos]
+
+    if request.method == 'POST':
+        telefonos_formset = TelefonoFormSet(request.POST)
+
+        paciente_form.instance.clinica = request.user.clinica
+
+        if paciente_form.is_valid() and telefonos_formset.is_valid():
+            paciente_form.save()
+            nuevos_telefonos = []
+            for telefono_form in telefonos_formset:
+                descripcion = telefono_form.cleaned_data.get('descripcion')
+                telefono = telefono_form.cleaned_data.get('telefono')
+                if telefono:
+                    nuevos_telefonos.append(Telefono(descripcion=descripcion, telefono=telefono, paciente = instance))
+            try:
+                with transaction.atomic():
+                    Telefono.objects.filter(paciente=instance).delete()
+                    Telefono.objects.bulk_create(nuevos_telefonos)
+                    messages.success(request, 'Paciente creado correctamente')
+                    return redirect(reverse('paciente_index'))
+
+            except IntegrityError:
+                messages.error(request, 'Ocurrio un error guardando el paciente')
+                return redirect(reverse('paciente_index'))
+
+    else:
+        paciente_form = PacienteForm(clinica_id = request.user.clinica.id)
+        telefonos_formset = TelefonoFormSet(initial=telefonos_data)
+
+    context = {
+        'paciente_form': paciente_form,
+        'telefono_formset': telefonos_formset,
+    }
+
+    return render(request, 'paciente/our_template.html', context)

@@ -34,12 +34,12 @@ class Paciente(models.Model):
     odontologos = models.ManyToManyField(Odontologo,blank=True)
     domicilio = models.CharField(max_length=100,blank=True)
     mail = models.EmailField(blank=True)
-    telefono = models.CharField(max_length=100,blank=True)
     dni = models.CharField(max_length=100,blank=True)
     obras_sociales = models.ManyToManyField('Obra_Social',blank=True)
     creado = models.DateTimeField(auto_now_add=True)
     actualizado = models.DateTimeField(auto_now=True)
     clinica = models.ForeignKey(Clinica, on_delete=models.CASCADE)
+    fecha_nacimiento = models.DateField(blank=True, null=True)
 
     def __str__(self):
     	return self.nombre_apellido
@@ -48,7 +48,7 @@ class Paciente(models.Model):
         ordering = ('nombre_apellido',)
 
 class Telefono(models.Model):
-    paciente = models.ForeignKey("Paciente")
+    paciente = models.ForeignKey("Paciente", on_delete = models.CASCADE)
     descripcion = models.CharField(max_length=100)
     telefono = models.CharField(max_length=100)
 
