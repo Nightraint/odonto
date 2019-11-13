@@ -17,36 +17,62 @@
 
         <form method="post">
             {% csrf_token %}
-
+            
             {{ paciente_form.as_p }}
-            <label for="id_telefonos">Teléfonos:</label>
-            {{ telefono_formset.management_form }}
 
-            {% for telefono_form in telefono_formset %}
-                <div class="telefono-formset" style="margin-bottom:1em;">
-                    {{ telefono_form.descripcion }}
-                    {% if telefono_form.descripcion.errors %}
-                        {% for error in telefono_form.descripcion.errors %}
-                            {{ error|escape }}
-                        {% endfor %}
-                    {% endif %}
+            <div style="margin-bottom:1em">
+                <label style="display:block;">Teléfonos:</label>
+                {{ telefono_formset.management_form }}
+                {% for telefono_form in telefono_formset %}
+                    <div class="telefono-formset" style="margin-bottom:0.4em;">
+                        {{ telefono_form.descripcion }}
+                        {% if telefono_form.descripcion.errors %}
+                            {% for error in telefono_form.descripcion.errors %}
+                                {{ error|escape }}
+                            {% endfor %}
+                        {% endif %}
 
-                    {{ telefono_form.telefono }}
-                    {% if telefono_form.telefono.errors %}
-                        {% for error in telefono_form.telefono.errors %}
-                            {{ error|escape }}
-                        {% endfor %}
-                    {% endif %}
-                </div>
-            {% endfor %}
-
-            {% if telefono_formset.non_form_errors %}
-                {% for error in telefono_formset.non_form_errors %}
-                    {{ error|escape }}
+                        {{ telefono_form.telefono }}
+                        {% if telefono_form.telefono.errors %}
+                            {% for error in telefono_form.telefono.errors %}
+                                {{ error|escape }}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
                 {% endfor %}
-            {% endif %}
+                {% if telefono_formset.non_form_errors %}
+                    {% for error in telefono_formset.non_form_errors %}
+                        {{ error|escape }}
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div style="margin-bottom:1em">
+                <label style="display:block;">Emails:</label>
+                {{ email_formset.management_form }}
+                {% for email_form in email_formset %}
+                    <div class="email-formset" style="margin-bottom:0.5em;">
+                        {{ email_form.descripcion }}
+                        {% if email_form.descripcion.errors %}
+                            {% for error in email_form.descripcion.errors %}
+                                {{ error|escape }}
+                            {% endfor %}
+                        {% endif %}
 
-             <p style="text-align:center;margin-top:10px;">
+                        {{ email_form.email }}
+                        {% if email_form.email.errors %}
+                            {% for error in email_form.email.errors %}
+                                {{ error|escape }}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                {% if email_formset.non_form_errors %}
+                    {% for error in email_formset.non_form_errors %}
+                        {{ error|escape }}
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <p style="text-align:center;margin-top:10px;">
                 <input type="submit" name="paciente-submit" class="btn-lila" value="Aceptar" />
             </p>
         </form>
@@ -58,7 +84,13 @@
         <script>
             $('.telefono-formset').formset({
                 addText: 'Agregar teléfono',
-                deleteText: 'Eliminar'
+                deleteText: 'Eliminar',
+                prefix: "{{ telefono_formset.prefix }}"
+            });
+            $('.email-formset').formset({
+                addText: 'Agregar email',
+                deleteText: 'Eliminar',
+                prefix: "{{ email_formset.prefix }}"
             });
         </script>
     </div>

@@ -4,6 +4,10 @@ body {
   font-family: "Open Sans", sans-serif;
 }
 
+.add-row{
+  margin-bottom:1em;
+}
+
 a {
   color: #413e66;
   transition: 0.5s;

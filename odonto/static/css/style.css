@@ -67,6 +67,10 @@ a {
   transition:  color 300ms, background-color 300ms;
 }
 
+.add-row{
+  margin-bottom:1em;
+}
+
 a:hover, a:focus {
   color:rgba(0,0,0,.85);
   text-decoration:none;

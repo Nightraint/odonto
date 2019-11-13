@@ -52,6 +52,17 @@ class Telefono(models.Model):
     descripcion = models.CharField(max_length=100)
     telefono = models.CharField(max_length=100)
 
+    def __str__(self):
+    	return self.descripcion + ': ' + self.telefono
+
+class Email(models.Model):
+    paciente = models.ForeignKey("Paciente", on_delete = models.CASCADE)
+    descripcion = models.CharField(max_length=100)
+    email = models.EmailField(max_length=100)
+
+    def __str__(self):
+    	return self.descripcion + ': ' + self.email 
+
 class Obra_Social(models.Model):
     codigo = models.IntegerField()
     nombre = models.CharField(max_length=100)    

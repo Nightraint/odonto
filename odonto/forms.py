@@ -3,8 +3,8 @@ from django import forms
 from django.db import models
 from .models import Obra_Social, Paciente, Norma_Trabajo, CustomUser, Odontologo, Ficha, Clinica, Telefono
 from django.contrib.auth.forms import AuthenticationForm,UserCreationForm,UserChangeForm,PasswordChangeForm
-from django.forms import DateTimeField
-from .widgets import BootstrapDateTimePickerInput
+from django.forms import DateTimeField, EmailField
+from .widgets import BootstrapDateTimePickerInput, BootstrapDatePickerInput
 from django.forms import modelformset_factory
 from django.forms.formsets import BaseFormSet
 
@@ -76,6 +76,11 @@ class PacienteForm(forms.ModelForm):
     class Meta:
         model = Paciente
         exclude = ('clinica',)
+
+    fecha_nacimiento = forms.DateTimeField(
+        input_formats=['%d/%m/%Y'], 
+        widget=BootstrapDatePickerInput()
+    )
 
     def __init__(self, *args, **kwargs):
         clinica_id = kwargs.pop('clinica_id')
@@ -243,5 +248,31 @@ class TelefonoForm(forms.Form):
             visible.field.widget.attrs['class'] = 'form-control'
 
 class BaseTelefonoFormSet(BaseFormSet):
+    def clean(self):
+        pass
+
+##################### EMAIL #########################
+
+class EmailForm(forms.Form):
+    email = forms.EmailField(
+                    max_length=100,
+                    widget=forms.TextInput(attrs={
+                        'placeholder': 'Email',
+                        'style' : 'width:220px;display:inline-block;margin-right:7px;',
+                    }),
+                    required=False)
+    descripcion = forms.CharField(
+                    widget=forms.TextInput(attrs={
+                        'placeholder': 'Contacto',
+                        'style' : 'width:220px;display:inline-block;margin-right:7px;',
+                    }),
+                    required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(EmailForm, self).__init__(*args, **kwargs)
+        for visible in self.visible_fields():
+            visible.field.widget.attrs['class'] = 'form-control'
+
+class BaseEmailFormSet(BaseFormSet):
     def clean(self):
         pass
