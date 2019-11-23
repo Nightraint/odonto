@@ -1,7 +1,7 @@
 import django_filters
 from django_filters.views import FilterView
-from odonto.forms import (Obra_SocialForm,CustomFilterForm,)
-from odonto.models import Obra_Social
+from odonto.forms import (Obra_SocialForm,CustomFilterForm,PlanForm,BasePlanFormSet)
+from odonto.models import Obra_Social, Plan
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView 
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -13,7 +13,10 @@ from odonto.vistas.util import CustomErrorList
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.db.models import F
-from django.db import IntegrityError
+from django.forms.formsets import formset_factory
+from django.shortcuts import redirect, render
+from django.db import IntegrityError, transaction
+from django.shortcuts import get_object_or_404
 
 class Obra_SocialListFilter(django_filters.FilterSet):
     filtro = django_filters.CharFilter(method='custom_filter')
@@ -111,3 +114,86 @@ def get_for_select(request):
         ).annotate(descrip = F('nombre')) # or simply .values() to get all fields
     os_list = list(obras_sociales)  # important: convert the QuerySet to a list object
     return JsonResponse(os_list, safe=False)
+
+@login_required
+def editar(request, pk):
+    PlanFormSet = formset_factory(PlanForm, formset=BasePlanFormSet)
+    instance = get_object_or_404(Obra_Social, pk=pk)
+    if request.method == 'GET':
+        obra_social_form = Obra_SocialForm(instance = instance,clinica_id = request.user.clinica.id)
+        planes = Plan.objects.filter(obra_social = instance).order_by('id')
+        planes_data = [{'nombre': p.nombre}
+                            for p in planes]
+        planes_formset = PlanFormSet(initial=planes_data)
+        context = {
+            'obra_social_form': obra_social_form,
+            'planes_formset': planes_formset,
+        }
+        return render(request, 'obra_social/form.html', context)
+    else:
+        obra_social_form = Obra_SocialForm(request.POST,instance=instance,clinica_id = request.user.clinica.id)
+        planes_formset = PlanFormSet(request.POST)
+
+        obra_social_form.instance.clinica = request.user.clinica
+
+        if obra_social_form.is_valid() and planes_formset.is_valid():
+            obra_social_form.save()
+            nuevos_planes = []
+            if instance.usa_planes:
+                for plan_form in planes_formset:
+                    nombre = plan_form.cleaned_data.get('nombre')
+                    if nombre:
+                        nuevos_planes.append(Plan(nombre=nombre, obra_social = instance))
+            try:
+                with transaction.atomic():
+                    #Replace the old with the new
+                    Plan.objects.filter(obra_social=instance).delete()
+                    Plan.objects.bulk_create(nuevos_planes)
+
+                    # And notify our users that it worked
+                    messages.success(request, 'Obra social actualizada.')
+                    return redirect(reverse('obra_social_index'))
+            except IntegrityError: #If the transaction failed
+                messages.error(request, 'Ocurrio un error guardando la obra social')
+                return redirect(reverse('obra_social_index'))
+
+@login_required
+def agregar(request):
+    PlanFormSet = formset_factory(PlanForm, formset=BasePlanFormSet)
+
+    if request.method == 'POST':
+        planes_formset = PlanFormSet(request.POST,prefix='planes')
+
+        obra_social_form = Obra_SocialForm(request.POST,clinica_id = request.user.clinica.id)
+        instance = obra_social_form.instance
+
+        obra_social_form.instance.clinica = request.user.clinica
+
+        if obra_social_form.is_valid() and planes_formset.is_valid():
+            obra_social_form.save()
+            
+            nuevos_planes = []
+            if instance.usa_planes:
+                for plan_form in planes_formset:
+                    nombre = plan_form.cleaned_data.get('nombre')
+                    if nombre:
+                        nuevos_planes.append(Plan(nombre = nombre, obra_social = instance))
+           
+            try:
+                with transaction.atomic():
+                    Plan.objects.bulk_create(nuevos_planes)
+                    messages.success(request, 'Obra social creada correctamente')
+                    return redirect(reverse('obra_social_index'))
+            except IntegrityError:
+                messages.error(request, 'Ocurrio un error guardando la obra social')
+                return redirect(reverse('obra_social_index'))
+    else:
+        obra_social_form = Obra_SocialForm(clinica_id = request.user.clinica.id)
+        planes_formset = PlanFormSet(prefix='planes')
+
+    context = {
+        'obra_social_form': obra_social_form,
+        'planes_formset': planes_formset,
+    }
+
+    return render(request, 'obra_social/form.html', context)

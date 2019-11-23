@@ -38,10 +38,12 @@ urlpatterns = [
 
     path('obra_social/crear', obra_social.ObraSocialCrear.as_view(template_name = "obra_social/obra_social_form.html"), name='crear'),
     path('obra_social/eliminar/<int:pk>', obra_social.ObraSocialEliminar.as_view(), name='eliminar'),
-    path('obra_social/editar/<int:pk>', obra_social.ObraSocialEditar.as_view(template_name = "obra_social/obra_social_form.html"), name='editar'),
+    #path('obra_social/editar/<int:pk>', obra_social.ObraSocialEditar.as_view(template_name = "obra_social/obra_social_form.html"), name='editar'),
     path('obra_social/detalle/<int:pk>', obra_social.Obras_Sociales_Detalle.as_view(template_name = "obra_social/obra_social_detail.html"), name='detalle'),
     path('obra_social/', obra_social.Obra_SocialList.as_view(template_name='obra_social/obra_social_list.html'), name='obra_social_index'),
     path(r'obra_social/get_for_select/', obra_social.get_for_select, name='get_for_select'),
+    path('obra_social/agregar', obra_social.agregar, name='agregar'),
+    path('obra_social/editar/<int:pk>', obra_social.editar, name='editar'),
 
     path('paciente/crear', paciente.PacienteCrear.as_view(template_name = "paciente/paciente_form.html"), name='crear'),
     path('paciente/eliminar/<int:pk>', paciente.PacienteEliminar.as_view(), name='eliminar'),

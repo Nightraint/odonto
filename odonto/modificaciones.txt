@@ -22,7 +22,6 @@ gravado
 no gravado
 exento
 
-
 turnos:
 
 pagos:

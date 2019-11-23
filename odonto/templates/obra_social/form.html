@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block head %}
+	<title>Crear obra social</title>
+{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+{% load staticfiles %}
+     <div class="col-md-6 offset-md-3">
+        {% if messages %}
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+        <form method= "POST">
+            {% csrf_token %}
+            {% for field in obra_social_form %}
+                <div class="fieldWrapper" id={{field.name|add:"_container"}} >
+                    {{ field.errors }}
+                    {% if field.field.widget.input_type is None %}
+                        {{ field.label_tag }} {{ field }}
+                    {% else %}
+                        {% if field.field.widget.input_type == 'checkbox' %}
+                            <div class="custom-control custom-checkbox">
+                                {{ field }}
+                                <label class="custom-control-label" for="{{ field.auto_id }}">{{ field.label }}</label>
+                            </div>
+                        {% else %}
+                            {{ field.label_tag }} {{ field }}
+                        {% endif %}
+                    {% endif %}
+                    {% if field.help_text %}
+                    <p class="help">{{ field.help_text|safe }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <div id="planes_old">
+                <div style="margin-bottom:1em;padding-left:20px;padding-top:20px;" id="planes">
+                    <!--label style="display:block;">Planes:</label-->
+                    {{ planes_formset.management_form }}
+                    {% for plan_form in planes_formset %}
+                        <div class="plan-formset" style="margin-bottom:0.4em;">
+                            {{ plan_form.nombre }}
+                            {% if plan_form.nombre.errors %}
+                                {% for error in plan_form.nombre.errors %}
+                                    {{ error|escape }}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    {% if planes_formset.non_form_errors %}
+                        {% for error in planes_formset.non_form_errors %}
+                            {{ error|escape }}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            <p style="text-align:center;">
+                <input type="submit" name="obra_social-submit" class="btn-lila" value="Aceptar" />
+            </p>
+        </form>
+        <!-- Include formset plugin - including jQuery dependency -->
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.formset/1.2.2/jquery.formset.js"></script>
+        <!--script src="{% static 'path_to/jquery.formset.js' %}"></script-->
+        <script>
+            $('.plan-formset').formset({
+                addText: 'Agregar plan',
+                deleteText: 'Eliminar',
+                prefix: "{{ planes_formset.prefix }}"
+            });
+
+            const cb_usa_planes = document.getElementById('id_usa_planes');
+            const planes = document.getElementById('planes');
+            const planes_container = document.getElementById('usa_planes_container');
+            const planes_old = document.getElementById('planes_old');
+
+            while(planes_old.childNodes.length)
+            {
+                planes_container.appendChild(planes_old.firstChild);
+            }
+
+            function mostrar_planes(){
+                if (cb_usa_planes.checked)
+                    planes.style.display = 'block';
+                else
+                    planes.style.display = 'none';
+            }
+
+            mostrar_planes();
+
+            cb_usa_planes.addEventListener('change', (event) => {
+                mostrar_planes();
+            });
+        </script>
+    </div>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

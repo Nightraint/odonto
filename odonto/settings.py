@@ -25,12 +25,12 @@ SECRET_KEY = 'v25!wz%4cudvv$xj#scz84oj7&_)1gdbc6_b*%k8(&7g_hddz&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost','192.168.0.18','*','127.0.0.1']
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'emilianorua@gmail.com'
-EMAIL_HOST_PASSWORD = 'EMIrua37575'
+EMAIL_HOST_PASSWORD = ''
 EMAIL_PORT = 587
 
 LOGIN_URL = '/login/'

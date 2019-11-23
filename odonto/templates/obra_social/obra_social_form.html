@@ -7,15 +7,65 @@
 {% endblock %}
 
 {% block content %}
-    <form method= "POST">
-        {% csrf_token %}
-        <div class="col-md-6 col-md-offset-3">
-            {{form.as_p}}
+     <div class="col-md-6 offset-md-3">
+        {% if messages %}
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+        <form method= "POST">
+            {% csrf_token %}
+            {% for field in obra_social_form %}
+                <div class="fieldWrapper">
+                    {{ field.errors }}
+                    {% if field.field.widget.input_type is None %}
+                        {{ field.label_tag }} {{ field }}
+                    {% else %}
+                        {% if field.field.widget.input_type == 'checkbox' %}
+                            <div class="custom-control custom-checkbox">
+                                {{ field }}
+                                <label class="custom-control-label" for="{{ field.auto_id }}">{{ field.label }}</label>
+                            </div>
+                        {% else %}
+                            {{ field.label_tag }} {{ field }}
+                        {% endif %}
+                    {% endif %}
+                    {% if field.help_text %}
+                    <p class="help">{{ field.help_text|safe }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <div style="margin-bottom:1em">
+                <label style="display:block;">Planes:</label>
+                {{ plan_formset.management_form }}
+                {% for plan_form in plan_formset %}
+                    <div class="plan-formset" style="margin-bottom:0.4em;">
+                        {{ plan_form.descripcion }}
+                        {% if plan_form.descripcion.errors %}
+                            {% for error in plan_form.descripcion.errors %}
+                                {{ error|escape }}
+                            {% endfor %}
+                        {% endif %}
+
+                        {{ plan_form.plan }}
+                        {% if plan_form.plan.errors %}
+                            {% for error in plan_form.plan.errors %}
+                                {{ error|escape }}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                {% if plan_formset.non_form_errors %}
+                    {% for error in plan_formset.non_form_errors %}
+                        {{ error|escape }}
+                    {% endfor %}
+                {% endif %}
+            </div>
             <p style="text-align:center;">
-                <input type="submit" name="obra_social-submit" class="btn" value="Aceptar" />
+                <input type="submit" name="obra_social-submit" class="btn-lila" value="Aceptar" />
             </p>
-        </div>
-    </form>
+        </form>
+    </div>
 {% endblock %}
 
 {% block script %}

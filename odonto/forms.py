@@ -68,7 +68,14 @@ class Obra_SocialForm(forms.ModelForm):
         clinica_id = kwargs.pop('clinica_id')
         super(Obra_SocialForm, self).__init__(*args, **kwargs)
         for field in self.fields.values():
-            field.widget.attrs['class'] = 'form-control'
+            if hasattr(field.widget,'input_type'):
+                if field.widget.input_type != 'checkbox':
+                    field.widget.attrs['class'] = 'form-control'
+                else:
+                    field.label_suffix = ''
+                    field.widget.attrs['class'] = 'custom-control-input'
+            else:
+                field.widget.attrs['class'] = 'form-control'
     
 ######################## PACIENTE ##########################
 
@@ -274,5 +281,24 @@ class EmailForm(forms.Form):
             visible.field.widget.attrs['class'] = 'form-control'
 
 class BaseEmailFormSet(BaseFormSet):
+    def clean(self):
+        pass
+
+##################### PLAN #########################
+
+class PlanForm(forms.Form):
+    nombre = forms.CharField(
+                    max_length=100,
+                    widget=forms.TextInput(attrs={
+                        'placeholder': 'Nombre',
+                        'style' : 'width:220px;display:inline-block;margin-right:7px;',
+                    }))
+
+    def __init__(self, *args, **kwargs):
+        super(PlanForm, self).__init__(*args, **kwargs)
+        for visible in self.visible_fields():
+            visible.field.widget.attrs['class'] = 'form-control'
+
+class BasePlanFormSet(BaseFormSet):
     def clean(self):
         pass
