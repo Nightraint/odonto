@@ -7,15 +7,31 @@
 {% endblock %}
 
 {% block content %}
-        <div class="col-md-6 col-md-offset-3">
+        <div class="col-md-6 offset-md-3">
             <p><b>Código:</b> {{object.codigo}}</p>
             <p><b>Descripcion:</b> {{object.descripcion}}</p>
             <p><b>Obra social:</b> {{object.obra_social}}</p>
-            <p><b>Dias:</b> {{object.dias}}</p>
-            <p><b>Meses:</b> {{object.meses}}</p>
-            <p><b>Años:</b> {{object.años}}</p>
+            {% if object.dias or object.meses or object.años %}
+                <p><b>Se reconoce una cada: </b>
+                {% if object.dias %}
+                    {{object.dias}} días
+                {% endif %}
+                {% if object.meses %}
+                    {{object.meses}} meses
+                {% endif %}
+                {% if object.años %}
+                    {{object.años}} años
+                {% endif %}
+                </p>
+            {% endif %}
+            {% if object.bonos %}
+                <p><b>Bonos:</b> {{object.bonos}}</p>
+            {% endif %}
+            {% if object.coseguro %}
+                <p><b>Coseguro:</b> {{object.coseguro}}</p>
+            {% endif %}
             <p style="text-align:center;">
-                <a href="/obra_social" name="obra_social-submit" class="btn">Volver</a>
+                <a href="/norma_trabajo" name="obra_social-submit" class="btn-lila">Volver</a>
             </p>
 {% endblock %}
 

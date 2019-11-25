@@ -28,3 +28,6 @@ pagos:
 
 cobros:
 ficha cta. cte.
+
+VER:
+Cuando se intenta borrar un paciente que tiene fichas creadas, error protected.

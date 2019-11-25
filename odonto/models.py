@@ -26,7 +26,6 @@ class Obra_Social(models.Model):
     creado = models.DateTimeField(auto_now_add=True)
     actualizado = models.DateTimeField(auto_now=True)
     clinica = models.ForeignKey(Clinica, on_delete=models.CASCADE)
-    
 
     def __str__(self):
         return self.nombre
@@ -38,19 +37,43 @@ class Obra_Social(models.Model):
 class Plan(models.Model):
     nombre = models.CharField(max_length=100)
     obra_social = models.ForeignKey('Obra_Social',on_delete=models.CASCADE)
+    paga_coseguro = models.BooleanField('Paga coseguro',blank=True,null=True)
+
+    VACIO = ''
+    GRAVADO = 'GR'
+    NO_GRAVADO = 'NG'
+    EXENTO = 'EX'
+    IVA = [
+        (VACIO, 'Seleccione IVA'),
+        (GRAVADO, 'Gravado'),
+        (NO_GRAVADO, 'No gravado'),
+        (EXENTO, 'Exento')
+    ]
+    iva = models.CharField(
+        max_length=2,
+        choices=IVA,
+        null=True,
+        blank=True
+    )
+
+    def __str__(self):
+        return self.nombre
+    
+    class Meta:
+        ordering = ('nombre',)
 
 class Norma_Trabajo(models.Model):
-    codigo = models.CharField(max_length=100)
     obra_social = models.ForeignKey('Obra_Social',on_delete=models.CASCADE)
+    codigo = models.CharField(max_length=100)
     dias = models.IntegerField(blank=True, null=True)
     meses = models.IntegerField(blank=True, null=True)
     años = models.IntegerField(blank=True, null=True)
     descripcion = models.TextField('Concepto',max_length=2000)
+    coseguro = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
+    bonos = models.IntegerField(blank=True, null=True)
     creado = models.DateTimeField(auto_now_add=True)
     actualizado = models.DateTimeField(auto_now=True)
     clinica = models.ForeignKey(Clinica, on_delete=models.CASCADE)
-    coseguro = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
-    bonos = models.IntegerField(blank=True, null=True)
     
     class Meta:
         unique_together = (("codigo", "obra_social", "clinica"),)

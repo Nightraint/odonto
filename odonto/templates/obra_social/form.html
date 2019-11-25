@@ -32,7 +32,7 @@
                         {% endif %}
                     {% endif %}
                     {% if field.help_text %}
-                    <p class="help">{{ field.help_text|safe }}</p>
+                        <p class="help">{{ field.help_text|safe }}</p>
                     {% endif %}
                 </div>
             {% endfor %}
@@ -42,12 +42,25 @@
                     {{ planes_formset.management_form }}
                     {% for plan_form in planes_formset %}
                         <div class="plan-formset" style="margin-bottom:0.4em;">
-                            {{ plan_form.nombre }}
-                            {% if plan_form.nombre.errors %}
-                                {% for error in plan_form.nombre.errors %}
-                                    {{ error|escape }}
-                                {% endfor %}
-                            {% endif %}
+                            {% for field in plan_form %}
+                                {% if field.field.widget.input_type is None %}
+                                    {{ field }}
+                                {% else %}
+                                    {% if field.field.widget.input_type == 'checkbox' %}
+                                        <div class="custom-control custom-checkbox" style="display:inline-block;" id="{{ field.name }}">
+                                            {{ field }}
+                                            <label class="custom-control-label" for="{{ field.auto_id }}">{{ field.label }}</label>
+                                        </div>
+                                    {% else %}
+                                        {{ field }}
+                                    {% endif %}
+                                {% endif %}
+                                {% if field.errors %}
+                                    {% for error in field.errors %}
+                                        {{ error|escape }}
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
                         </div>
                     {% endfor %}
                     {% if planes_formset.non_form_errors %}
@@ -73,14 +86,20 @@
             });
 
             const cb_usa_planes = document.getElementById('id_usa_planes');
+            const cb_usa_coseguro = document.getElementById('id_usa_coseguro');
             const planes = document.getElementById('planes');
             const planes_container = document.getElementById('usa_planes_container');
             const planes_old = document.getElementById('planes_old');
 
-            while(planes_old.childNodes.length)
-            {
-                planes_container.appendChild(planes_old.firstChild);
+            function load_complete_obra_social() {
+                while(planes_old.childNodes.length)
+                {
+                    planes_container.appendChild(planes_old.firstChild);
+                }
+                mostrar_planes();
+                mostrar_coseguro();
             }
+            window.addEventListener("load", load_complete_obra_social, false);
 
             function mostrar_planes(){
                 if (cb_usa_planes.checked)
@@ -89,10 +108,24 @@
                     planes.style.display = 'none';
             }
 
-            mostrar_planes();
+            function mostrar_coseguro(){
+                let e = document.querySelectorAll('[id="paga_coseguro"]');
+                let dis = '';
+                if (cb_usa_coseguro.checked)
+                    dis = 'inline-block';
+                else
+                    dis = 'none';
+
+                for(i=0;i<e.length;i++){
+                    e[i].style.display=dis;
+                }
+            }
 
             cb_usa_planes.addEventListener('change', (event) => {
                 mostrar_planes();
+            });
+            cb_usa_coseguro.addEventListener('change', (event) => {
+                mostrar_coseguro();
             });
         </script>
     </div>

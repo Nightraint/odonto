@@ -108,9 +108,11 @@ class Norma_TrabajoForm(forms.ModelForm):
         clinica_id = kwargs.pop('clinica_id')
         super(Norma_TrabajoForm, self).__init__(*args, **kwargs)
         self.fields['obra_social'].queryset = Obra_Social.objects.filter(clinica_id=clinica_id)
-        self.fields['dias'].widget.attrs['style'] = 'width:100px;display:inline-block;'
-        self.fields['meses'].widget.attrs['style'] = 'width:100px;display:inline-block;'
-        self.fields['años'].widget.attrs['style'] = 'width:100px;display:inline-block;'
+        self.fields['coseguro'].widget.attrs['style'] = 'width:150px;display:inline-block;'
+        self.fields['bonos'].widget.attrs['style'] = 'width:150px;display:inline-block;'
+        self.fields['dias'].widget.attrs['style'] = 'width:70px;display:inline-block;'
+        self.fields['meses'].widget.attrs['style'] = 'width:70px;display:inline-block;'
+        self.fields['años'].widget.attrs['style'] = 'width:70px;display:inline-block;'
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
 
@@ -288,16 +290,44 @@ class BaseEmailFormSet(BaseFormSet):
 
 class PlanForm(forms.Form):
     nombre = forms.CharField(
-                    max_length=100,
-                    widget=forms.TextInput(attrs={
-                        'placeholder': 'Nombre',
-                        'style' : 'width:220px;display:inline-block;margin-right:7px;',
-                    }))
+        max_length=100,
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Nombre del plan',
+            'style' : 'width:180px;display:inline-block;margin-right:7px;',
+        }))
+
+    VACIO = ''
+    GRAVADO = 'GR'
+    NO_GRAVADO = 'NG'
+    EXENTO = 'EX'
+    IVA = [
+        (VACIO, 'Seleccione IVA'),
+        (GRAVADO, 'Gravado'),
+        (NO_GRAVADO, 'No gravado'),
+        (EXENTO, 'Exento')
+    ]
+
+    iva = forms.ChoiceField(
+        choices=IVA,
+        required= False,
+        widget=forms.Select(attrs={
+            'style' : 'width:160px;display:inline-block;margin-right:7px;',
+        }))
+        
+    paga_coseguro = forms.BooleanField(required=False)
 
     def __init__(self, *args, **kwargs):
         super(PlanForm, self).__init__(*args, **kwargs)
         for visible in self.visible_fields():
-            visible.field.widget.attrs['class'] = 'form-control'
+            #for field in self.fields.values():
+            if hasattr(visible.field.widget,'input_type'):
+                if visible.field.widget.input_type != 'checkbox':
+                    visible.field.widget.attrs['class'] = 'form-control'
+                else:
+                    visible.field.label_suffix = ''
+                    visible.field.widget.attrs['class'] = 'custom-control-input'
+            else:
+                visible.field.widget.attrs['class'] = 'form-control'
 
 class BasePlanFormSet(BaseFormSet):
     def clean(self):

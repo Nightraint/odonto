@@ -105,7 +105,7 @@
             }
         }
         
-        function createCallback(select) {
+        function createCallback(select){
             console.log('callback creado para: ' + select.id);
             return function() {
                 console.log(this.responseText);
@@ -127,7 +127,7 @@
             };
         }
 
-        function cargar_odontologos() {
+        function cargar_odontologos(){
             console.log('cargar odontologos');
             var paciente = parseInt(select_paciente.value);
             if (isNaN(paciente) == false){
@@ -144,7 +144,7 @@
             }
         }
 
-        function cargar_obras_sociales() {
+        function cargar_obras_sociales(){
             console.log('cargar obras sociales');
             var paciente = parseInt(select_paciente.value);
             var odontologo = parseInt(select_odontologo.value);
@@ -160,7 +160,7 @@
             }
         }
 
-        function cargar_normas_trabajo() {
+        function cargar_normas_trabajo(){
             var obra_social = parseInt(select_obra_social.value);
             console.log('cargar normas de trabajo de la obra social ' + obra_social);
             if (isNaN(obra_social) == false){
@@ -172,8 +172,8 @@
                 removeOptions(select_norma_trabajo);
             }
         }
-        function removeOptions(selectbox)
-        {
+
+        function removeOptions(selectbox){
             var i;
             for(i = selectbox.options.length - 1 ; i >= 0 ; i--)
             {

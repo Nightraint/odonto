@@ -9,7 +9,7 @@
 {% block content %}
     <form method= "POST">
         {% csrf_token %}
-        <div class="col-md-6 col-md-offset-3">
+        <div class="col-md-6 offset-md-3">
             {% if form.non_field_errors %}
                 <ul class="list-group" style="margin-bottom:10px;">
                 {% for error in form.non_field_errors %}
@@ -21,30 +21,92 @@
             {% endif %}
             {% for field in form %}
                 {% if field.name == 'dias' or field.name == 'meses' or field.name == 'años' %}
-                    <div style="display:inline-block;margin: 0 0 30px 0;">
+                    {% if field.name == 'dias' %}
+                        <div style="display:inline-block;margin-bottom: 1em;">
+                        <label>Se puede aplicar cada:</label>
+                    {% endif %}
                         {{ field.errors }}
-                        {{ field }}  {{ field.label }}
-                        {% if field.help_text %}
-                        <p class="help">{{ field.help_text|safe }}</p>
-                        {% endif %}
-                    </div>
-                {% else %}
-                    <p>
-                        {{ field.errors }}
-                        {{ field.label_tag}}
                         {{ field }}
+                        <label>{{ field.label }}</label>
                         {% if field.help_text %}
-                        <p class="help">{{ field.help_text|safe }}</p>
+                            <p class="help">{{ field.help_text|safe }}</p>
                         {% endif %}
-                    </p>
+                    {% if field.name == 'años' %}
+                        </div>
+                    {% endif %}
+                {% else %}
+                    {% if field.name == 'bonos' or field.name == 'coseguro' %}
+                        <div id={{field.name|add:"_container"}} style="display:inline-block;margin-bottom:1em;margin-right:10px;">
+                            {{ field.errors }}
+                            {{ field.label_tag }}
+                            {{ field }}
+                            {% if field.help_text %}
+                                <p class="help">{{ field.help_text|safe }}</p>
+                            {% endif %}
+                        </div>    
+                    {% else %}
+                        <p>
+                            {{ field.errors }}
+                            {{ field.label_tag }}
+                            {{ field }}
+                            {% if field.help_text %}
+                                <p class="help">{{ field.help_text|safe }}</p>
+                            {% endif %}
+                        </p>
+                    {% endif %}
                 {% endif %}
             {% endfor %}
             <p style="text-align:center;">
-                <input type="submit" name="obra_social-submit" class="btn" value="Aceptar" />
+                <input type="submit" name="norma_trabajo-submit" class="btn-lila" value="Aceptar" />
             </p>
         </div>
     </form>
 {% endblock %}
 
 {% block script %}
+    <script>
+        var select_obra_social = document.getElementById('id_obra_social');
+        var obra_social_object;
+        var bonos_container = document.getElementById('bonos_container');
+        var coseguro_container = document.getElementById('coseguro_container');
+
+        function load_complete_norma_trabajo() {
+            var obra_social = parseInt(select_obra_social.value);
+            if (isNaN(obra_social) == false)
+                cargar_obra_social();
+            select_obra_social.addEventListener("change", cargar_obra_social);
+        }
+        window.addEventListener("load", load_complete_norma_trabajo, false);
+
+        var xhttp_os = new XMLHttpRequest();
+        xhttp_os.onreadystatechange = function() {
+                console.log('state: ' + this.status + ' readyState: ' + this.readyState + ' ' + this.responseText);
+                if (this.readyState == 4 && this.status == 200) {
+                    obra_social_object = JSON.parse(this.responseText)[0].fields;
+                    console.log(obra_social_object);
+                    if (obra_social_object.usa_bonos)
+                        bonos_container.style.display = 'inline-block';
+                    else
+                        bonos_container.style.display = 'none';
+                    
+                    if (obra_social_object.usa_coseguro)
+                        coseguro_container.style.display = 'inline-block';
+                    else
+                        coseguro_container.style.display = 'none';
+                }
+            };
+
+        function cargar_obra_social(){
+            var obra_social = parseInt(select_obra_social.value);
+            console.log('cargar obra social ' + obra_social);
+            if (isNaN(obra_social) == false){
+                xhttp_os.open("GET", "/obra_social/"+ obra_social, true);
+                xhttp_os.send();
+            }
+            else{
+                bonos_container.style.display = 'none';
+                coseguro_container.style.display = 'none';
+            }
+        }
+    </script>
 {% endblock %}

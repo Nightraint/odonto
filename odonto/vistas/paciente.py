@@ -161,25 +161,28 @@ def days_between(d1, d2):
 @login_required
 def editar(request, pk):
     TelefonoFormSet = formset_factory(TelefonoForm, formset=BaseTelefonoFormSet)
+    EmailFormSet = formset_factory(EmailForm, formset=BaseEmailFormSet)
     instance = get_object_or_404(Paciente, pk=pk)
+
     if request.method == 'GET':
         paciente_form = PacienteForm(instance = instance,clinica_id = request.user.clinica.id)
         telefonos = Telefono.objects.filter(paciente = instance).order_by('id')
         telefonos_data = [{'descripcion': l.descripcion, 'telefono': l.telefono}
                             for l in telefonos]
         telefonos_formset = TelefonoFormSet(initial=telefonos_data)
-        context = {
-            'paciente_form': paciente_form,
-            'telefono_formset': telefonos_formset,
-        }
-        return render(request, 'paciente/our_template.html', context)
+
+        emails = Email.objects.filter(paciente = instance).order_by('id')
+        emails_data = [{'descripcion': l.descripcion, 'email': l.email}
+                            for l in emails]
+        emails_formset = EmailFormSet(initial=emails_data)
     else:
         paciente_form = PacienteForm(request.POST,instance=instance,clinica_id = request.user.clinica.id)
         telefonos_formset = TelefonoFormSet(request.POST)
+        emails_formset = EmailFormSet(request.POST)
 
         paciente_form.instance.clinica = request.user.clinica
 
-        if paciente_form.is_valid() and telefonos_formset.is_valid():
+        if paciente_form.is_valid() and telefonos_formset.is_valid() and emails_formset.is_valid():
             paciente_form.save()
             nuevos_telefonos = []
             for telefono_form in telefonos_formset:
@@ -187,25 +190,44 @@ def editar(request, pk):
                 telefono = telefono_form.cleaned_data.get('telefono')
                 if telefono:
                     nuevos_telefonos.append(Telefono(descripcion=descripcion, telefono=telefono, paciente = instance))
+            
+            nuevos_emails = []
+            for email_form in emails_formset:
+                descripcion = email_form.cleaned_data.get('descripcion')
+                email = email_form.cleaned_data.get('email')
+                if email:
+                    nuevos_emails.append(Email(descripcion=descripcion, email=email, paciente = instance))
+            
             try:
                 with transaction.atomic():
-                    #Replace the old with the new
                     Telefono.objects.filter(paciente=instance).delete()
                     Telefono.objects.bulk_create(nuevos_telefonos)
 
-                    # And notify our users that it worked
+                    Email.objects.filter(paciente=instance).delete()
+                    Email.objects.bulk_create(nuevos_emails)
+
                     messages.success(request, 'Paciente actualizado.')
                     return redirect(reverse('paciente_index'))
             except IntegrityError: #If the transaction failed
                 messages.error(request, 'Ocurrio un error guardando el paciente')
                 return redirect(reverse('paciente_index'))
+    context = {
+        'paciente_form': paciente_form,
+        'telefono_formset': telefonos_formset,
+        'email_formset' : emails_formset,
+    }
+    return render(request, 'paciente/form.html', context)
 
 @login_required
-def agregar(request):
+def crear(request):
     TelefonoFormSet = formset_factory(TelefonoForm, formset=BaseTelefonoFormSet)
     EmailFormSet = formset_factory(EmailForm, formset=BaseEmailFormSet)
 
-    if request.method == 'POST':
+    if request.method == 'GET':
+        paciente_form = PacienteForm(clinica_id = request.user.clinica.id)
+        telefonos_formset = TelefonoFormSet(prefix='telefonos')
+        emails_formset = EmailFormSet(prefix='emails')
+    else:
         telefonos_formset = TelefonoFormSet(request.POST,prefix='telefonos')
         emails_formset = EmailFormSet(request.POST,prefix='emails')
 
@@ -239,15 +261,10 @@ def agregar(request):
             except IntegrityError:
                 messages.error(request, 'Ocurrio un error guardando el paciente')
                 return redirect(reverse('paciente_index'))
-    else:
-        paciente_form = PacienteForm(clinica_id = request.user.clinica.id)
-        telefonos_formset = TelefonoFormSet(prefix='telefonos')
-        emails_formset = EmailFormSet(prefix='emails')
 
     context = {
         'paciente_form': paciente_form,
         'telefono_formset': telefonos_formset,
         'email_formset' : emails_formset,
     }
-
-    return render(request, 'paciente/our_template.html', context)
+    return render(request, 'paciente/form.html', context)
