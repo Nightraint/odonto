@@ -18,7 +18,7 @@ from django.urls import path, include
 from django.views.generic.base import TemplateView
 from django import views
 from . import views
-from .vistas import paciente, odontologo, norma_trabajo, ficha, obra_social
+from .vistas import paciente, odontologo, norma_trabajo, ficha, obra_social, plan
 from django.contrib.auth import views as auth_views
 from odonto.forms import UserLoginForm, PasswordForm
 
@@ -43,6 +43,8 @@ urlpatterns = [
     path('obra_social/', obra_social.Obra_SocialList.as_view(template_name='obra_social/obra_social_list.html'), name='obra_social_index'),
     path(r'obra_social/get_for_select/', obra_social.get_for_select, name='get_for_select'),
     path('obra_social/<int:pk>', obra_social.get, name='get'),
+
+    path(r'plan/get_for_select/', plan.get_for_select, name='get_for_select'),
 
     path('paciente/crear', paciente.crear , name='crear'),
     path('paciente/eliminar/<int:pk>', paciente.PacienteEliminar.as_view(), name='eliminar'),

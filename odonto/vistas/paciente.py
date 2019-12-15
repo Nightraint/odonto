@@ -5,8 +5,10 @@ from odonto.forms import (PacienteForm,
                         TelefonoForm,
                         BaseTelefonoFormSet,
                         EmailForm,
-                        BaseEmailFormSet)
-from odonto.models import Paciente, Norma_Trabajo, Ficha, Telefono, Email
+                        BaseEmailFormSet,
+                        PacientePlanForm,
+                        BasePacientePlanFormSet)
+from odonto.models import Paciente, Norma_Trabajo, Ficha, Telefono, Email, Plan
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView 
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -23,6 +25,7 @@ from django.forms.formsets import formset_factory
 from django.shortcuts import redirect, render
 from django.db import IntegrityError, transaction
 from django.shortcuts import get_object_or_404
+from functools import partial, wraps
 
 class PacienteListFilter(django_filters.FilterSet):
     filtro = django_filters.CharFilter(method='custom_filter')
@@ -222,11 +225,13 @@ def editar(request, pk):
 def crear(request):
     TelefonoFormSet = formset_factory(TelefonoForm, formset=BaseTelefonoFormSet)
     EmailFormSet = formset_factory(EmailForm, formset=BaseEmailFormSet)
+    PacientePlanFormSet = formset_factory(wraps(PacientePlanForm)(partial(PacientePlanForm, clinica_id = request.user.clinica.id)), formset=BasePacientePlanFormSet)
 
     if request.method == 'GET':
         paciente_form = PacienteForm(clinica_id = request.user.clinica.id)
         telefonos_formset = TelefonoFormSet(prefix='telefonos')
         emails_formset = EmailFormSet(prefix='emails')
+        paciente_planes_formset = PacientePlanFormSet(prefix='paciente_planes')
     else:
         telefonos_formset = TelefonoFormSet(request.POST,prefix='telefonos')
         emails_formset = EmailFormSet(request.POST,prefix='emails')
@@ -266,5 +271,6 @@ def crear(request):
         'paciente_form': paciente_form,
         'telefono_formset': telefonos_formset,
         'email_formset' : emails_formset,
+        'paciente_planes_formset' : paciente_planes_formset,
     }
     return render(request, 'paciente/form.html', context)

@@ -100,7 +100,6 @@ class Paciente(models.Model):
     nombre_apellido = models.CharField("Nombre y apellido",max_length=100)
     odontologos = models.ManyToManyField(Odontologo,blank=True)
     domicilio = models.CharField(max_length=100,blank=True)
-    mail = models.EmailField(blank=True)
     dni = models.CharField(max_length=100,blank=True)
     creado = models.DateTimeField(auto_now_add=True)
     actualizado = models.DateTimeField(auto_now=True)
@@ -113,9 +112,8 @@ class Paciente(models.Model):
     class Meta:
         ordering = ('nombre_apellido',)
 
-class PacienteObraSocial(models.Model):
+class PacientePlan(models.Model):
     paciente = models.ForeignKey("Paciente", on_delete = models.CASCADE)
-    obra_social = models.ForeignKey('Obra_Social',on_delete=models.PROTECT)
     plan = models.ForeignKey('Plan',null=True,blank=True,on_delete=models.PROTECT)
     nro_afiliado = models.CharField('Nro. Afiliado', max_length=20)
 

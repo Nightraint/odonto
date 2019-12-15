@@ -8,7 +8,7 @@
 
 {% block content %}
 {% load staticfiles %}
-    <div class="col-md-6 col-md-offset-3">
+    <div class="col-md-8 offset-md-2">
         {% if messages %}
             {% for message in messages %}
                 <p>{{ message }}</p>
@@ -72,6 +72,39 @@
                     {% endfor %}
                 {% endif %}
             </div>
+            <div style="margin-bottom:1em">
+                <label style="display:block;">Obras sociales:</label>
+                {{ paciente_planes_formset.management_form }}
+                {% for plan_form in paciente_planes_formset %}
+                    <div class="paciente-planes-formset" style="margin-bottom:0.5em;">
+                        {{ plan_form.obra_social }}
+                        {% if plan_form.obra_social.errors %}
+                            {% for error in plan_form.obra_social.errors %}
+                                {{ error|escape }}
+                            {% endfor %}
+                        {% endif %}
+
+                        {{ plan_form.plan }}
+                        {% if plan_form.plan.errors %}
+                            {% for error in plan_form.plan.errors %}
+                                {{ error|escape }}
+                            {% endfor %}
+                        {% endif %}
+
+                        {{ plan_form.nro_afiliado }}
+                        {% if plan_form.nro_afiliado.errors %}
+                            {% for error in plan_form.nro_afiliado.errors %}
+                                {{ error|escape }}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                {% if paciente_planes_formset.non_form_errors %}
+                    {% for error in paciente_planes_formset.non_form_errors %}
+                        {{ error|escape }}
+                    {% endfor %}
+                {% endif %}
+            </div>
             <p style="text-align:center;margin-top:10px;">
                 <input type="submit" name="paciente-submit" class="btn-lila" value="Aceptar" />
             </p>
@@ -92,6 +125,71 @@
                 deleteText: 'Eliminar',
                 prefix: "{{ email_formset.prefix }}"
             });
+            $('.paciente-planes-formset').formset({
+                addText: 'Agregar obra social',
+                deleteText: 'Eliminar',
+                prefix: "{{ paciente_planes_formset.prefix }}"
+            });
+
+            var xhttp_plan = new XMLHttpRequest();
+
+            function createCallback(select){
+                console.log('callback creado para: ' + select.id);
+                return function() {
+                    console.log(this.responseText);
+                    if (this.readyState == 4 && this.status == 200) {
+                        removeOptions(select);
+                        var opt = document.createElement('option');
+                        opt.appendChild(document.createTextNode('Seleccionar plan'));
+                        opt.value = '';
+                        select.appendChild(opt);
+                        var arr = JSON.parse(this.responseText);
+                        for (i in arr) {
+                            opt = document.createElement('option');
+                            opt.appendChild(document.createTextNode(arr[i].nombre));
+                            opt.value = arr[i].id; 
+                            select.appendChild(opt);
+                        }
+                    }
+                }
+            }
+
+            function seleccionarObraSocial(control){
+                let id = control[control.selectedIndex].value;
+
+                let select_plan = control.parentNode.querySelector('.select_plan');
+
+                let controls = document.getElementsByClassName("select_obra_social");
+                console.log('Encontrados: ' + controls.length);
+                
+                let counter = 0;
+                for(var i = 0; i < controls.length ; i++){
+                    console.log(controls[i][controls[i].selectedIndex].value);
+                    if (id == controls[i][controls[i].selectedIndex].value)
+                        counter++;
+                }
+
+                if(counter > 1){
+                    alert('La obra social ya fue seleccionada');
+                    control.value = '';
+                }
+                else{
+                    if (isNaN(id) == false && id != ''){
+                        console.log(select_plan);
+                        xhttp_plan.onreadystatechange = createCallback(select_plan);
+                        xhttp_plan.open("GET", "/plan/get_for_select?obra_social=" + id, true);
+                        xhttp_plan.send();
+                    }
+                }
+            }
+
+            function removeOptions(selectbox){
+                var i;
+                for(i = selectbox.options.length - 1 ; i >= 0 ; i--)
+                {
+                    selectbox.remove(i);
+                }
+            }
         </script>
     </div>
 {% endblock %}

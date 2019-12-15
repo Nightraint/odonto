@@ -92,7 +92,7 @@ class PacienteForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         clinica_id = kwargs.pop('clinica_id')
         super(PacienteForm, self).__init__(*args, **kwargs)
-        self.fields['obras_sociales'].queryset = Obra_Social.objects.filter(clinica_id=clinica_id)
+        #self.fields['obras_sociales'].queryset = Obra_Social.objects.filter(clinica_id=clinica_id)
         self.fields['odontologos'].queryset = Odontologo.objects.filter(clinica_id=clinica_id)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
@@ -330,5 +330,41 @@ class PlanForm(forms.Form):
                 visible.field.widget.attrs['class'] = 'form-control'
 
 class BasePlanFormSet(BaseFormSet):
+    def clean(self):
+        pass
+
+##################### PACIENTEPLAN #########################
+
+class PacientePlanForm(forms.Form):
+    obra_social = forms.ChoiceField(required = False,
+        widget=forms.Select(attrs={
+            'style' : 'width:200px;display:inline-block;margin-right:7px;',
+            'onChange' : 'seleccionarObraSocial(this);',
+        }))
+
+    plan = forms.ChoiceField(
+        required= True,
+        widget=forms.Select(attrs={
+            'style' : 'width:200px;display:inline-block;margin-right:7px;',
+            
+        }))
+
+    nro_afiliado = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Nro. Afiliado',
+            'style' : 'width:150px;display:inline-block;margin-right:7px;',
+        }),
+        required=True)
+
+    def __init__(self, *args, **kwargs):
+        clinica_id = kwargs.pop('clinica_id')
+        super(PacientePlanForm, self).__init__(*args, **kwargs)
+        for visible in self.visible_fields():
+            visible.field.widget.attrs['class'] = 'form-control'
+        self.fields['plan'].widget.attrs['class'] = 'form-control select_plan'
+        self.fields['obra_social'].widget.attrs['class'] = 'form-control select_obra_social'
+        self.fields['obra_social'].choices = [('','Seleccionar')] + [(o.id, str(o).upper()) for o in Obra_Social.objects.filter(clinica_id=clinica_id)]
+
+class BasePacientePlanFormSet(BaseFormSet):
     def clean(self):
         pass
