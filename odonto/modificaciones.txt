@@ -1,5 +1,7 @@
 ficha:
 importe
+AGREGAR FOTOS A FICHA DE PACIENTE: para ver la evolucion del tratamiento, etc
+
 
 Datos adicionales del paciente
 mail

@@ -1,7 +1,7 @@
 from django.contrib.auth import update_session_auth_hash
 from django import forms
 from django.db import models
-from .models import Obra_Social, Paciente, Norma_Trabajo, CustomUser, Odontologo, Ficha, Clinica, Telefono
+from .models import Obra_Social, Paciente, Norma_Trabajo, CustomUser, Odontologo, Ficha, Clinica, Telefono, Plan
 from django.contrib.auth.forms import AuthenticationForm,UserCreationForm,UserChangeForm,PasswordChangeForm
 from django.forms import DateTimeField, EmailField
 from .widgets import BootstrapDateTimePickerInput, BootstrapDatePickerInput
@@ -168,13 +168,13 @@ class FichaForm(forms.ModelForm):
         if 'odontologo' in self.data:
             try:
                 odontologo_id = int(self.data.get('odontologo'))
-                self.fields['obra_social'].queryset = Obra_Social.objects.filter(paciente__id=paciente_id
+                self.fields['obra_social'].queryset = Obra_Social.objects.filter(plan__pacienteplan__paciente__id=paciente_id
                     ).filter(odontologo__id = odontologo_id
                     ).order_by('nombre')
             except (ValueError, TypeError):
                 pass
         elif self.instance.pk:
-            self.fields['obra_social'].queryset = Obra_Social.objects.filter(paciente__id=self.instance.paciente.id
+            self.fields['obra_social'].queryset = Obra_Social.objects.filter(plan__pacienteplan__paciente__id=self.instance.paciente.id
                 ).filter(odontologo__id = self.instance.odontologo.id
                 ).order_by('nombre')
 
@@ -366,5 +366,19 @@ class PacientePlanForm(forms.Form):
         self.fields['obra_social'].choices = [('','Seleccionar')] + [(o.id, str(o).upper()) for o in Obra_Social.objects.filter(clinica_id=clinica_id)]
 
 class BasePacientePlanFormSet(BaseFormSet):
+    def clean(self):
+        pass
+
+##################### IMAGENFICHA #########################
+
+class ImagenFichaForm(forms.Form):
+    imagen = forms.ImageField()
+
+    def __init__(self, *args, **kwargs):
+        #clinica_id = kwargs.pop('clinica_id')
+        super(ImagenFichaForm, self).__init__(*args, **kwargs)
+        self.fields['imagen'].widget.attrs['class'] = 'cargar_imagen'
+
+class BaseImagenFichaFormSet(BaseFormSet):
     def clean(self):
         pass

@@ -17,15 +17,17 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.generic.base import TemplateView
 from django import views
-from . import views
+from . import views, settings
 from .vistas import paciente, odontologo, norma_trabajo, ficha, obra_social, plan
 from django.contrib.auth import views as auth_views
 from odonto.forms import UserLoginForm, PasswordForm
+from django.contrib.staticfiles.urls import static
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
-    path('ficha/crear', ficha.FichaCrear.as_view(template_name = "ficha/ficha_form.html"), name='crear'),
+    path('ficha/crear', ficha.crear, name='crear'),
     path('ficha/eliminar/<int:pk>', ficha.FichaEliminar.as_view(), name='eliminar'),
-    path('ficha/editar/<int:pk>', ficha.FichaEditar.as_view(template_name = "ficha/ficha_form.html"), name='editar'),
+    path('ficha/editar/<int:pk>', ficha.editar, name='editar'),
     path('ficha/detalle/<int:pk>', ficha.FichaDetalle.as_view(template_name = "ficha/ficha_detail.html"), name='detalle'),
     path('ficha/', ficha.FichaList.as_view(template_name='ficha/ficha_list.html'), name='ficha_index'),
 
@@ -70,3 +72,5 @@ urlpatterns = [
                                                                 template_name = 'registration/password_change.html',
                                                                 success_url = '/'),name='changepassword')
 ]
+urlpatterns += staticfiles_urlpatterns()
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

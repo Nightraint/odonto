@@ -144,4 +144,8 @@ class Ficha(models.Model):
     actualizada = models.DateTimeField(auto_now=True)
     clinica = models.ForeignKey('Clinica',on_delete=models.PROTECT)
 
+class Imagen(models.Model):
+    ruta = models.TextField()
+    imagen = models.ImageField(blank=True, null=True, upload_to='imagenes_fichas/')
+    ficha = models.ForeignKey('Ficha', on_delete=models.CASCADE)
     

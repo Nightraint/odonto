@@ -7,10 +7,41 @@
 {% endblock %}
 
 {% block content %}
-    <form method= "POST" id="formulario">
+    <form method= "POST" id="formulario" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="col-md-6 col-md-offset-3">
-            {{form.as_p}}
+            {{ficha_form.as_p}}
+            <div style="margin-bottom:1em">
+                <label style="display:block;">Imagenes:</label>
+                {{ imagenes_formset.management_form }}
+                {% for imagen_form in imagenes_formset %}
+                    <div class="imagenes-formset" style="margin-bottom:0.5em;height:100px;">
+                        <div class="img-preview img-preview-sm" style="display:inline-block;">
+                            {% if imagen_form.initial.imagen %}
+                                <img name="preview" src="{{ imagen_form.initial.imagen.url }}" width="100" style="margin-right:10px;"/>
+                            {% else %}
+                                <img name="preview" src="/static/images/placeholder.png" width="100" style="margin-right:10px;"/>
+                            {% endif %}
+                        </div>      
+                        <label title="Subir Imagen" for="{{imagen_form.imagen.auto_id}}" class="btn">
+                            <div style="display:none;">
+                                {{ imagen_form.imagen }}
+                            </div>
+                            Seleccionar Imagen
+                        </label> 
+                        {% if imagen_form.imagen.errors %}
+                            {% for error in imagen_form.imagen.errors %}
+                                {{ error|escape }}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                {% if imagen_form.non_form_errors %}
+                    {% for error in imagen_form.non_form_errors %}
+                        {{ error|escape }}
+                    {% endfor %}
+                {% endif %}
+            </div>
             <p style="text-align:center;">
                 <input type="submit" name="ficha-submit" class="btn" value="Aceptar" />
             </p>
@@ -19,7 +50,36 @@
 {% endblock %}
 
 {% block script %}
+    <!-- Include formset plugin - including jQuery dependency -->
+    <!--script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.formset/1.2.2/jquery.formset.js"></script>
+    
     <script>
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    contenedor = input.parentNode.parentNode.parentNode;
+                    console.log(contenedor);
+                    let div_preview = contenedor.querySelector(".img-preview");
+                    console.log(div_preview);
+                    let preview = div_preview.children;
+                    $(preview).attr("src", e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        $(".cargar_imagen").change(function() {
+            readURL(this);
+        });
+
+        $('.imagenes-formset').formset({
+            addText: 'Agregar Imagen',
+            deleteText: 'Eliminar',
+            prefix: "{{ imagenes_formset.prefix }}"
+        });
+
         var select_paciente = document.getElementById('id_paciente');
         var select_odontologo = document.getElementById('id_odontologo');
         var select_obra_social = document.getElementById('id_obra_social');

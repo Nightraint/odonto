@@ -109,7 +109,7 @@ def get_for_select(request):
     paciente = int(request.GET.get('paciente'))
     odontologo = int(request.GET.get('odontologo'))
     obras_sociales = Obra_Social.objects.filter(clinica = request.user.clinica
-        ).filter(paciente__id = paciente
+        ).filter(plan__pacienteplan__paciente__id = paciente
         ).filter(odontologo__id = odontologo
         ).values('id', 'nombre'
         ).annotate(descrip = F('nombre')) # or simply .values() to get all fields
