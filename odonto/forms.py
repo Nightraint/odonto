@@ -336,17 +336,17 @@ class BasePlanFormSet(BaseFormSet):
 ##################### PACIENTEPLAN #########################
 
 class PacientePlanForm(forms.Form):
-    obra_social = forms.ChoiceField(required = False,
+    obra_social = forms.ChoiceField(
+        required = False,
         widget=forms.Select(attrs={
             'style' : 'width:200px;display:inline-block;margin-right:7px;',
             'onChange' : 'seleccionarObraSocial(this);',
         }))
 
     plan = forms.ChoiceField(
-        required= True,
+        required= False,
         widget=forms.Select(attrs={
             'style' : 'width:200px;display:inline-block;margin-right:7px;',
-            
         }))
 
     nro_afiliado = forms.CharField(
@@ -354,7 +354,7 @@ class PacientePlanForm(forms.Form):
             'placeholder': 'Nro. Afiliado',
             'style' : 'width:150px;display:inline-block;margin-right:7px;',
         }),
-        required=True)
+        required=False)
 
     def __init__(self, *args, **kwargs):
         clinica_id = kwargs.pop('clinica_id')
@@ -364,7 +364,12 @@ class PacientePlanForm(forms.Form):
         self.fields['plan'].widget.attrs['class'] = 'form-control select_plan'
         self.fields['obra_social'].widget.attrs['class'] = 'form-control select_obra_social'
         self.fields['obra_social'].choices = [('','Seleccionar')] + [(o.id, str(o).upper()) for o in Obra_Social.objects.filter(clinica_id=clinica_id)]
-
+        
+        if self.initial:
+            os = self.initial['obra_social']
+            if os:
+                self.fields['plan'].choices = [('','Seleccionar')] + [(p.id, str(p).upper()) for p in Plan.objects.filter(obra_social=os)]
+                
 class BasePacientePlanFormSet(BaseFormSet):
     def clean(self):
         pass

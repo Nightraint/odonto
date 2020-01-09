@@ -10,7 +10,19 @@
     <form method= "POST" id="formulario" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="col-md-6 col-md-offset-3">
-            {{ficha_form.as_p}}
+            {% for field in ficha_form %}
+                {% if field.name == 'norma_trabajo' and ficha_form.initial.obra_social is None %}
+                <p style="display:none;">
+                {% else %}
+                <p>
+                {% endif %}
+                    {{ field.errors }}
+                    {{ field.label_tag }} {{ field }}
+                    {% if field.help_text %}
+                        <p class="help">{{ field.help_text|safe }}</p>
+                    {% endif %}
+                </p>
+            {% endfor %}
             <div style="margin-bottom:1em">
                 <label style="display:block;">Imagenes:</label>
                 {{ imagenes_formset.management_form }}
@@ -55,31 +67,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.formset/1.2.2/jquery.formset.js"></script>
     
     <script>
-        function readURL(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    contenedor = input.parentNode.parentNode.parentNode;
-                    console.log(contenedor);
-                    let div_preview = contenedor.querySelector(".img-preview");
-                    console.log(div_preview);
-                    let preview = div_preview.children;
-                    $(preview).attr("src", e.target.result);
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        $(".cargar_imagen").change(function() {
-            readURL(this);
-        });
-
-        $('.imagenes-formset').formset({
-            addText: 'Agregar Imagen',
-            deleteText: 'Eliminar',
-            prefix: "{{ imagenes_formset.prefix }}"
-        });
-
         var select_paciente = document.getElementById('id_paciente');
         var select_odontologo = document.getElementById('id_odontologo');
         var select_obra_social = document.getElementById('id_obra_social');
@@ -107,12 +94,38 @@
 
         var xhttp_o = new XMLHttpRequest();
         xhttp_o.onreadystatechange = createCallback(select_odontologo);
+
         var xhttp_os = new XMLHttpRequest();
-        xhttp_os.onreadystatechange = createCallback(select_obra_social);
+        xhttp_os.onreadystatechange = respuestaObraSocial();
+
         var xhttp_nt = new XMLHttpRequest();
         xhttp_nt.onreadystatechange = createCallback(select_norma_trabajo);
+
         var xhttp_chequear_norma = new XMLHttpRequest();
         xhttp_chequear_norma.onreadystatechange = createCallbackChequearNorma();
+
+        function respuestaObraSocial(){
+            console.log('Cargando obras sociales');
+            return function (){
+                removeOptions(select_obra_social);
+                if (this.readyState == 4 && this.status == 200) {
+                    var opt = document.createElement('option');
+                    opt.appendChild(document.createTextNode('Seleccionar'));
+                    opt.value = '';
+                    select_obra_social.appendChild(opt);
+                    var arr = JSON.parse(this.responseText);
+                    if(arr.length == 0)
+                        select_norma_trabajo.parentNode.style.display = 'none';
+                    for (i in arr) {
+                        opt = document.createElement('option');
+                        opt.appendChild(document.createTextNode(arr[i].descrip));
+                        opt.value = arr[i].id; 
+                        select_obra_social.appendChild(opt);
+                    }
+                    select_obra_social.parentNode.style.display = 'block';
+                }
+            }
+        }
 
         function createCallbackChequearNorma() {
             console.log('callback creado para chequear norma');
@@ -240,5 +253,30 @@
                 selectbox.remove(i);
             }
         }
+
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    contenedor = input.parentNode.parentNode.parentNode;
+                    console.log(contenedor);
+                    let div_preview = contenedor.querySelector(".img-preview");
+                    console.log(div_preview);
+                    let preview = div_preview.children;
+                    $(preview).attr("src", e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        $(".cargar_imagen").change(function() {
+            readURL(this);
+        });
+
+        $('.imagenes-formset').formset({
+            addText: 'Agregar Imagen',
+            deleteText: 'Eliminar',
+            prefix: "{{ imagenes_formset.prefix }}"
+        });
     </script>
 {% endblock %}

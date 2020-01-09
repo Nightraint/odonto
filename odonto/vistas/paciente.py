@@ -189,15 +189,15 @@ def editar(request, pk):
 
         planes = PacientePlan.objects.filter(paciente = instance).order_by('id')
         planes_data = [{'nro_afiliado': l.nro_afiliado,
-                        'paciente_id' : l.paciente_id,
-                        'plan_id' : l.plan_id}
+                        'obra_social' : l.plan.obra_social_id,
+                        'plan' : l.plan_id}
                             for l in planes]
-        planes_formset = PacientePlanFormSet(initial=planes_data)
+        paciente_planes_formset = PacientePlanFormSet(initial=planes_data,prefix='paciente_planes')
     else:
         paciente_form = PacienteForm(request.POST,instance=instance,clinica_id = request.user.clinica.id)
         telefonos_formset = TelefonoFormSet(request.POST)
         emails_formset = EmailFormSet(request.POST)
-        planes_formset = PacientePlanFormSet(request.POST)
+        paciente_planes_formset = PacientePlanFormSet(request.POST,prefix='paciente_planes')
 
         paciente_form.instance.clinica = request.user.clinica
 
@@ -217,17 +217,13 @@ def editar(request, pk):
                 email = email_form.cleaned_data.get('email')
                 if email:
                     nuevos_emails.append(Email(descripcion=descripcion, email=email, paciente = instance))
-            
+
             nuevos_planes = []
-            for plan_form in planes_formset:
+            for plan_form in paciente_planes_formset:
+                plan = plan_form.cleaned_data.get('plan')
                 nro_afiliado = plan_form.cleaned_data.get('nro_afiliado')
-                plan = plan_form.cleaned_data.get('plan_id')
-                obra_social = plan_form.cleaned_data.get('obra_social_id')
-                if plan and obra_social:
-                    nuevos_planes.append(PacientePlan(nro_afiliado=nro_afiliado,
-                        obra_social_id=obra_social,
-                        plan_id = plan,
-                        paciente = instance))
+                if plan:
+                    nuevos_planes.append(PacientePlan(plan_id=plan,paciente = instance,nro_afiliado=nro_afiliado))
             
             try:
                 with transaction.atomic():
@@ -246,7 +242,7 @@ def editar(request, pk):
         'paciente_form': paciente_form,
         'telefono_formset': telefonos_formset,
         'email_formset' : emails_formset,
-        'paciente_planes_formset' : planes_formset
+        'paciente_planes_formset' : paciente_planes_formset
     }
     return render(request, 'paciente/form.html', context)
 
@@ -264,13 +260,14 @@ def crear(request):
     else:
         telefonos_formset = TelefonoFormSet(request.POST,prefix='telefonos')
         emails_formset = EmailFormSet(request.POST,prefix='emails')
+        paciente_planes_formset = PacientePlanFormSet(request.POST,prefix='paciente_planes')
 
         paciente_form = PacienteForm(request.POST,clinica_id = request.user.clinica.id)
         instance = paciente_form.instance
 
         paciente_form.instance.clinica = request.user.clinica
 
-        if paciente_form.is_valid() and telefonos_formset.is_valid() and emails_formset.is_valid():
+        if paciente_form.is_valid() and telefonos_formset.is_valid() and emails_formset.is_valid() and paciente_planes_formset.is_valid:
             paciente_form.save()
             
             nuevos_telefonos = []
@@ -286,10 +283,19 @@ def crear(request):
                 email = email_form.cleaned_data.get('email')
                 if email:
                     nuevos_emails.append(Email(descripcion=descripcion, email=email, paciente = instance))
+            
+            nuevos_planes = []
+            for plan_form in paciente_planes_formset:
+                plan = plan_form.cleaned_data.get('plan')
+                nro_afiliado = plan_form.cleaned_data.get('nro_afiliado')
+                if plan:
+                    nuevos_planes.append(PacientePlan(plan_id=plan,paciente = instance,nro_afiliado=nro_afiliado))
+            
             try:
                 with transaction.atomic():
                     Telefono.objects.bulk_create(nuevos_telefonos)
                     Email.objects.bulk_create(nuevos_emails)
+                    PacientePlan.objects.bulk_create(nuevos_planes)
                     messages.success(request, 'Paciente creado correctamente')
                     return redirect(reverse('paciente_index'))
             except IntegrityError:
