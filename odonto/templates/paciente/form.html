@@ -74,26 +74,26 @@
             </div>
             <div style="margin-bottom:1em">
                 <label style="display:block;">Obras sociales:</label>
-                {{ paciente_planes_formset.management_form }}
-                {% for plan_form in paciente_planes_formset %}
-                    <div class="paciente-planes-formset" style="margin-bottom:0.5em;">
-                        {{ plan_form.obra_social }}
-                        {% if plan_form.obra_social.errors %}
-                            {% for error in plan_form.obra_social.errors %}
+                {{ obras_sociales_formset.management_form }}
+                {% for os_form in obras_sociales_formset %}
+                    <div class="obras-sociales-formset" style="margin-bottom:0.5em;">
+                        {{ os_form.obra_social }}
+                        {% if os_form.obra_social.errors %}
+                            {% for error in os_form.obra_social.errors %}
                                 {{ error|escape }}
                             {% endfor %}
                         {% endif %}
 
-                        {{ plan_form.plan }}
-                        {% if plan_form.plan.errors %}
-                            {% for error in plan_form.plan.errors %}
+                        {{ os_form.plan }}
+                        {% if os_form.plan.errors %}
+                            {% for error in os_form.plan.errors %}
                                 {{ error|escape }}
                             {% endfor %}
                         {% endif %}
 
-                        {{ plan_form.nro_afiliado }}
-                        {% if plan_form.nro_afiliado.errors %}
-                            {% for error in plan_form.nro_afiliado.errors %}
+                        {{ os_form.nro_afiliado }}
+                        {% if os_form.nro_afiliado.errors %}
+                            {% for error in os_form.nro_afiliado.errors %}
                                 {{ error|escape }}
                             {% endfor %}
                         {% endif %}
@@ -125,10 +125,10 @@
                 deleteText: 'Eliminar',
                 prefix: "{{ email_formset.prefix }}"
             });
-            $('.paciente-planes-formset').formset({
+            $('.obras-sociales-formset').formset({
                 addText: 'Agregar obra social',
                 deleteText: 'Eliminar',
-                prefix: "{{ paciente_planes_formset.prefix }}"
+                prefix: "{{ obras_sociales_formset.prefix }}"
             });
 
             var xhttp_plan = new XMLHttpRequest();

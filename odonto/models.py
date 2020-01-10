@@ -8,7 +8,7 @@ class Clinica(models.Model):
     	return self.nombre
 
 class CustomUser(AbstractUser):
-    clinica = models.ForeignKey(Clinica, on_delete=models.CASCADE)
+    clinica = models.ForeignKey(Clinica, null=True, blank=True, on_delete=models.CASCADE)
     creado = models.DateTimeField(auto_now_add=True)
     actualizado = models.DateTimeField(auto_now=True)
 
@@ -112,8 +112,9 @@ class Paciente(models.Model):
     class Meta:
         ordering = ('nombre_apellido',)
 
-class PacientePlan(models.Model):
+class PacienteObraSocial(models.Model):
     paciente = models.ForeignKey("Paciente", on_delete = models.CASCADE)
+    obra_social = models.ForeignKey('Obra_Social',on_delete=models.PROTECT)
     plan = models.ForeignKey('Plan',null=True,blank=True,on_delete=models.PROTECT)
     nro_afiliado = models.CharField('Nro. Afiliado', max_length=20)
 

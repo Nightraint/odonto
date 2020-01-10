@@ -41,9 +41,6 @@ LOGOUT_REDIRECT_URL = '/'
 INSTALLED_APPS = [
     'django_filters',
     'odonto.apps.OdontoConfig',
-    'obra_social.apps.ObraSocialConfig',
-    'paciente.apps.PacienteConfig',
-    'norma_trabajo.apps.NormaTrabajoConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

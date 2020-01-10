@@ -333,20 +333,36 @@ class BasePlanFormSet(BaseFormSet):
     def clean(self):
         pass
 
-##################### PACIENTEPLAN #########################
+##################### PACIENTE OBRA SOCIAL #########################
 
-class PacientePlanForm(forms.Form):
-    obra_social = forms.ChoiceField(
+class MyModelChoiceField(forms.ModelChoiceField):
+    def to_python(self, value):
+        if value in self.empty_values:
+            return None
+        try:
+            key = self.to_field_name or 'pk'
+            value = self.queryset.get(**{key: value})
+        except(ValueError, TypeError, self.queryset.model.DoesNotExist):
+            pass
+            #raise ValidationError(seld.error_messages['invalid_choice'], code='invalid_choice')
+        return value
+
+class PacienteObraSocialForm(forms.Form):
+    obra_social = forms.ModelChoiceField(
         required = False,
+        empty_label= 'Seleccionar obra social',
+        queryset=Obra_Social.objects.none(),
         widget=forms.Select(attrs={
-            'style' : 'width:200px;display:inline-block;margin-right:7px;',
+            'style' : 'width:200px;margin-right:7px;display:inline-block;',
             'onChange' : 'seleccionarObraSocial(this);',
         }))
 
-    plan = forms.ChoiceField(
+    plan = MyModelChoiceField(
         required= False,
+        empty_label= 'Seleccionar plan',
+        queryset=Plan.objects.none(),
         widget=forms.Select(attrs={
-            'style' : 'width:200px;display:inline-block;margin-right:7px;',
+            'style' : 'width:200px;margin-right:7px;',
         }))
 
     nro_afiliado = forms.CharField(
@@ -358,19 +374,29 @@ class PacientePlanForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         clinica_id = kwargs.pop('clinica_id')
-        super(PacientePlanForm, self).__init__(*args, **kwargs)
+        super(PacienteObraSocialForm, self).__init__(*args, **kwargs)
         for visible in self.visible_fields():
             visible.field.widget.attrs['class'] = 'form-control'
         self.fields['plan'].widget.attrs['class'] = 'form-control select_plan'
         self.fields['obra_social'].widget.attrs['class'] = 'form-control select_obra_social'
-        self.fields['obra_social'].choices = [('','Seleccionar')] + [(o.id, str(o).upper()) for o in Obra_Social.objects.filter(clinica_id=clinica_id)]
-        
+        #self.fields['obra_social'].choices = [(o.id, str(o).upper()) for o in Obra_Social.objects.filter(clinica_id=clinica_id)]
+        self.fields['obra_social'].queryset = Obra_Social.objects.filter(clinica_id = clinica_id)
+        #self.fields['plan'].choices = [('','Seleccionar plan')] 
+
         if self.initial:
             os = self.initial['obra_social']
             if os:
-                self.fields['plan'].choices = [('','Seleccionar')] + [(p.id, str(p).upper()) for p in Plan.objects.filter(obra_social=os)]
-                
-class BasePacientePlanFormSet(BaseFormSet):
+                self.fields['plan'].widget.attrs['style'] += 'display:inline-block;'
+                self.fields['plan'].queryset = Plan.objects.filter(obra_social = os)
+                #self.fields['plan'].choices = [('','Seleccionar')] + [(p.id, str(p).upper()) for p in Plan.objects.filter(obra_social=os)]
+            else:
+                 self.fields['plan'].widget.attrs['style'] += 'display:inline-block;'
+                #self.fields['plan'].widget.attrs['style'] += 'display:none;'
+        else:
+             self.fields['plan'].widget.attrs['style'] += 'display:inline-block;'
+             #self.fields['plan'].widget.attrs['style'] += 'display:none;'
+
+class BasePacienteObraSocialFormSet(BaseFormSet):
     def clean(self):
         pass
 
