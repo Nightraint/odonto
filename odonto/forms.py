@@ -8,6 +8,18 @@ from .widgets import BootstrapDateTimePickerInput, BootstrapDatePickerInput
 from django.forms import modelformset_factory
 from django.forms.formsets import BaseFormSet
 
+class MyModelChoiceField(forms.ModelChoiceField):
+    def to_python(self, value):
+        if value in self.empty_values:
+            return None
+        try:
+            key = self.to_field_name or 'pk'
+            value = self.queryset.get(**{key: value})
+        except(ValueError, TypeError, self.queryset.model.DoesNotExist):
+            pass
+            #raise ValidationError(seld.error_messages['invalid_choice'], code='invalid_choice')
+        return value
+
 ######################## LOGIN ##########################
 
 class UserLoginForm(AuthenticationForm):
@@ -108,6 +120,7 @@ class Norma_TrabajoForm(forms.ModelForm):
         clinica_id = kwargs.pop('clinica_id')
         super(Norma_TrabajoForm, self).__init__(*args, **kwargs)
         self.fields['obra_social'].queryset = Obra_Social.objects.filter(clinica_id=clinica_id)
+        self.fields['obra_social'].empty_label = 'Seleccionar obra social'
         self.fields['coseguro'].widget.attrs['style'] = 'width:150px;display:inline-block;'
         self.fields['bonos'].widget.attrs['style'] = 'width:150px;display:inline-block;'
         self.fields['dias'].widget.attrs['style'] = 'width:70px;display:inline-block;'
@@ -128,7 +141,7 @@ class OdontologoForm(forms.ModelForm):
         super(OdontologoForm, self).__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
-127244
+
 ##################### FICHAS #################### 
 
 class FichaForm(forms.ModelForm):
@@ -141,6 +154,14 @@ class FichaForm(forms.ModelForm):
         widget=BootstrapDateTimePickerInput()
     )
 
+    # obra_social = MyModelChoiceField(
+    #     required= False,
+    #     empty_label= 'Seleccionar obra social',
+    #     queryset=Obra_Social.objects.none(),
+    #     widget=forms.Select(attrs={
+    #         'style' : 'width:150px;margin-right:7px;',
+    #     }))
+
     def __init__(self, *args, **kwargs):
         clinica_id = kwargs.pop('clinica_id')
         super(FichaForm, self).__init__(*args, **kwargs)
@@ -150,10 +171,10 @@ class FichaForm(forms.ModelForm):
         self.fields['norma_trabajo'].queryset = Norma_Trabajo.objects.none()
         self.fields['paciente'].queryset = Paciente.objects.filter(clinica_id=clinica_id)
 
-        self.fields['odontologo'].empty_label = 'Seleccionar'
-        self.fields['obra_social'].empty_label = 'Seleccionar'
-        self.fields['norma_trabajo'].empty_label = 'Seleccionar'
-        self.fields['paciente'].empty_label = 'Seleccionar'
+        self.fields['odontologo'].empty_label = 'Seleccionar odontólogo'
+        self.fields['obra_social'].empty_label = 'Seleccionar obra social'
+        self.fields['norma_trabajo'].empty_label = 'Seleccionar norma de trabajo'
+        self.fields['paciente'].empty_label = 'Seleccionar paciente'
 
         if 'paciente' in self.data:
             try:
@@ -168,13 +189,13 @@ class FichaForm(forms.ModelForm):
         if 'odontologo' in self.data:
             try:
                 odontologo_id = int(self.data.get('odontologo'))
-                self.fields['obra_social'].queryset = Obra_Social.objects.filter(plan__pacienteplan__paciente__id=paciente_id
+                self.fields['obra_social'].queryset = Obra_Social.objects.filter(pacienteobrasocial__paciente__id=paciente_id
                     ).filter(odontologo__id = odontologo_id
                     ).order_by('nombre')
             except (ValueError, TypeError):
                 pass
         elif self.instance.pk:
-            self.fields['obra_social'].queryset = Obra_Social.objects.filter(plan__pacienteplan__paciente__id=self.instance.paciente.id
+            self.fields['obra_social'].queryset = Obra_Social.objects.filter(pacienteobrasocial__paciente__id=self.instance.paciente.id
                 ).filter(odontologo__id = self.instance.odontologo.id
                 ).order_by('nombre')
 
@@ -335,25 +356,13 @@ class BasePlanFormSet(BaseFormSet):
 
 ##################### PACIENTE OBRA SOCIAL #########################
 
-class MyModelChoiceField(forms.ModelChoiceField):
-    def to_python(self, value):
-        if value in self.empty_values:
-            return None
-        try:
-            key = self.to_field_name or 'pk'
-            value = self.queryset.get(**{key: value})
-        except(ValueError, TypeError, self.queryset.model.DoesNotExist):
-            pass
-            #raise ValidationError(seld.error_messages['invalid_choice'], code='invalid_choice')
-        return value
-
 class PacienteObraSocialForm(forms.Form):
     obra_social = forms.ModelChoiceField(
         required = False,
         empty_label= 'Seleccionar obra social',
         queryset=Obra_Social.objects.none(),
         widget=forms.Select(attrs={
-            'style' : 'width:200px;margin-right:7px;display:inline-block;',
+            'style' : 'width:220px;margin-right:7px;display:inline-block;',
             'onChange' : 'seleccionarObraSocial(this);',
         }))
 
@@ -362,7 +371,7 @@ class PacienteObraSocialForm(forms.Form):
         empty_label= 'Seleccionar plan',
         queryset=Plan.objects.none(),
         widget=forms.Select(attrs={
-            'style' : 'width:200px;margin-right:7px;',
+            'style' : 'width:150px;margin-right:7px;',
         }))
 
     nro_afiliado = forms.CharField(
@@ -385,16 +394,17 @@ class PacienteObraSocialForm(forms.Form):
 
         if self.initial:
             os = self.initial['obra_social']
-            if os:
-                self.fields['plan'].widget.attrs['style'] += 'display:inline-block;'
-                self.fields['plan'].queryset = Plan.objects.filter(obra_social = os)
-                #self.fields['plan'].choices = [('','Seleccionar')] + [(p.id, str(p).upper()) for p in Plan.objects.filter(obra_social=os)]
+            obra_social = Obra_Social.objects.get(pk=os)
+            if obra_social:
+                if obra_social.usa_planes:
+                    self.fields['plan'].queryset = Plan.objects.filter(obra_social = os)
+                    self.fields['plan'].widget.attrs['style'] += 'display:inline-block;'
+                else:
+                    self.fields['plan'].widget.attrs['style'] += 'display:none;'
             else:
-                 self.fields['plan'].widget.attrs['style'] += 'display:inline-block;'
-                #self.fields['plan'].widget.attrs['style'] += 'display:none;'
+                 self.fields['plan'].widget.attrs['style'] += 'display:none;'
         else:
-             self.fields['plan'].widget.attrs['style'] += 'display:inline-block;'
-             #self.fields['plan'].widget.attrs['style'] += 'display:none;'
+             self.fields['plan'].widget.attrs['style'] += 'display:none;'
 
 class BasePacienteObraSocialFormSet(BaseFormSet):
     def clean(self):
@@ -403,7 +413,8 @@ class BasePacienteObraSocialFormSet(BaseFormSet):
 ##################### IMAGENFICHA #########################
 
 class ImagenFichaForm(forms.Form):
-    imagen = forms.ImageField()
+    imagen = forms.ImageField(required=False)
+    id_img = forms.IntegerField(required=False)
 
     def __init__(self, *args, **kwargs):
         #clinica_id = kwargs.pop('clinica_id')

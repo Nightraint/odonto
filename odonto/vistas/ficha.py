@@ -155,42 +155,45 @@ def crear(request):
             ficha_form.save()
             
             nuevas_imagenes = []
-        for imagen_form in imagenes_formset:
-            ficha = ficha_form.instance
-            imagen = imagen_form.cleaned_data.get('imagen')
-            if imagen:
-                nuevas_imagenes.append(Imagen(ficha=ficha,
-                    imagen= imagen))
-        try:
-            with transaction.atomic():
-                Imagen.objects.bulk_create(nuevas_imagenes)
-                messages.success(request, 'Ficha creada correctamente')
+            for imagen_form in imagenes_formset:
+                ficha = ficha_form.instance
+                imagen = imagen_form.cleaned_data.get('imagen')
+                if imagen:
+                    nuevas_imagenes.append(Imagen(ficha=ficha,
+                        imagen= imagen))
+            try:
+                with transaction.atomic():
+                    Imagen.objects.bulk_create(nuevas_imagenes)
+                    messages.success(request, 'Ficha creada correctamente')
+                    return redirect(reverse('ficha_index'))
+            except IntegrityError:
+                messages.error(request, 'Ocurrio un error guardando la ficha')
                 return redirect(reverse('ficha_index'))
-        except IntegrityError:
-            messages.error(request, 'Ocurrio un error guardando la ficha')
-            return redirect(reverse('ficha_index'))
 
     context = {
         'ficha_form': ficha_form,
         'imagenes_formset': imagenes_formset,
+        'funcion' : 'Editar',
     }
     return render(request, 'ficha/form.html', context)
 
 @login_required
 def editar(request,pk):
     ImagenFichaFormSet = formset_factory(ImagenFichaForm, formset=BaseImagenFichaFormSet)
+
     instance = get_object_or_404(Ficha, pk=pk)
+
     if request.method == 'GET':
         ficha_form = FichaForm(instance=instance,clinica_id = request.user.clinica.id)
         
         imagenes = Imagen.objects.filter(ficha = instance).order_by('id')
-        imagenes_data = [{'imagen': i.imagen, }
+        imagenes_data = [{'imagen': i.imagen, 'id_img': i.id}
                             for i in imagenes]
         imagenes_formset = ImagenFichaFormSet(prefix='imagenes',initial=imagenes_data)
     else:
-        imagenes_formset = ImagenFichaFormSet(request.POST,request.FILES,prefix='imagenes')
+        imagenes_formset = ImagenFichaFormSet(request.POST,request.FILES or None,prefix='imagenes')
 
-        ficha_form = FichaForm(request.POST,clinica_id = request.user.clinica.id)
+        ficha_form = FichaForm(request.POST, request.FILES,instance=instance,clinica_id = request.user.clinica.id)
         instance = ficha_form.instance
 
         ficha_form.instance.clinica = request.user.clinica
@@ -199,23 +202,29 @@ def editar(request,pk):
             ficha_form.save()
             
             nuevas_imagenes = []
-        for imagen_form in imagenes_formset:
-            ficha = ficha_form.instance
-            imagen = imagen_form.cleaned_data.get('imagen')
-            if imagen:
-                nuevas_imagenes.append(Imagen(ficha=ficha,
-                    imagen= imagen))
-        try:
-            with transaction.atomic():
-                Imagen.objects.bulk_create(nuevas_imagenes)
-                messages.success(request, 'Ficha creada correctamente')
+            id_existentes = []
+            for imagen_form in imagenes_formset:
+                ficha = ficha_form.instance
+                imagen = imagen_form.cleaned_data.get('imagen')
+                id_img = imagen_form.cleaned_data.get('id_img')
+                if imagen and not id_img:
+                    nuevas_imagenes.append(Imagen(ficha=ficha,
+                        imagen= imagen))
+                elif id_img:
+                        id_existentes.append(id_img)
+            try:
+                with transaction.atomic():
+                    Imagen.objects.filter(ficha=instance).exclude(id__in=id_existentes).delete()
+                    Imagen.objects.bulk_create(nuevas_imagenes)
+                    messages.success(request, 'Ficha modificada correctamente')
+                    return redirect(reverse('ficha_index'))
+            except IntegrityError:
+                messages.error(request, 'Ocurrio un error guardando la ficha')
                 return redirect(reverse('ficha_index'))
-        except IntegrityError:
-            messages.error(request, 'Ocurrio un error guardando la ficha')
-            return redirect(reverse('ficha_index'))
 
     context = {
         'ficha_form': ficha_form,
         'imagenes_formset': imagenes_formset,
+        'funcion' : 'Editar',
     }
     return render(request, 'ficha/form.html', context)

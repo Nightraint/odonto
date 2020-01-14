@@ -250,7 +250,8 @@ def editar(request, pk):
         'paciente_form': paciente_form,
         'telefono_formset': telefonos_formset,
         'email_formset' : emails_formset,
-        'obras_sociales_formset' : obras_sociales_formset
+        'obras_sociales_formset' : obras_sociales_formset,
+        'funcion' : 'Editar'
     }
     return render(request, 'paciente/form.html', context)
 
@@ -321,5 +322,6 @@ def crear(request):
         'telefono_formset': telefonos_formset,
         'email_formset' : emails_formset,
         'obras_sociales_formset' : obras_sociales_formset,
+        'funcion' : 'Agregar'
     }
     return render(request, 'paciente/form.html', context)

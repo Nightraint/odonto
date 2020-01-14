@@ -1,15 +1,40 @@
 {% extends "base.html" %}
 {% block head %}
-	<title>Crear ficha</title>
+	<title>{{ funcion }} ficha</title>
 {% endblock %}
 
 {% block style %}
+    <style>
+        .img_wrp {
+            display: inline-block;
+            position: relative;
+        }
+        .close {
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+        .add-photo {
+            opacity: 0.5;
+            filter: alpha(opacity=50); /* For IE8 and earlier */
+        }
+        .add-photo:hover {
+            opacity: 1;
+            filter: alpha(opacity=100); /* For IE8 and earlier */
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
-    <form method= "POST" id="formulario" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="col-md-6 col-md-offset-3">
+{% load staticfiles %}
+    <div class="col-md-8 offset-md-2">
+        {% if messages %}
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+        <form method= "POST" enctype="multipart/form-data">
+            {% csrf_token %}
             {% for field in ficha_form %}
                 {% if field.name == 'norma_trabajo' and ficha_form.initial.obra_social is None %}
                 <p style="display:none;">
@@ -27,20 +52,26 @@
                 <label style="display:block;">Imagenes:</label>
                 {{ imagenes_formset.management_form }}
                 {% for imagen_form in imagenes_formset %}
-                    <div class="imagenes-formset" style="margin-bottom:0.5em;height:100px;">
-                        <div class="img-preview img-preview-sm" style="display:inline-block;">
-                            {% if imagen_form.initial.imagen %}
-                                <img name="preview" src="{{ imagen_form.initial.imagen.url }}" width="100" style="margin-right:10px;"/>
-                            {% else %}
-                                <img name="preview" src="/static/images/placeholder.png" width="100" style="margin-right:10px;"/>
-                            {% endif %}
-                        </div>      
-                        <label title="Subir Imagen" for="{{imagen_form.imagen.auto_id}}" class="btn">
-                            <div style="display:none;">
-                                {{ imagen_form.imagen }}
+                    <div class="imagenes-formset" style="height:100px;display:inline-block;">
+                        <div style="display:none;">
+                            {{ imagen_form.imagen }}
+                            {{ imagen_form.id_img}}
+                        </div>
+                         <div style="display:block !important;" class="div-preview">
+                            
+                                <div ng-repeat="file in imagefinaldata" class="img_wrp" style="display:{% if imagen_form.initial.imagen %}block{% else %} none {% endif %};">
+                            
+                                    <img width=100 src="{{ imagen_form.initial.imagen.url }}" class="img-preview"/>
+                                    <img class="close" src="/static/images/delete.png" onclick="eliminar(this);"/>
+                                </div>
+                        </div>
+                        {% if not imagen_form.initial %}
+                        <label for="{{imagen_form.imagen.auto_id}}" class="label-seleccionar" style="display:block !important;cursor:pointer;">
+                            <div ng-repeat="file in imagefinaldata" class="img_wrp">
+                                <img name="preview" class="img-preview add-photo" src="/static/images/add_photo.png" style="margin-right:10px;width:100px;"/>
                             </div>
-                            Seleccionar Imagen
-                        </label> 
+                        </label>
+                        {% endif %}
                         {% if imagen_form.imagen.errors %}
                             {% for error in imagen_form.imagen.errors %}
                                 {{ error|escape }}
@@ -55,10 +86,10 @@
                 {% endif %}
             </div>
             <p style="text-align:center;">
-                <input type="submit" name="ficha-submit" class="btn" value="Aceptar" />
+                <input type="submit" name="ficha-submit" class="btn-lila" value="Aceptar" />
             </p>
-        </div>
-    </form>
+        </form>
+    </div>
 {% endblock %}
 
 {% block script %}
@@ -258,12 +289,17 @@
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
                 reader.onload = function(e) {
-                    contenedor = input.parentNode.parentNode.parentNode;
-                    console.log(contenedor);
-                    let div_preview = contenedor.querySelector(".img-preview");
-                    console.log(div_preview);
-                    let preview = div_preview.children;
-                    $(preview).attr("src", e.target.result);
+                    contenedor = input.parentNode.parentNode;
+                    let div_preview = contenedor.querySelector(".div-preview");
+                    let img_preview = div_preview.querySelector(".img-preview");
+                    let img_wrp = div_preview.querySelector(".img_wrp");
+                    img_wrp.style.display = "block";
+
+                    let label = contenedor.querySelector(".label-seleccionar");
+                    label.remove();
+
+                    $(img_preview).attr("src", e.target.result);
+                    agregar_imagen();
                 }
                 reader.readAsDataURL(input.files[0]);
             }
@@ -274,9 +310,20 @@
         });
 
         $('.imagenes-formset').formset({
-            addText: 'Agregar Imagen',
-            deleteText: 'Eliminar',
+            addText: '',
+            deleteText: '',
             prefix: "{{ imagenes_formset.prefix }}"
         });
+
+        function eliminar(icon){
+            let contenedor = icon.parentNode.parentNode.parentNode;
+            let boton_eliminar = contenedor.querySelector(".delete-row");
+            boton_eliminar.click();
+        }
+
+        function agregar_imagen(){
+            let boton_agegar = document.querySelector(".add-row");
+            boton_agegar.click();
+        }
     </script>
 {% endblock %}

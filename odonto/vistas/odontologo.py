@@ -63,6 +63,11 @@ class OdontologoCrear(LoginRequiredMixin, SuccessMessageMixin, CreateView):
  
     def get_success_url(self):        
         return reverse('odontologo_index')
+
+    def get_context_data(self, **kwargs):
+        context = super(OdontologoCrear, self).get_context_data(**kwargs)
+        context['funcion']='Agregar'
+        return context
     
     def form_valid(self, form):
         form.instance.clinica = self.request.user.clinica
@@ -83,6 +88,11 @@ class OdontologoEditar(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
  
     def get_success_url(self):        
         return reverse('odontologo_index')
+
+    def get_context_data(self, **kwargs):
+        context = super(OdontologoEditar, self).get_context_data(**kwargs)
+        context['funcion']='Editar'
+        return context
 
     def get_form_kwargs(self):
         kwargs = super(OdontologoEditar, self).get_form_kwargs()

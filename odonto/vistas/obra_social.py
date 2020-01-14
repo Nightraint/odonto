@@ -109,10 +109,11 @@ def get_for_select(request):
     paciente = int(request.GET.get('paciente'))
     odontologo = int(request.GET.get('odontologo'))
     obras_sociales = Obra_Social.objects.filter(clinica = request.user.clinica
-        ).filter(plan__pacienteplan__paciente__id = paciente
+        ).filter(pacienteobrasocial__paciente__id = paciente
         ).filter(odontologo__id = odontologo
-        ).values('id', 'nombre'
+        ).values('id', 'nombre', 'usa_planes',
         ).annotate(descrip = F('nombre')) # or simply .values() to get all fields
+    count = obras_sociales.count()
     os_list = list(obras_sociales)  # important: convert the QuerySet to a list object
     return JsonResponse(os_list, safe=False)
 
@@ -169,6 +170,7 @@ def editar(request, pk):
     context = {
         'obra_social_form': obra_social_form,
         'planes_formset': planes_formset,
+        'funcion' : 'Editar',
     }
     return render(request, 'obra_social/form.html', context)
 
@@ -214,5 +216,6 @@ def crear(request):
     context = {
         'obra_social_form': obra_social_form,
         'planes_formset': planes_formset,
+        'funcion' : 'Agregar',
     }
     return render(request, 'obra_social/form.html', context)

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block head %}
-	<title>Crear paciente</title>
+	<title>{{ funcion }} paciente</title>
 {% endblock %}
 
 {% block style %}
@@ -14,7 +14,6 @@
                 <p>{{ message }}</p>
             {% endfor %}
         {% endif %}
-
         <form method="post">
             {% csrf_token %}
             
@@ -120,11 +119,13 @@
                 deleteText: 'Eliminar',
                 prefix: "{{ telefono_formset.prefix }}"
             });
+
             $('.email-formset').formset({
                 addText: 'Agregar email',
                 deleteText: 'Eliminar',
                 prefix: "{{ email_formset.prefix }}"
             });
+
             $('.obras-sociales-formset').formset({
                 addText: 'Agregar obra social',
                 deleteText: 'Eliminar',
@@ -132,32 +133,10 @@
             });
 
             var xhttp_plan = new XMLHttpRequest();
-
-            function createCallback(select){
-                console.log('callback creado para: ' + select.id);
-                return function() {
-                    console.log(this.responseText);
-                    if (this.readyState == 4 && this.status == 200) {
-                        removeOptions(select);
-                        var opt = document.createElement('option');
-                        opt.appendChild(document.createTextNode('Seleccionar plan'));
-                        opt.value = '';
-                        select.appendChild(opt);
-                        var arr = JSON.parse(this.responseText);
-                        for (i in arr) {
-                            opt = document.createElement('option');
-                            opt.appendChild(document.createTextNode(arr[i].nombre));
-                            opt.value = arr[i].id; 
-                            select.appendChild(opt);
-                        }
-                    }
-                }
-            }
+            var xhttp_os = new XMLHttpRequest();
 
             function seleccionarObraSocial(control){
                 let id = control[control.selectedIndex].value;
-
-                let select_plan = control.parentNode.querySelector('.select_plan');
 
                 let controls = document.getElementsByClassName("select_obra_social");
                 console.log('Encontrados: ' + controls.length);
@@ -169,16 +148,68 @@
                         counter++;
                 }
 
-                if(counter > 1){
+                if(counter > 1 && isNaN(id) == false && id != ''){
                     alert('La obra social ya fue seleccionada');
                     control.value = '';
                 }
                 else{
                     if (isNaN(id) == false && id != ''){
-                        console.log(select_plan);
-                        xhttp_plan.onreadystatechange = createCallback(select_plan);
-                        xhttp_plan.open("GET", "/plan/get_for_select?obra_social=" + id, true);
-                        xhttp_plan.send();
+                        xhttp_os.onreadystatechange = callbackObraSocial(control);
+                        xhttp_os.open("GET", "/obra_social/" + id, true);
+                        xhttp_os.send();
+                    }
+                }
+                if (isNaN(id) == true || id == ''){
+                    let select_plan = control.parentNode.querySelector('.select_plan');
+                    removeOptions(select_plan);
+                    select_plan.style.display = 'none';
+                }
+            }
+
+            function callbackObraSocial(select_os){
+                return function() {
+                    let id = select_os[select_os.selectedIndex].value;
+                    if (this.readyState == 4 && this.status == 200) {
+                        console.log(this.responseText);
+                        var arr = JSON.parse(this.responseText);
+
+                        let usa_planes = arr[0].fields.usa_planes;
+                        console.log(usa_planes);
+
+                        let select_plan = select_os.parentNode.querySelector('.select_plan');
+                        if (usa_planes == true){
+                            xhttp_plan.onreadystatechange = createCallback(select_plan);
+                            xhttp_plan.open("GET", "/plan/get_for_select?obra_social=" + id, true);
+                            xhttp_plan.send();
+                        }
+                        else
+                        {
+                            removeOptions(select_plan);
+                            select_plan.style.display = 'none';
+                        }
+                    }
+                }
+            }
+
+            function createCallback(select){
+                console.log('callback creado para: ' + select.id);
+                return function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        console.log(this.responseText);
+                        removeOptions(select);
+                        var opt = document.createElement('option');
+                        opt.appendChild(document.createTextNode('Seleccionar plan'));
+                        opt.value = '';
+                        select.appendChild(opt);
+                        var arr = JSON.parse(this.responseText);
+                        if (arr.length > 0)
+                            select.style.display = 'inline-block';
+                        for (i in arr) {
+                            opt = document.createElement('option');
+                            opt.appendChild(document.createTextNode(arr[i].nombre));
+                            opt.value = arr[i].id; 
+                            select.appendChild(opt);
+                        }
                     }
                 }
             }
