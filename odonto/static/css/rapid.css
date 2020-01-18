@@ -12,7 +12,7 @@ body {
   margin-bottom: 10px;
 }
 
-a {
+.links {
   color: #413e66;
   transition: 0.5s;
 }

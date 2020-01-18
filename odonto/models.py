@@ -101,10 +101,10 @@ class Paciente(models.Model):
     odontologos = models.ManyToManyField(Odontologo,blank=True)
     domicilio = models.CharField(max_length=100,blank=True)
     dni = models.CharField(max_length=100,blank=True)
+    fecha_nacimiento = models.DateField(blank=True, null=True)
     creado = models.DateTimeField(auto_now_add=True)
     actualizado = models.DateTimeField(auto_now=True)
     clinica = models.ForeignKey(Clinica, on_delete=models.CASCADE)
-    fecha_nacimiento = models.DateField(blank=True, null=True)
 
     def __str__(self):
     	return self.nombre_apellido
@@ -145,8 +145,18 @@ class Ficha(models.Model):
     actualizada = models.DateTimeField(auto_now=True)
     clinica = models.ForeignKey('Clinica',on_delete=models.PROTECT)
 
+class Consulta(models.Model):
+    fecha = models.DateTimeField()
+    obra_social = models.ForeignKey('Obra_Social',null=True,blank=True,on_delete=models.PROTECT)
+    norma_trabajo = models.ForeignKey('Norma_Trabajo',null=True,blank=True,on_delete=models.PROTECT)
+    detalle = models.TextField(max_length=1000,blank=True)
+    ficha = models.ForeignKey('Ficha', on_delete=models.CASCADE)
+    creada = models.DateTimeField(auto_now_add=True)
+    actualizada = models.DateTimeField(auto_now=True)
+
 class Imagen(models.Model):
     ruta = models.TextField()
     imagen = models.ImageField(blank=True, null=True, upload_to='imagenes_fichas/')
+    descripcion = models.CharField(blank=True, null=True,max_length=500)
     ficha = models.ForeignKey('Ficha', on_delete=models.CASCADE)
     

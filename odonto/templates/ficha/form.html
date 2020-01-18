@@ -22,6 +22,48 @@
             opacity: 1;
             filter: alpha(opacity=100); /* For IE8 and earlier */
         }
+        button.accordion {
+            background-color: #eee;
+            color: #444;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 15px;
+            transition: 0.4s;
+        }
+
+        button.accordion.active, button.accordion:hover {
+            background-color: #ddd;
+        }
+
+        button.accordion:after {
+            content: '\02795';
+            font-size: 13px;
+            color: #777;
+            float: right;
+            margin-left: 5px;
+        }
+
+        button.accordion.active:after {
+            content: "\2796";
+        }
+
+        div.panel {
+            padding: 5px 0px;
+            background-color: white;
+            max-height: 0;
+            overflow: hidden;
+            transition: 0.6s ease-in-out;
+            opacity: 0;
+        }
+
+        div.panel.show {
+            opacity: 1;
+            max-height: 500px;
+        }
     </style>
 {% endblock %}
 
@@ -58,12 +100,10 @@
                             {{ imagen_form.id_img}}
                         </div>
                          <div style="display:block !important;" class="div-preview">
-                            
-                                <div ng-repeat="file in imagefinaldata" class="img_wrp" style="display:{% if imagen_form.initial.imagen %}block{% else %} none {% endif %};">
-                            
-                                    <img width=100 src="{{ imagen_form.initial.imagen.url }}" class="img-preview"/>
-                                    <img class="close" src="/static/images/delete.png" onclick="eliminar(this);"/>
-                                </div>
+                            <div ng-repeat="file in imagefinaldata" class="img_wrp" style="display:{% if imagen_form.initial and imagen_form.initial.imagen %}block{% else %} none {% endif %};">
+                                <img width=100 src="{% if imagen_form.initial %}{{ imagen_form.initial.imagen.url }}{% endif %}" class="img-preview"/>
+                                <img class="close" src="/static/images/delete.png" onclick="eliminar(this);"/>
+                            </div>
                         </div>
                         {% if not imagen_form.initial %}
                         <label for="{{imagen_form.imagen.auto_id}}" class="label-seleccionar" style="display:block !important;cursor:pointer;">
@@ -81,6 +121,62 @@
                 {% endfor %}
                 {% if imagen_form.non_form_errors %}
                     {% for error in imagen_form.non_form_errors %}
+                        {{ error|escape }}
+                    {% endfor %}
+                {% endif %}
+            </div>
+             <div style="margin-bottom:1em">
+                <label style="display:block;">Consultas:</label>
+                {{ consultas_formset.management_form }}
+                {% for form in consultas_formset %}
+                    <div class="consultas-formset" style="margin-bottom:0.4em;">
+                    {% if form.initial %}
+                        <button type="button" class="accordion">Consulta del {{form.initial.fecha}}</button>
+                        <div class="panel">
+                    {% endif%}
+                        <div class="row">
+                            <div class="col-md-4">
+                                {{ form.fecha }}
+                                {% if form.fecha.errors %}
+                                    {% for error in form.fecha.errors %}
+                                        {{ error|escape }}
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.obra_social }}
+                                {% if form.obra_social.errors %}
+                                    {% for error in form.obra_social.errors %}
+                                        {{ error|escape }}
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.norma_trabajo }}
+                                {% if form.norma_trabajo.errors %}
+                                    {% for error in form.norma_trabajo.errors %}
+                                        {{ error|escape }}
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                {{ form.detalle }}
+                                {% if form.detalle.errors %}
+                                    {% for error in form.detalle.errors %}
+                                        {{ error|escape }}
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% if form.initial %}
+                    </div>
+                {% endif %}
+                {% endfor %}
+                {% if consultas_formset.non_form_errors %}
+                    {% for error in consultas_formset.non_form_errors %}
                         {{ error|escape }}
                     {% endfor %}
                 {% endif %}
@@ -315,6 +411,12 @@
             prefix: "{{ imagenes_formset.prefix }}"
         });
 
+        $('.consultas-formset').formset({
+            addText: 'Agregar consulta',
+            deleteText: '',
+            prefix: "{{ consultas_formset.prefix }}"
+        });
+
         function eliminar(icon){
             let contenedor = icon.parentNode.parentNode.parentNode;
             let boton_eliminar = contenedor.querySelector(".delete-row");
@@ -324,6 +426,16 @@
         function agregar_imagen(){
             let boton_agegar = document.querySelector(".add-row");
             boton_agegar.click();
+        }
+
+        var acc = document.getElementsByClassName("accordion");
+        var i;
+
+        for (i = 0; i < acc.length; i++) {
+            acc[i].onclick = function(){
+                this.classList.toggle("active");
+                this.nextElementSibling.classList.toggle("show");
+            }
         }
     </script>
 {% endblock %}

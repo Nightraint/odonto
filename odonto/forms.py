@@ -154,13 +154,11 @@ class FichaForm(forms.ModelForm):
         widget=BootstrapDateTimePickerInput()
     )
 
-    # obra_social = MyModelChoiceField(
-    #     required= False,
-    #     empty_label= 'Seleccionar obra social',
-    #     queryset=Obra_Social.objects.none(),
-    #     widget=forms.Select(attrs={
-    #         'style' : 'width:150px;margin-right:7px;',
-    #     }))
+    detalle = forms.CharField(
+                widget=forms.Textarea(attrs={
+                    'style' : 'height:100px;',
+                }),
+                required=False)
 
     def __init__(self, *args, **kwargs):
         clinica_id = kwargs.pop('clinica_id')
@@ -422,5 +420,59 @@ class ImagenFichaForm(forms.Form):
         self.fields['imagen'].widget.attrs['class'] = 'cargar_imagen'
 
 class BaseImagenFichaFormSet(BaseFormSet):
+    def clean(self):
+        pass
+
+##################### CONSULTA #########################
+
+class ConsultaForm(forms.Form):
+
+    fecha = forms.DateTimeField(
+        input_formats=['%d/%m/%Y'], 
+        widget=BootstrapDatePickerInput()
+    )
+
+    obra_social = forms.ModelChoiceField(
+        required = False,
+        empty_label= 'Seleccionar obra social',
+        queryset=Obra_Social.objects.none(),
+        widget=forms.Select(attrs={
+            'style' : '',
+            'onChange' : 'seleccionarObraSocial(this);',
+        }))
+    
+    norma_trabajo = forms.ModelChoiceField(
+        required = False,
+        empty_label= 'Seleccionar norma trabajo',
+        queryset=Norma_Trabajo.objects.none(),
+        widget=forms.Select(attrs={
+            'style' : '',
+            'onChange' : 'seleccionarNormaTrabajo(this);',
+        }))
+
+    detalle = forms.CharField(
+                widget=forms.TextInput(attrs={
+                    'placeholder': 'Detalle',
+                    'style' : 'display:inline-block;margin-top:7px;',
+                }),
+                required=False)
+
+    def __init__(self, *args, **kwargs):
+        clinica_id = kwargs.pop('clinica_id')
+        super(ConsultaForm, self).__init__(*args, **kwargs)
+        for visible in self.visible_fields():
+            visible.field.widget.attrs['class'] = 'form-control'
+        self.fields['obra_social'].queryset = Obra_Social.objects.filter(clinica_id = clinica_id)
+
+        if self.initial:
+            try:
+                os = self.initial['obra_social']
+                if os:
+                    self.fields['norma_trabajo'].queryset = Norma_Trabajo.objects.filter(obra_social__id=os
+                        ).order_by('codigo')
+            except (ValueError, TypeError):
+                pass
+
+class BaseConsultaFormSet(BaseFormSet):
     def clean(self):
         pass

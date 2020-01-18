@@ -1,7 +1,12 @@
 import django_filters
 from django_filters.views import FilterView
-from odonto.forms import (FichaForm,CustomFilterForm,ImagenFichaForm,BaseImagenFichaFormSet)
-from odonto.models import Ficha, Imagen
+from odonto.forms import (FichaForm,
+    CustomFilterForm,
+    ImagenFichaForm,
+    BaseImagenFichaFormSet,
+    ConsultaForm,
+    BaseConsultaFormSet)
+from odonto.models import Ficha, Imagen, Consulta
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView 
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -15,6 +20,7 @@ from django.forms.formsets import formset_factory
 from django.db import IntegrityError, transaction
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect, render
+from functools import partial, wraps
 
 class FichaListFilter(django_filters.FilterSet):
     filtro = django_filters.CharFilter(method='custom_filter')
@@ -139,30 +145,46 @@ class FichaEliminar(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
 @login_required
 def crear(request):
     ImagenFichaFormSet = formset_factory(ImagenFichaForm, formset=BaseImagenFichaFormSet)
+    ConsultaFormSet = formset_factory(wraps(ConsultaForm)(partial(ConsultaForm, clinica_id = request.user.clinica.id)), formset=BaseConsultaFormSet)
 
     if request.method == 'GET':
         ficha_form = FichaForm(clinica_id = request.user.clinica.id)
         imagenes_formset = ImagenFichaFormSet(prefix='imagenes')
+        consultas_formset = ConsultaFormSet(prefix='consultas')
     else:
         imagenes_formset = ImagenFichaFormSet(request.POST,request.FILES,prefix='imagenes')
+        consultas_formset = ConsultaFormSet(request.POST,prefix='consultas')
 
         ficha_form = FichaForm(request.POST,clinica_id = request.user.clinica.id)
         instance = ficha_form.instance
 
         ficha_form.instance.clinica = request.user.clinica
 
-        if ficha_form.is_valid() and imagenes_formset.is_valid():
+        if ficha_form.is_valid() and imagenes_formset.is_valid() and consultas_formset.is_valid():
             ficha_form.save()
             
+            nuevas_consultas = []
+            for form in consultas_formset:
+                fecha = form.cleaned_data.get('fecha')
+                obra_social = form.cleaned_data.get('obra_social')
+                norma_trabajo = form.cleaned_data.get('norma_trabajo')
+                detalle = form.cleaned_data.get('detalle')
+                if detalle:
+                    nuevas_consultas.append(Consulta(ficha=instance,
+                        obra_social= obra_social,
+                        norma_trabajo = norma_trabajo,
+                        detalle = detalle,
+                        fecha = fecha))
+
             nuevas_imagenes = []
             for imagen_form in imagenes_formset:
-                ficha = ficha_form.instance
                 imagen = imagen_form.cleaned_data.get('imagen')
                 if imagen:
-                    nuevas_imagenes.append(Imagen(ficha=ficha,
+                    nuevas_imagenes.append(Imagen(ficha=instance,
                         imagen= imagen))
             try:
                 with transaction.atomic():
+                    Consulta.objects.bulk_create(nuevas_consultas)
                     Imagen.objects.bulk_create(nuevas_imagenes)
                     messages.success(request, 'Ficha creada correctamente')
                     return redirect(reverse('ficha_index'))
@@ -173,6 +195,7 @@ def crear(request):
     context = {
         'ficha_form': ficha_form,
         'imagenes_formset': imagenes_formset,
+        'consultas_formset': consultas_formset,
         'funcion' : 'Editar',
     }
     return render(request, 'ficha/form.html', context)
@@ -180,6 +203,7 @@ def crear(request):
 @login_required
 def editar(request,pk):
     ImagenFichaFormSet = formset_factory(ImagenFichaForm, formset=BaseImagenFichaFormSet)
+    ConsultaFormSet = formset_factory(wraps(ConsultaForm)(partial(ConsultaForm, clinica_id = request.user.clinica.id)), formset=BaseConsultaFormSet)
 
     instance = get_object_or_404(Ficha, pk=pk)
 
@@ -190,6 +214,14 @@ def editar(request,pk):
         imagenes_data = [{'imagen': i.imagen, 'id_img': i.id}
                             for i in imagenes]
         imagenes_formset = ImagenFichaFormSet(prefix='imagenes',initial=imagenes_data)
+
+        consultas = Consulta.objects.filter(ficha = instance).order_by('id')
+        consultas_data = [{'fecha': c.fecha,
+                           'detalle': c.detalle,
+                           'obra_social': c.obra_social,
+                           'norma_trabajo' : c.norma_trabajo}
+                            for c in consultas]
+        consultas_formset = ConsultaFormSet(prefix='consultas',initial=consultas_data)
     else:
         imagenes_formset = ImagenFichaFormSet(request.POST,request.FILES or None,prefix='imagenes')
 
@@ -204,11 +236,10 @@ def editar(request,pk):
             nuevas_imagenes = []
             id_existentes = []
             for imagen_form in imagenes_formset:
-                ficha = ficha_form.instance
                 imagen = imagen_form.cleaned_data.get('imagen')
                 id_img = imagen_form.cleaned_data.get('id_img')
                 if imagen and not id_img:
-                    nuevas_imagenes.append(Imagen(ficha=ficha,
+                    nuevas_imagenes.append(Imagen(ficha=instance,
                         imagen= imagen))
                 elif id_img:
                         id_existentes.append(id_img)
@@ -225,6 +256,7 @@ def editar(request,pk):
     context = {
         'ficha_form': ficha_form,
         'imagenes_formset': imagenes_formset,
+        'consultas_formset': consultas_formset,
         'funcion' : 'Editar',
     }
     return render(request, 'ficha/form.html', context)
