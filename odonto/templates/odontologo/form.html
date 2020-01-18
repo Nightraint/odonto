@@ -12,11 +12,17 @@
         <div class="col-md-6 col-md-offset-3">
             {{form.as_p}}
             <p style="text-align:center;">
-                <input type="submit" name="paciente-submit" class="btn" value="Aceptar" />
+                <input type="submit" name="paciente-submit" class="btn-lila" value="Aceptar" />
             </p>
         </div>
     </form>
 {% endblock %}
 
 {% block script %}
+    <script>
+        $("#id_obras_sociales").select2({
+            placeholder: 'Obras sociales',
+            allowClear: true
+        });
+    </script>
 {% endblock %}

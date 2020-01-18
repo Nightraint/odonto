@@ -32,11 +32,12 @@
             text-align: left;
             outline: none;
             font-size: 15px;
-            transition: 0.4s;
+            transition: 0.2s;
+            font-weight:bold;
         }
 
         button.accordion.active, button.accordion:hover {
-            background-color: #ddd;
+            background-color: #c1c0d8;
         }
 
         button.accordion:after {
@@ -52,17 +53,18 @@
         }
 
         div.panel {
-            padding: 5px 0px;
-            background-color: white;
+            background-color: #f0eff5;
             max-height: 0;
             overflow: hidden;
-            transition: 0.6s ease-in-out;
+            transition: 0.8s ease-in-out;
             opacity: 0;
+            padding:5px;
         }
 
         div.panel.show {
             opacity: 1;
             max-height: 500px;
+            background-color: #c1c0d8;
         }
     </style>
 {% endblock %}
@@ -130,9 +132,14 @@
                 {{ consultas_formset.management_form }}
                 {% for form in consultas_formset %}
                     <div class="consultas-formset" style="margin-bottom:0.4em;">
+                     <div style="display:none;">
+                        {{ form.id_consulta }}
+                    </div>
                     {% if form.initial %}
                         <button type="button" class="accordion">Consulta del {{form.initial.fecha}}</button>
                         <div class="panel">
+                    {% else %}
+                        <div style="background-color:#f0eff5;padding:10px 5px;">
                     {% endif%}
                         <div class="row">
                             <div class="col-md-4">
@@ -171,9 +178,7 @@
                             </div>
                         </div>
                     </div>
-                {% if form.initial %}
-                    </div>
-                {% endif %}
+                </div>
                 {% endfor %}
                 {% if consultas_formset.non_form_errors %}
                     {% for error in consultas_formset.non_form_errors %}

@@ -76,7 +76,7 @@ td,th {
 }
 .bootstrap-datetimepicker-widget a{
   font-size: x-large !important;
-  color: #535074;
+  /* color: #535074; */
 }
 
 /* Back to top button */
@@ -307,7 +307,7 @@ td,th {
 
 .btn{
   -webkit-appearance: inherit !important;
-  background: #1bb1dc;
+  background: #ddd;
   border: 0;
   border-radius: 3px;
   padding: 8px 20px;
@@ -321,7 +321,7 @@ td,th {
 }
 
 .btn:hover{
-  background: #0a98c0;
+  background: #ddd;
   color: #fff !important;
 }
 
@@ -336,7 +336,7 @@ td,th {
   border-radius: 4px;
   transition: 0.5s;
   color: #fff;
-  background: #1bb1dc;
+  /* background: #1bb1dc; */
   color: #fff;
 }
 
@@ -1687,4 +1687,20 @@ td,th {
   color: #fff;
   border-color: #413e66;
   background-color: #413e66;
+}
+
+.select2-container--default .select2-selection--multiple{
+  border-color: #413e66;
+}
+
+.select2-container--default.select2-container--focus .select2-selection--multiple {
+  border-color: #413e66;
+}
+
+.delete-row{
+  color: #413e66;
+}
+
+.add-row{
+  color: #413e66;
 }

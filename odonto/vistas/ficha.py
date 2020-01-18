@@ -219,19 +219,38 @@ def editar(request,pk):
         consultas_data = [{'fecha': c.fecha,
                            'detalle': c.detalle,
                            'obra_social': c.obra_social,
-                           'norma_trabajo' : c.norma_trabajo}
+                           'norma_trabajo' : c.norma_trabajo,
+                           'id_consulta': c.id}
                             for c in consultas]
         consultas_formset = ConsultaFormSet(prefix='consultas',initial=consultas_data)
     else:
         imagenes_formset = ImagenFichaFormSet(request.POST,request.FILES or None,prefix='imagenes')
-
+        consultas_formset = ConsultaFormSet(request.POST,prefix='consultas')
+        
         ficha_form = FichaForm(request.POST, request.FILES,instance=instance,clinica_id = request.user.clinica.id)
         instance = ficha_form.instance
 
         ficha_form.instance.clinica = request.user.clinica
 
-        if ficha_form.is_valid() and imagenes_formset.is_valid():
+        if ficha_form.is_valid() and imagenes_formset.is_valid() and consultas_formset.is_valid():
             ficha_form.save()
+
+            nuevas_consultas = []
+            id_consultas = []
+            for form in consultas_formset:
+                fecha = form.cleaned_data.get('fecha')
+                obra_social = form.cleaned_data.get('obra_social')
+                norma_trabajo = form.cleaned_data.get('norma_trabajo')
+                detalle = form.cleaned_data.get('detalle')
+                id_consulta = form.cleaned_data.get('id_consulta')
+                if detalle and not id_consulta:
+                    nuevas_consultas.append(Consulta(ficha=instance,
+                        obra_social= obra_social,
+                        norma_trabajo = norma_trabajo,
+                        detalle = detalle,
+                        fecha = fecha))
+                elif id_consulta:
+                        id_consultas.append(id_consulta)
             
             nuevas_imagenes = []
             id_existentes = []
@@ -247,6 +266,8 @@ def editar(request,pk):
                 with transaction.atomic():
                     Imagen.objects.filter(ficha=instance).exclude(id__in=id_existentes).delete()
                     Imagen.objects.bulk_create(nuevas_imagenes)
+                    #Consulta.objects.filter(ficha=instance).exclude(id__in=id_consultas).delete()
+                    Consulta.objects.bulk_create(nuevas_consultas)
                     messages.success(request, 'Ficha modificada correctamente')
                     return redirect(reverse('ficha_index'))
             except IntegrityError:
