@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+import os
 
 class Clinica(models.Model):
     nombre = models.CharField("Nombre",max_length=100)
@@ -156,7 +157,11 @@ class Consulta(models.Model):
 
 class Imagen(models.Model):
     ruta = models.TextField()
-    imagen = models.ImageField(blank=True, null=True, upload_to='imagenes_fichas/')
+    imagen = models.FileField(blank=True, null=True, upload_to='imagenes_fichas/')
     descripcion = models.CharField(blank=True, null=True,max_length=500)
     ficha = models.ForeignKey('Ficha', on_delete=models.CASCADE)
+    creada = models.DateTimeField(auto_now_add=True)
+
+    def filename(self):
+        return os.path.basename(self.imagen.name)
     

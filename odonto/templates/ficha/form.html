@@ -5,14 +5,34 @@
 
 {% block style %}
     <style>
+        .label_preview{
+            text-align:center;
+            width:150px;
+            padding-top:20px;
+            font-size: 12px;
+            max-height:100px;
+            cursor:pointer;
+        }
+        .label_preview:hover{
+            color:blue;
+        }
+        .img_preview{
+            cursor:pointer;
+            padding-top:21px;
+            width:150px;
+        }
+        .img_preview:hover{
+            opacity: 0.5;
+            filter: alpha(opacity=50); /* For IE8 and earlier */
+        }
         .img_wrp {
             display: inline-block;
             position: relative;
         }
         .close {
             position: absolute;
-            top: 0;
-            right: 0;
+            top: .25rem;
+            right: .25rem;
         }
         .add-photo {
             opacity: 0.5;
@@ -56,14 +76,15 @@
             background-color: #f0eff5;
             max-height: 0;
             overflow: hidden;
-            transition: 0.8s ease-in-out;
+            transition: 0.2s ease-in-out;
             opacity: 0;
             padding:5px;
         }
 
         div.panel.show {
             opacity: 1;
-            max-height: 500px;
+            max-height:fit-content;
+            transition: 0.2s;
             background-color: #c1c0d8;
         }
     </style>
@@ -93,24 +114,33 @@
                 </p>
             {% endfor %}
             <div style="margin-bottom:1em">
-                <label style="display:block;">Imagenes:</label>
+                <button type="button" class="accordion">Imágenes</button>
+                <div class="panel">
                 {{ imagenes_formset.management_form }}
                 {% for imagen_form in imagenes_formset %}
-                    <div class="imagenes-formset" style="height:100px;display:inline-block;">
+                    <div class="imagenes-formset" style="margin-bottom:0.4em;">
                         <div style="display:none;">
                             {{ imagen_form.imagen }}
                             {{ imagen_form.id_img}}
+                            {% if imagen_form.initial%}
+                                <input class="url" value="{{ imagen_form.initial.imagen.url }}">
+                                <input class="filename" value="{{ imagen_form.initial.filename }}">
+                            {% else %}
+                                <input class="filename" value="">
+                            {% endif %}
                         </div>
-                         <div style="display:block !important;" class="div-preview">
-                            <div ng-repeat="file in imagefinaldata" class="img_wrp" style="display:{% if imagen_form.initial and imagen_form.initial.imagen %}block{% else %} none {% endif %};">
-                                <img width=100 src="{% if imagen_form.initial %}{{ imagen_form.initial.imagen.url }}{% endif %}" class="img-preview"/>
-                                <img class="close" src="/static/images/delete.png" onclick="eliminar(this);"/>
+                         <div style="display:none;background-color:#f0eff5;padding:10px 5px;position:relative;border:1px solid #413e66;border-radius:.25rem;" class="div_preview">
+                            <img class="close" src="/static/images/delete.png" onclick="eliminar(this);"/>
+                            <div ng-repeat="file in imagefinaldata" class="img_wrp">
+                                <label style="display:none;" class="label_preview" onclick="ver_archivo(this);" title="Descargar archivo"></label>
+                                <img onError="errorImagen(this);" style="display:none;" class="img_preview" onclick="ver_imagen(this);" title="Ver imagen"/>
                             </div>
+                            {{ imagen_form.descripcion }}
                         </div>
                         {% if not imagen_form.initial %}
                         <label for="{{imagen_form.imagen.auto_id}}" class="label-seleccionar" style="display:block !important;cursor:pointer;">
                             <div ng-repeat="file in imagefinaldata" class="img_wrp">
-                                <img name="preview" class="img-preview add-photo" src="/static/images/add_photo.png" style="margin-right:10px;width:100px;"/>
+                                <img name="preview" class="img-preview add-photo" src="/static/images/add_photo.png" style="margin-right:10px;width:100px;" title="Agregar imagen"/>
                             </div>
                         </label>
                         {% endif %}
@@ -126,6 +156,7 @@
                         {{ error|escape }}
                     {% endfor %}
                 {% endif %}
+                </div>
             </div>
              <div style="margin-bottom:1em">
                 <label style="display:block;">Consultas:</label>
@@ -196,7 +227,7 @@
 {% block script %}
     <!-- Include formset plugin - including jQuery dependency -->
     <!--script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.formset/1.2.2/jquery.formset.js"></script>
+    <script src="{% static 'js/jquery.formset.js' %}"></script>
     
     <script>
         var select_paciente = document.getElementById('id_paciente');
@@ -221,6 +252,32 @@
             select_obra_social.addEventListener("change", cargar_normas_trabajo);
             select_norma_trabajo.addEventListener("change", chequear_norma);
             fecha.addEventListener("change", chequear_norma);
+
+            $('.imagenes-formset').each(function(){
+                let filename = $(this).find('.filename').val();
+                let url = $(this).find('.url').val();
+                let div_preview = $(this).find('.div_preview');
+                let img_preview = $(this).find('.img_preview');
+                let label_preview = $(this).find('.label_preview');
+                $(img_preview).show();
+                $(img_preview).attr('src',url);
+                
+                //IsValidImage(url,filename,img_preview,label_preview,CallbackFunction);
+                if(url)
+                    $(div_preview).show();
+            });
+
+            $('.imagenes-formset').formset({
+                addText: '',
+                deleteText: '',
+                prefix: "{{ imagenes_formset.prefix }}"
+            });
+
+            $('.consultas-formset').formset({
+                addText: 'Agregar consulta',
+                deleteText: '',
+                prefix: "{{ consultas_formset.prefix }}"
+            });
         }
         window.addEventListener("load", load_complete_ficha, false);
 
@@ -390,15 +447,24 @@
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
                 reader.onload = function(e) {
-                    contenedor = input.parentNode.parentNode;
-                    let div_preview = contenedor.querySelector(".div-preview");
-                    let img_preview = div_preview.querySelector(".img-preview");
-                    let img_wrp = div_preview.querySelector(".img_wrp");
-                    img_wrp.style.display = "block";
+                    var is_img = input.files[0]['type'].split('/')[0] === 'image';
 
-                    let label = contenedor.querySelector(".label-seleccionar");
+                    let contenedor = $(input).parent().parent();
+                    let div_preview = $(contenedor).find(".div_preview");
+                    let img_preview = $(contenedor).find(".img_preview");
+                    let label_preview = $(contenedor).find(".label_preview");
+                    let img_wrp = $(contenedor).find(".img_wrp");
+                    $(img_wrp).show();
+
+                    let filename = $(contenedor).find('.filename');
+                    $(filename).val(input.files[0]['name']);
+
+                    console.log(input.files[0]['name']);
+
+                    let label = $(contenedor).find(".label-seleccionar");
                     label.remove();
 
+                    $(div_preview).show();
                     $(img_preview).attr("src", e.target.result);
                     agregar_imagen();
                 }
@@ -410,22 +476,10 @@
             readURL(this);
         });
 
-        $('.imagenes-formset').formset({
-            addText: '',
-            deleteText: '',
-            prefix: "{{ imagenes_formset.prefix }}"
-        });
-
-        $('.consultas-formset').formset({
-            addText: 'Agregar consulta',
-            deleteText: '',
-            prefix: "{{ consultas_formset.prefix }}"
-        });
-
         function eliminar(icon){
-            let contenedor = icon.parentNode.parentNode.parentNode;
-            let boton_eliminar = contenedor.querySelector(".delete-row");
-            boton_eliminar.click();
+            let contenedor = $(icon).parent().parent();
+            $(contenedor).remove();
+            //$(contenedor).find(".delete-row").click();
         }
 
         function agregar_imagen(){
@@ -441,6 +495,57 @@
                 this.classList.toggle("active");
                 this.nextElementSibling.classList.toggle("show");
             }
+        }
+
+        var IsValidImage = function (url, filename, img_preview, label_preview,callback) {
+            $('<img>', {
+                src: url,
+                error: function () {
+                    callback(url, filename, img_preview, label_preview, false);
+                },
+                load: function () {
+                    callback(url, filename, img_preview, label_preview, true);
+                }
+            });
+        }
+
+        var CallbackFunction = function (url, filename, img_preview, label_preview, isValid) {
+            if (isValid) {
+                $(label_preview).hide();
+                $(img_preview).attr("src", url);
+                $(img_preview).show();
+            } else {
+                $(img_preview).hide();
+                $(label_preview).html(filename);
+                $(label_preview).show();
+            }
+        }
+
+        function errorImagen(image){
+            console.log('error');
+            $(image).hide();
+            let label = $(image).parent().find('.label_preview');
+            let div_preview = $(image).parent().parent(); 
+            let contenedor = $(image).parent().parent().parent(); 
+            let filename = $(contenedor).find('.filename').val();
+
+            $(label).html(filename);
+            $(label).show();
+            $(div_preview).show();
+        }
+
+        function ver_archivo(label){
+            let contenedor = $(label).parent().parent().parent();
+            let url = $(contenedor).find('.url').val();
+            console.log(url);
+            window.open(url,'_blank');
+        }
+
+        function ver_imagen(imagen){
+            let contenedor = $(imagen).parent().parent().parent();
+            let url = $(contenedor).find('.url').val();
+            console.log(url);
+            window.open($(imagen).attr("src"),'_blank');
         }
     </script>
 {% endblock %}

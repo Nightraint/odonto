@@ -411,13 +411,18 @@ class BasePacienteObraSocialFormSet(BaseFormSet):
 ##################### IMAGENFICHA #########################
 
 class ImagenFichaForm(forms.Form):
-    imagen = forms.ImageField(required=False)
+    imagen = forms.FileField(required=False)
     id_img = forms.IntegerField(required=False)
+    filename = forms.CharField(required=False)
+    descripcion = forms.CharField(required=False)
 
     def __init__(self, *args, **kwargs):
         #clinica_id = kwargs.pop('clinica_id')
         super(ImagenFichaForm, self).__init__(*args, **kwargs)
         self.fields['imagen'].widget.attrs['class'] = 'cargar_imagen'
+        self.fields['descripcion'].widget.attrs['class'] = 'form-control'
+        self.fields['descripcion'].widget.attrs['placeholder'] = 'Descripción'
+        self.fields['descripcion'].widget.attrs['style'] = 'margin-top:5px;'
 
 class BaseImagenFichaFormSet(BaseFormSet):
     def clean(self):
@@ -428,7 +433,7 @@ class BaseImagenFichaFormSet(BaseFormSet):
 class ConsultaForm(forms.Form):
 
     fecha = forms.DateTimeField(
-        input_formats=['%d/%m/%Y %H:%S'], 
+        input_formats=['%d/%m/%Y %H:%M'], 
         widget=BootstrapDateTimePickerInput()
     )
 

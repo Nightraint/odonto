@@ -179,9 +179,11 @@ def crear(request):
             nuevas_imagenes = []
             for imagen_form in imagenes_formset:
                 imagen = imagen_form.cleaned_data.get('imagen')
+                descripcion = imagen_form.cleaned_data.get('descripcion')
                 if imagen:
                     nuevas_imagenes.append(Imagen(ficha=instance,
-                        imagen= imagen))
+                        imagen= imagen,
+                        descripcion = descripcion))
             try:
                 with transaction.atomic():
                     Consulta.objects.bulk_create(nuevas_consultas)
@@ -211,7 +213,10 @@ def editar(request,pk):
         ficha_form = FichaForm(instance=instance,clinica_id = request.user.clinica.id)
         
         imagenes = Imagen.objects.filter(ficha = instance).order_by('id')
-        imagenes_data = [{'imagen': i.imagen, 'id_img': i.id}
+        imagenes_data = [{'imagen': i.imagen,
+                          'id_img': i.id,
+                          'filename': i.filename(),
+                          'descripcion': i.descripcion}
                             for i in imagenes]
         imagenes_formset = ImagenFichaFormSet(prefix='imagenes',initial=imagenes_data)
 
@@ -257,11 +262,16 @@ def editar(request,pk):
             for imagen_form in imagenes_formset:
                 imagen = imagen_form.cleaned_data.get('imagen')
                 id_img = imagen_form.cleaned_data.get('id_img')
+                descripcion = imagen_form.cleaned_data.get('descripcion')
                 if imagen and not id_img:
                     nuevas_imagenes.append(Imagen(ficha=instance,
-                        imagen= imagen))
+                        imagen= imagen,
+                        descripcion = descripcion))
                 elif id_img:
                         id_existentes.append(id_img)
+                        img = Imagen.objects.get(pk=id_img)
+                        img.descripcion = descripcion
+                        img.save()
             try:
                 with transaction.atomic():
                     Imagen.objects.filter(ficha=instance).exclude(id__in=id_existentes).delete()
