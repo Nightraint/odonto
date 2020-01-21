@@ -94,7 +94,7 @@ DATABASES = {
         'NAME': 'odonto_db',
         'USER': 'Nightrain',
         'PASSWORD': 'emirua575902',
-        'HOST': 'localhost',
+        'HOST': 'Nightrain.mysql.pythonanywhere-services.com',
         'PORT': '',
         'OPTIONS': {
             'sql_mode': 'traditional',
