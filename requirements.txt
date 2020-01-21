@@ -10,12 +10,8 @@ lazy-object-proxy==1.4.2
 mccabe==0.6.1
 Pillow==7.0.0
 psycopg2==2.8.4
-psycopg2-binary==2.8.4
 pycodestyle==2.5.0
 pyflakes==2.1.1
-pylint==1.8.2
-pylint-django==2.0.11
-pylint-plugin-utils==0.5
 pytz==2019.2
 six==1.12.0
 sqlparse==0.3.0
