@@ -5,12 +5,15 @@
 
 {% block style %}
     <style>
+        .div_preview{
+            background-color:#f0eff5;
+            padding:10px 5px;
+            position:relative;
+            /*border:1px solid #413e66;*/
+            border-radius:.25rem;
+        }
         .label_preview{
-            text-align:center;
-            width:150px;
             padding-top:20px;
-            font-size: 12px;
-            max-height:100px;
             cursor:pointer;
         }
         .label_preview:hover{
@@ -79,6 +82,7 @@
             transition: 0.2s ease-in-out;
             opacity: 0;
             padding:5px;
+            
         }
 
         div.panel.show {
@@ -101,11 +105,7 @@
         <form method= "POST" enctype="multipart/form-data">
             {% csrf_token %}
             {% for field in ficha_form %}
-                {% if field.name == 'norma_trabajo' and ficha_form.initial.obra_social is None %}
-                <p style="display:none;">
-                {% else %}
                 <p>
-                {% endif %}
                     {{ field.errors }}
                     {{ field.label_tag }} {{ field }}
                     {% if field.help_text %}
@@ -113,7 +113,7 @@
                     {% endif %}
                 </p>
             {% endfor %}
-            <div style="margin-bottom:1em">
+            <div style="margin-bottom:1em;" id="div_imagenes">
                 <button type="button" class="accordion">Imágenes</button>
                 <div class="panel">
                 {{ imagenes_formset.management_form }}
@@ -129,7 +129,7 @@
                                 <input class="filename" value="">
                             {% endif %}
                         </div>
-                         <div style="display:none;background-color:#f0eff5;padding:10px 5px;position:relative;border:1px solid #413e66;border-radius:.25rem;" class="div_preview">
+                         <div style="display:none;" class="div_preview">
                             <img class="close" src="/static/images/delete.png" onclick="eliminar(this);"/>
                             <div ng-repeat="file in imagefinaldata" class="img_wrp">
                                 <label style="display:none;" class="label_preview" onclick="ver_archivo(this);" title="Descargar archivo"></label>
@@ -182,9 +182,9 @@
                                 {% endif %}
                             </div>
                             <div class="col-md-4">
-                                {{ form.obra_social }}
-                                {% if form.obra_social.errors %}
-                                    {% for error in form.obra_social.errors %}
+                                {{ form.nro_diente }}
+                                {% if form.nro_diente.errors %}
+                                    {% for error in form.nro_diente.errors %}
                                         {{ error|escape }}
                                     {% endfor %}
                                 {% endif %}
@@ -225,47 +225,16 @@
 {% endblock %}
 
 {% block script %}
-    <!-- Include formset plugin - including jQuery dependency -->
     <!--script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script-->
     <script src="{% static 'js/jquery.formset.js' %}"></script>
     
     <script>
-        var select_paciente = document.getElementById('id_paciente');
-        var select_odontologo = document.getElementById('id_odontologo');
-        var select_obra_social = document.getElementById('id_obra_social');
-        var select_norma_trabajo = document.getElementById('id_norma_trabajo');
-        var fecha = document.getElementById("id_fecha");
+        var select_obra_social;
+        var select_plan;
 
-        function load_complete_ficha() {
-            var paciente = parseInt(select_paciente.value);
-            if (isNaN(paciente) == true){
-                select_odontologo.parentNode.style.display = 'none';
-                removeOptions(select_odontologo);
-                select_obra_social.parentNode.style.display = 'none';
-                removeOptions(select_obra_social);
-                select_norma_trabajo.parentNode.style.display = 'none';
-                removeOptions(select_norma_trabajo);
-            }
-            select_paciente.addEventListener("change", cargar_odontologos);
-            select_paciente.addEventListener("change", cargar_obras_sociales);
-            select_odontologo.addEventListener("change", cargar_obras_sociales);
-            select_obra_social.addEventListener("change", cargar_normas_trabajo);
-            select_norma_trabajo.addEventListener("change", chequear_norma);
-            fecha.addEventListener("change", chequear_norma);
-
-            $('.imagenes-formset').each(function(){
-                let filename = $(this).find('.filename').val();
-                let url = $(this).find('.url').val();
-                let div_preview = $(this).find('.div_preview');
-                let img_preview = $(this).find('.img_preview');
-                let label_preview = $(this).find('.label_preview');
-                $(img_preview).show();
-                $(img_preview).attr('src',url);
-                
-                //IsValidImage(url,filename,img_preview,label_preview,CallbackFunction);
-                if(url)
-                    $(div_preview).show();
-            });
+        $('document').ready(function(){
+            select_obra_social = $('#id_obra_social');
+            select_plan = $('#id_plan');
 
             $('.imagenes-formset').formset({
                 addText: '',
@@ -278,43 +247,37 @@
                 deleteText: '',
                 prefix: "{{ consultas_formset.prefix }}"
             });
-        }
-        window.addEventListener("load", load_complete_ficha, false);
 
-        var xhttp_o = new XMLHttpRequest();
-        xhttp_o.onreadystatechange = createCallback(select_odontologo);
+            $('.imagenes-formset').each(function(){
+                let filename = $(this).find('.filename').val();
+                let url = $(this).find('.url').val();
+                let div_preview = $(this).find('.div_preview');
+                let img_preview = $(this).find('.img_preview');
+                let label_preview = $(this).find('.label_preview');
+                $(img_preview).show();
+                $(img_preview).attr('src',url);
+                if(url)
+                    $(div_preview).show();
+            });
 
-        var xhttp_os = new XMLHttpRequest();
-        xhttp_os.onreadystatechange = respuestaObraSocial();
+            $(select_obra_social).change(function() {
+                cargar_planes();
+            });
 
-        var xhttp_nt = new XMLHttpRequest();
-        xhttp_nt.onreadystatechange = createCallback(select_norma_trabajo);
-
-        var xhttp_chequear_norma = new XMLHttpRequest();
-        xhttp_chequear_norma.onreadystatechange = createCallbackChequearNorma();
-
-        function respuestaObraSocial(){
-            console.log('Cargando obras sociales');
-            return function (){
-                removeOptions(select_obra_social);
-                if (this.readyState == 4 && this.status == 200) {
-                    var opt = document.createElement('option');
-                    opt.appendChild(document.createTextNode('Seleccionar'));
-                    opt.value = '';
-                    select_obra_social.appendChild(opt);
-                    var arr = JSON.parse(this.responseText);
-                    if(arr.length == 0)
-                        select_norma_trabajo.parentNode.style.display = 'none';
-                    for (i in arr) {
-                        opt = document.createElement('option');
-                        opt.appendChild(document.createTextNode(arr[i].descrip));
-                        opt.value = arr[i].id; 
-                        select_obra_social.appendChild(opt);
-                    }
-                    select_obra_social.parentNode.style.display = 'block';
+            let acc = $(".accordion");
+            for (i = 0; i < acc.length; i++) {
+                acc[i].onclick = function(){
+                    this.classList.toggle("active");
+                    this.nextElementSibling.classList.toggle("show");
                 }
             }
-        }
+
+            
+        });
+
+        $(".cargar_imagen").change(function() {
+            readURL(this);
+        });
 
         function createCallbackChequearNorma() {
             console.log('callback creado para chequear norma');
@@ -366,80 +329,20 @@
                 xhttp_chequear_norma.send();
             }
         }
-        
-        function createCallback(select){
-            console.log('callback creado para: ' + select.id);
-            return function() {
-                console.log(this.responseText);
-                removeOptions(select);
-                if (this.readyState == 4 && this.status == 200) {
-                    var opt = document.createElement('option');
-                    opt.appendChild(document.createTextNode('Seleccionar'));
-                    opt.value = '';
-                    select.appendChild(opt);
-                    var arr = JSON.parse(this.responseText);
-                    for (i in arr) {
-                        opt = document.createElement('option');
-                        opt.appendChild(document.createTextNode(arr[i].descrip));
-                        opt.value = arr[i].id; 
-                        select.appendChild(opt);
-                    }
-                    select.parentNode.style.display = 'block';
-                }
-            };
-        }
 
-        function cargar_odontologos(){
-            console.log('cargar odontologos');
-            var paciente = parseInt(select_paciente.value);
-            if (isNaN(paciente) == false){
-                xhttp_o.open("GET", "/odontologo/get_for_select?paciente=" + paciente, true);
-                xhttp_o.send();
-            }
-            else{
-                select_odontologo.parentNode.style.display = 'none';
-                removeOptions(select_odontologo);
-                select_obra_social.parentNode.style.display = 'none';
-                removeOptions(select_obra_social);
-                select_norma_trabajo.parentNode.style.display = 'none';
-                removeOptions(select_norma_trabajo);
-            }
-        }
-
-        function cargar_obras_sociales(){
-            console.log('cargar obras sociales');
-            var paciente = parseInt(select_paciente.value);
-            var odontologo = parseInt(select_odontologo.value);
-            if (isNaN(odontologo) == false && isNaN(paciente) == false){
-                xhttp_os.open("GET", "/obra_social/get_for_select?odontologo=" + odontologo + "&paciente="+ paciente, true);
-                xhttp_os.send();
-            }
-            else{
-                select_obra_social.parentNode.style.display = 'none';
-                removeOptions(select_obra_social);
-                select_norma_trabajo.parentNode.style.display = 'none';
-                removeOptions(select_norma_trabajo);
-            }
-        }
-
-        function cargar_normas_trabajo(){
-            var obra_social = parseInt(select_obra_social.value);
-            console.log('cargar normas de trabajo de la obra social ' + obra_social);
+        function cargar_planes(){
+            let obra_social = parseInt($(select_obra_social).val());
+            console.log('cargar planes de la obra social ' + obra_social);
+            $(select_plan).empty();
+            $(select_plan).append(new Option('Seleccionar plan', ''))
             if (isNaN(obra_social) == false){
-                xhttp_nt.open("GET", "/norma_trabajo/get_for_select?obra_social=" + obra_social, true);
-                xhttp_nt.send();
-            }
-            else{
-                select_norma_trabajo.parentNode.style.display = 'none';
-                removeOptions(select_norma_trabajo);
-            }
-        }
-
-        function removeOptions(selectbox){
-            var i;
-            for(i = selectbox.options.length - 1 ; i >= 0 ; i--)
-            {
-                selectbox.remove(i);
+                $.getJSON("/plan/get_for_select?obra_social=" + obra_social, function( json ) {
+                    let arr = JSON.parse(JSON.stringify(json));
+                    for (i in arr) {
+                        $(select_plan).append(new Option(arr[i].descrip, arr[i].id))
+                    }
+                    $(select_plan).show();
+                });
             }
         }
 
@@ -465,6 +368,7 @@
                     label.remove();
 
                     $(div_preview).show();
+                    $(img_preview).show();
                     $(img_preview).attr("src", e.target.result);
                     agregar_imagen();
                 }
@@ -472,29 +376,12 @@
             }
         }
 
-        $(".cargar_imagen").change(function() {
-            readURL(this);
-        });
-
         function eliminar(icon){
-            let contenedor = $(icon).parent().parent();
-            $(contenedor).remove();
-            //$(contenedor).find(".delete-row").click();
+            $(icon).parent().parent().remove();
         }
 
         function agregar_imagen(){
-            let boton_agegar = document.querySelector(".add-row");
-            boton_agegar.click();
-        }
-
-        var acc = document.getElementsByClassName("accordion");
-        var i;
-
-        for (i = 0; i < acc.length; i++) {
-            acc[i].onclick = function(){
-                this.classList.toggle("active");
-                this.nextElementSibling.classList.toggle("show");
-            }
+            $("#div_imagenes .add-row").click();
         }
 
         var IsValidImage = function (url, filename, img_preview, label_preview,callback) {

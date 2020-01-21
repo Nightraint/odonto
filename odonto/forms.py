@@ -1,7 +1,15 @@
 from django.contrib.auth import update_session_auth_hash
 from django import forms
 from django.db import models
-from .models import Obra_Social, Paciente, Norma_Trabajo, CustomUser, Odontologo, Ficha, Clinica, Telefono, Plan
+from .models import (Obra_Social,
+                    Paciente,
+                    Norma_Trabajo,
+                    CustomUser,
+                    Odontologo,
+                    Ficha,
+                    Clinica,
+                    Telefono,
+                    Plan)
 from django.contrib.auth.forms import AuthenticationForm,UserCreationForm,UserChangeForm,PasswordChangeForm
 from django.forms import DateTimeField, EmailField
 from .widgets import BootstrapDateTimePickerInput, BootstrapDatePickerInput
@@ -150,11 +158,11 @@ class FichaForm(forms.ModelForm):
         exclude = ('clinica',)
 
     fecha = forms.DateTimeField(
-        input_formats=['%d/%m/%Y %H:%M'], 
-        widget=BootstrapDateTimePickerInput()
+        input_formats=['%d/%m/%Y'], 
+        widget=BootstrapDatePickerInput()
     )
 
-    detalle = forms.CharField(
+    observaciones = forms.CharField(
                 widget=forms.Textarea(attrs={
                     'style' : 'height:100px;',
                 }),
@@ -164,50 +172,52 @@ class FichaForm(forms.ModelForm):
         clinica_id = kwargs.pop('clinica_id')
         super(FichaForm, self).__init__(*args, **kwargs)
         
-        self.fields['odontologo'].queryset = Odontologo.objects.none()
-        self.fields['obra_social'].queryset = Obra_Social.objects.none()
-        self.fields['norma_trabajo'].queryset = Norma_Trabajo.objects.none()
+        self.fields['odontologo'].queryset = Odontologo.objects.filter(clinica_id = clinica_id)
+        self.fields['obra_social'].queryset = Obra_Social.objects.filter(clinica_id = clinica_id)
+        #self.fields['norma_trabajo'].queryset = Norma_Trabajo.objects.none()
+        self.fields['plan'].queryset = Plan.objects.none()
         self.fields['paciente'].queryset = Paciente.objects.filter(clinica_id=clinica_id)
 
         self.fields['odontologo'].empty_label = 'Seleccionar odontólogo'
         self.fields['obra_social'].empty_label = 'Seleccionar obra social'
-        self.fields['norma_trabajo'].empty_label = 'Seleccionar norma de trabajo'
+        #self.fields['norma_trabajo'].empty_label = 'Seleccionar norma de trabajo'
+        self.fields['plan'].empty_label = 'Seleccionar plan'
         self.fields['paciente'].empty_label = 'Seleccionar paciente'
 
-        if 'paciente' in self.data:
-            try:
-                paciente_id = int(self.data.get('paciente'))
-                self.fields['odontologo'].queryset = Odontologo.objects.filter(paciente__id=paciente_id
-                    ).order_by('nombre_apellido')
-            except (ValueError, TypeError):
-                pass  # invalid input from the client; ignore and fallback to empty City queryset
-        elif self.instance.pk:
-            self.fields['odontologo'].queryset = self.instance.paciente.odontologos.order_by('nombre_apellido')
+        # if 'paciente' in self.data:
+        #     try:
+        #         paciente_id = int(self.data.get('paciente'))
+        #         self.fields['odontologo'].queryset = Odontologo.objects.filter(paciente__id=paciente_id
+        #             ).order_by('nombre_apellido')
+        #     except (ValueError, TypeError):
+        #         pass
+        # elif self.instance.pk:
+        #     self.fields['odontologo'].queryset = self.instance.paciente.odontologos.order_by('nombre_apellido')
 
-        if 'odontologo' in self.data:
-            try:
-                odontologo_id = int(self.data.get('odontologo'))
-                self.fields['obra_social'].queryset = Obra_Social.objects.filter(pacienteobrasocial__paciente__id=paciente_id
-                    ).filter(odontologo__id = odontologo_id
-                    ).order_by('nombre')
-            except (ValueError, TypeError):
-                pass
-        elif self.instance.pk:
-            self.fields['obra_social'].queryset = Obra_Social.objects.filter(pacienteobrasocial__paciente__id=self.instance.paciente.id
-                ).filter(odontologo__id = self.instance.odontologo.id
-                ).order_by('nombre')
+        # if 'odontologo' in self.data:
+        #     try:
+        #         odontologo_id = int(self.data.get('odontologo'))
+        #         self.fields['obra_social'].queryset = Obra_Social.objects.filter(pacienteobrasocial__paciente__id=paciente_id
+        #             ).filter(odontologo__id = odontologo_id
+        #             ).order_by('nombre')
+        #     except (ValueError, TypeError):
+        #         pass
+        # elif self.instance.pk:
+        #     self.fields['obra_social'].queryset = Obra_Social.objects.filter(pacienteobrasocial__paciente__id=self.instance.paciente.id
+        #         ).filter(odontologo__id = self.instance.odontologo.id
+        #         ).order_by('nombre')
 
         if 'obra_social' in self.data:
             try:
                 obra_social_id = int(self.data.get('obra_social'))
-                self.fields['norma_trabajo'].queryset = Norma_Trabajo.objects.filter(obra_social__id=obra_social_id
-                    ).order_by('codigo')
+                self.fields['plan'].queryset = Plan.objects.filter(obra_social__id=obra_social_id
+                    ).order_by('nombre')
             except (ValueError, TypeError):
                 pass
         elif self.instance.pk:
             if self.instance.obra_social:
-                self.fields['norma_trabajo'].queryset = Norma_Trabajo.objects.filter(obra_social=self.instance.obra_social
-                ).order_by('codigo')
+                self.fields['plan'].queryset = Plan.objects.filter(obra_social=self.instance.obra_social
+                ).order_by('nombre')
         
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
@@ -434,17 +444,10 @@ class ConsultaForm(forms.Form):
 
     fecha = forms.DateTimeField(
         input_formats=['%d/%m/%Y %H:%M'], 
-        widget=BootstrapDateTimePickerInput()
+        widget=BootstrapDateTimePickerInput(attrs={
+                    'placeholder': 'Fecha',
+                })
     )
-
-    obra_social = forms.ModelChoiceField(
-        required = False,
-        empty_label= 'Seleccionar obra social',
-        queryset=Obra_Social.objects.none(),
-        widget=forms.Select(attrs={
-            'style' : '',
-            'onChange' : 'seleccionarObraSocial(this);',
-        }))
     
     norma_trabajo = forms.ModelChoiceField(
         required = False,
@@ -454,6 +457,12 @@ class ConsultaForm(forms.Form):
             'style' : '',
             'onChange' : 'seleccionarNormaTrabajo(this);',
         }))
+
+    nro_diente = forms.IntegerField(
+                widget=forms.NumberInput(attrs={
+                    'placeholder': 'Nro diente',
+                }),
+                required=False)
 
     detalle = forms.CharField(
                 widget=forms.TextInput(attrs={
@@ -469,16 +478,15 @@ class ConsultaForm(forms.Form):
         super(ConsultaForm, self).__init__(*args, **kwargs)
         for visible in self.visible_fields():
             visible.field.widget.attrs['class'] = 'form-control'
-        self.fields['obra_social'].queryset = Obra_Social.objects.filter(clinica_id = clinica_id)
 
-        if self.initial:
-            try:
-                os = self.initial['obra_social']
-                if os:
-                    self.fields['norma_trabajo'].queryset = Norma_Trabajo.objects.filter(obra_social__id=os
-                        ).order_by('codigo')
-            except (ValueError, TypeError):
-                pass
+        # if self.initial:
+        #     try:
+        #         os = self.initial['obra_social']
+        #         if os:
+        #             self.fields['norma_trabajo'].queryset = Norma_Trabajo.objects.filter(obra_social__id=os
+        #                 ).order_by('codigo')
+        #     except (ValueError, TypeError):
+        #         pass
 
 class BaseConsultaFormSet(BaseFormSet):
     def clean(self):

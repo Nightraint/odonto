@@ -223,9 +223,9 @@ def editar(request,pk):
         consultas = Consulta.objects.filter(ficha = instance).order_by('id')
         consultas_data = [{'fecha': c.fecha,
                            'detalle': c.detalle,
-                           'obra_social': c.obra_social,
                            'norma_trabajo' : c.norma_trabajo,
-                           'id_consulta': c.id}
+                           'id_consulta': c.id,
+                           'nro_diente': c.nro_diente}
                             for c in consultas]
         consultas_formset = ConsultaFormSet(prefix='consultas',initial=consultas_data)
     else:
@@ -244,16 +244,16 @@ def editar(request,pk):
             id_consultas = []
             for form in consultas_formset:
                 fecha = form.cleaned_data.get('fecha')
-                obra_social = form.cleaned_data.get('obra_social')
                 norma_trabajo = form.cleaned_data.get('norma_trabajo')
                 detalle = form.cleaned_data.get('detalle')
                 id_consulta = form.cleaned_data.get('id_consulta')
+                nro_diente = form.cleaned_data.get('nro_diente')
                 if detalle and not id_consulta:
                     nuevas_consultas.append(Consulta(ficha=instance,
-                        obra_social= obra_social,
                         norma_trabajo = norma_trabajo,
                         detalle = detalle,
-                        fecha = fecha))
+                        fecha = fecha,
+                        nro_diente = nro_diente))
                 elif id_consulta:
                         id_consultas.append(id_consulta)
             
