@@ -91,8 +91,8 @@ DATABASES = {
     },
     'default': { # le coloco default para poder usar MySQL 
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'odonto_db',
-        'USER': 'Nightrain$Nightrain',
+        'NAME': 'Nightrain$odonto_db',
+        'USER': 'Nightrain',
         'PASSWORD': 'emirua575902',
         'HOST': 'Nightrain.mysql.pythonanywhere-services.com',
         'PORT': '',
