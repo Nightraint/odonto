@@ -25,7 +25,7 @@ SECRET_KEY = 'v25!wz%4cudvv$xj#scz84oj7&_)1gdbc6_b*%k8(&7g_hddz&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['emiodonto.herokuapp.com','127.0.0.1']
+ALLOWED_HOSTS = [*]
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
