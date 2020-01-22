@@ -25,7 +25,7 @@ SECRET_KEY = 'v25!wz%4cudvv$xj#scz84oj7&_)1gdbc6_b*%k8(&7g_hddz&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['nightrain.pythonanywhere.com']
+ALLOWED_HOSTS = ['nightrain.pythonanywhere.com','*']
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
@@ -89,16 +89,22 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     },
-    'default': { # le coloco default para poder usar MySQL 
+    # 'default': { # le coloco default para poder usar MySQL 
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'Nightrain$odonto_db',
+    #     'USER': 'Nightrain',
+    #     'PASSWORD': 'emirua575902',
+    #     'HOST': 'Nightrain.mysql.pythonanywhere-services.com',
+    #     'PORT': '',
+    #     'OPTIONS': {
+    #         'sql_mode': 'traditional',
+    #     },
+    'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'Nightrain$odonto_db',
         'USER': 'Nightrain',
         'PASSWORD': 'emirua575902',
         'HOST': 'Nightrain.mysql.pythonanywhere-services.com',
-        'PORT': '',
-        'OPTIONS': {
-            'sql_mode': 'traditional',
-        }
     }
 }
 
