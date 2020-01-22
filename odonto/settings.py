@@ -99,24 +99,24 @@ DATABASES = {
     #     'OPTIONS': {
     #         'sql_mode': 'traditional',
     #     },
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'Nightrain$odonto_db',
-        'USER': 'Nightrain',
-        'PASSWORD': 'emirua575902',
-        'HOST': 'Nightrain.mysql.pythonanywhere-services.com',
-    },
-    # 'default': { # le coloco default para poder usar MySQL 
+    # 'default': {
     #     'ENGINE': 'django.db.backends.mysql',
-    #     'NAME': 'odonto',
-    #     'USER': 'root',
-    #     'PASSWORD': 'root',
-    #     'HOST': 'localhost',
-    #     'PORT': '3306',
-    #     'OPTIONS': {
-    #         'sql_mode': 'traditional',
-    #     }
-    # }
+    #     'NAME': 'Nightrain$odonto_db',
+    #     'USER': 'Nightrain',
+    #     'PASSWORD': 'emirua575902',
+    #     'HOST': 'Nightrain.mysql.pythonanywhere-services.com',
+    # },
+    'default': { # le coloco default para poder usar MySQL 
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'odonto',
+        'USER': 'root',
+        'PASSWORD': 'root',
+        'HOST': 'localhost',
+        'PORT': '3306',
+        'OPTIONS': {
+            'sql_mode': 'traditional',
+        }
+    }
 }
 
 AUTH_USER_MODEL = "odonto.CustomUser" 

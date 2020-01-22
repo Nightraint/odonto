@@ -46,8 +46,8 @@
             filter: alpha(opacity=100); /* For IE8 and earlier */
         }
         button.accordion {
+            background-color:transparent;
             border-radius: .25rem;
-            background-color: #eee;
             color: #444;
             cursor: pointer;
             padding: 18px;
@@ -60,8 +60,14 @@
             font-weight:bold;
         }
 
-        button.accordion.active, button.accordion:hover {
-            background-color: #c1c0d8;
+        button.accordion:hover {
+            background-color: #eee;
+        }
+
+        button.accordion.active{
+            border-bottom-left-radius:0;
+            border-bottom-right-radius:0;
+            border-bottom:0;
         }
 
         button.accordion:after {
@@ -77,20 +83,22 @@
         }
 
         div.panel {
-            background-color: #f0eff5;
+            background-color: ##eee;
             max-height: 0;
             overflow: hidden;
-            transition: 0.2s ease-in-out;
             opacity: 0;
             padding:5px;
-            
+            border-bottom: 1px solid;
+            border-left: 1px solid;
+            border-right: 1px solid;
+            border-bottom-left-radius:.25rem;
+            border-bottom-right-radius:.25rem;
         }
 
         div.panel.show {
             opacity: 1;
             max-height:fit-content;
             transition: 0.2s;
-            background-color: #c1c0d8;
         }
     </style>
 {% endblock %}
@@ -133,13 +141,13 @@
                          <div style="display:none;" class="div_preview">
                             <img class="close" src="/static/images/delete.png" onclick="eliminar(this);"/>
                             <div ng-repeat="file in imagefinaldata" class="img_wrp">
-                                <label style="display:none;" class="label_preview" onclick="ver_archivo(this);" title="Descargar archivo"></label>
+                                <label style="display:none;" class="label_preview" onclick="ver_archivo(this);" title="Descargar archivo"><i class="fa fa-download" style="margin-right:5px;"></i></label>
                                 <img onError="errorImagen(this);" style="display:none;" class="img_preview" onclick="ver_imagen(this);" title="Ver imagen"/>
                             </div>
                             {{ imagen_form.descripcion }}
                         </div>
                         {% if not imagen_form.initial %}
-                        <label for="{{imagen_form.imagen.auto_id}}" class="label-seleccionar" style="display:block !important;cursor:pointer;">
+                        <label for="{{imagen_form.imagen.auto_id}}" class="label-seleccionar" style="display:block !important;cursor:pointer;text-align:center;">
                             <div ng-repeat="file in imagefinaldata" class="img_wrp">
                                 <img name="preview" class="img-preview add-photo" src="/static/images/add_photo.png" style="margin-right:10px;width:100px;" title="Agregar imagen"/>
                             </div>
@@ -404,7 +412,7 @@
                 $(img_preview).show();
             } else {
                 $(img_preview).hide();
-                $(label_preview).html(filename);
+                $(label_preview).append(filename);
                 $(label_preview).show();
             }
         }
@@ -417,7 +425,7 @@
             let contenedor = $(image).parent().parent().parent(); 
             let filename = $(contenedor).find('.filename').val();
 
-            $(label).html(filename);
+            $(label).append(filename);
             $(label).show();
             $(div_preview).show();
         }
