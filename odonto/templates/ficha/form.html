@@ -14,23 +14,21 @@
         }
         .label_preview{
             padding-top:20px;
-            cursor:pointer;
         }
-        .label_preview:hover{
-            color:blue;
+        .label_preview.descargable:hover{
+            color:#1bb1dc;
         }
         .img_preview{
-            cursor:pointer;
             padding-top:21px;
             width:150px;
         }
-        .img_preview:hover{
+        .descargable {
+            cursor:pointer;
+        }
+        .descargable:hover {
+            cursor:pointer;
             opacity: 0.5;
             filter: alpha(opacity=50); /* For IE8 and earlier */
-        }
-        .img_wrp {
-            display: inline-block;
-            position: relative;
         }
         .close {
             position: absolute;
@@ -58,6 +56,7 @@
             font-size: 15px;
             transition: 0.2s;
             font-weight:bold;
+            border-color:#413e66;
         }
 
         button.accordion:hover {
@@ -96,12 +95,19 @@
             border-right: 1px solid;
             border-bottom-left-radius:.25rem;
             border-bottom-right-radius:.25rem;
+            border-color:#413e66;
         }
 
         div.panel.show {
             opacity: 1;
             max-height:fit-content;
             transition: 0.2s;
+        }
+
+        .div_nueva_consulta{
+            padding:10px 5px;
+            border: 1px solid #413e66;
+            border-radius:.25rem;
         }
     </style>
 {% endblock %}
@@ -143,17 +149,13 @@
                         </div>
                          <div style="display:none;" class="div_preview">
                             <img class="close" src="/static/images/delete.png" onclick="eliminar(this);"/>
-                            <div ng-repeat="file in imagefinaldata" class="img_wrp">
-                                <label style="display:none;" class="label_preview" onclick="ver_archivo(this);" title="Descargar archivo"><i class="fa fa-download" style="margin-right:5px;"></i></label>
-                                <img onError="errorImagen(this);" style="display:none;" class="img_preview" onclick="ver_imagen(this);" title="Ver imagen"/>
-                            </div>
+                            <label style="display:none;" class="label_preview" onclick="ver_archivo(this);" title="Descargar archivo"><i class="fa fa-download" style="margin-right:5px;"></i></label>
+                            <img onError="errorImagen(this);" style="display:none;" class="img_preview" onclick="ver_imagen(this);" title="Ver imagen"/>
                             {{ imagen_form.descripcion }}
                         </div>
                         {% if not imagen_form.initial %}
                         <label for="{{imagen_form.imagen.auto_id}}" class="label-seleccionar" style="display:block !important;cursor:pointer;text-align:center;">
-                            <div ng-repeat="file in imagefinaldata" class="img_wrp">
-                                <img name="preview" class="img-preview add-photo" src="/static/images/add_photo.png" style="margin-right:10px;width:100px;" title="Agregar imagen"/>
-                            </div>
+                            <img class="add-photo" src="{% static '/images/add_photo.png' %}" style="margin-right:10px;width:100px;" title="Agregar imagen"/>
                         </label>
                         {% endif %}
                         {% if imagen_form.imagen.errors %}
@@ -182,7 +184,8 @@
                         <button type="button" class="accordion">Consulta del {{form.initial.fecha}}</button>
                         <div class="panel">
                     {% else %}
-                        <div style="background-color:#f0eff5;padding:10px 5px;">
+                        <div class="div_nueva_consulta">
+                        <label style="padding-bottom: 10px;font-size:15px;font-weight:bold;">Nueva consulta:</label>
                     {% endif%}
                         <div class="row">
                             <div class="col-md-4">
@@ -268,8 +271,10 @@
                 let label_preview = $(this).find('.label_preview');
                 $(img_preview).show();
                 $(img_preview).attr('src',url);
-                if(url)
+                if(url){
                     $(div_preview).show();
+                    $(img_preview).toggleClass('descargable');
+                }
             });
 
             $(select_obra_social).change(function() {
@@ -424,11 +429,14 @@
             console.log('error');
             $(image).hide();
             let label = $(image).parent().find('.label_preview');
-            let div_preview = $(image).parent().parent(); 
-            let contenedor = $(image).parent().parent().parent(); 
+            let div_preview = $(image).parent(); 
+            let contenedor = $(div_preview).parent(); 
             let filename = $(contenedor).find('.filename').val();
+            let url = $(contenedor).find('.url').val();
 
             $(label).append(filename);
+            if (url)
+                $(label).toggleClass('descargable');
             $(label).show();
             $(div_preview).show();
         }
