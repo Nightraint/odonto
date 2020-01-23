@@ -71,15 +71,18 @@
         }
 
         button.accordion:after {
-            content: '\02795';
-            font-size: 13px;
-            color: #777;
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            content: "\f103";
+            font-size: 20px;
+            color: #413e66;
             float: right;
-            margin-left: 5px;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: auto;
         }
 
         button.accordion.active:after {
-            content: "\2796";
+            content: "\f068";
         }
 
         div.panel {
@@ -123,7 +126,7 @@
                 </p>
             {% endfor %}
             <div style="margin-bottom:1em;" id="div_imagenes">
-                <button type="button" class="accordion">Imágenes</button>
+                <button type="button" class="accordion">Imágenes </button>
                 <div class="panel">
                 {{ imagenes_formset.management_form }}
                 {% for imagen_form in imagenes_formset %}
