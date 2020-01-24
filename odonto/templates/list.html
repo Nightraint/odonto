@@ -11,16 +11,14 @@
         <div class="col-md-4">
             <a href="crear" title="Agregar" class="btn-lila" style="float:left;"><i class="fa fa-plus"></i> Agregar</a>
         </div>
-        {% if object_list %}
-            <div class="col-md-8 filter-col">
-                <form method="get" style="display:inline-block;float:left;" autocomplete="off">
-                        {{filter.form.filtro}}
-                </form>
-                <a href="#" onclick="limpiar('{{filter.form.filtro.auto_id}}');" class="btn-lila" style="margin-left:10px;float:left;"><i class="fa fa-remove"></i> Limpiar</a>
-            </div>
-        {% endif %}
+        <div class="col-md-8 filter-col">
+            <form method="get" style="display:inline-block;float:left;" autocomplete="off">
+                    {{filter.form.filtro}}
+            </form>
+            <a href="." onclick="/*limpiar('{{filter.form.filtro.auto_id}}');*/" class="btn-lila" style="margin-left:10px;float:left;"><i class="fa fa-remove"></i> Limpiar</a>
+        </div>
     </div>
-    <table class="table table-hover" style="margin-top:10px;">
+    <table class="table table-hover table-responsive-md" style="margin-top:10px;">
         {% if object_list %}
             <thead>
                 {% block encabezados %}
