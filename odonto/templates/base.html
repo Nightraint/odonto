@@ -8,45 +8,26 @@
   <meta content="" name="description">
   {% block head %}
   {% endblock %}
-  <!-- Favicons -->
   <link href="{% static 'images/favicon.png'%}" rel="icon">
   <link href="{% static 'images/favicon.png'%}" rel="apple-touch-icon">
 
-  <!-- Bootstrap 4 -->
-  <!--link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous"-->
-  <!--script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script-->
-  <script type="text/javascript" src="{%static 'js/jquery-3.3.1.min.js'%}"></script>
-  <!--script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script-->
+   <script type="text/javascript" src="{%static 'js/jquery-3.3.1.min.js'%}"></script>
   <script type="text/javascript" src="{%static 'js/popper.min.js'%}"></script>
-  <!--script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script-->
   <script type="text/javascript" src="{%static 'js/bootstrap.min.js'%}"></script>
-  <!--script type="text/javascript" src="https://cdn.jsdelivr.net/jquery.validation/1.15.0/jquery.validate.js" ></script-->
   <script type="text/javascript" src="{%static 'js/jquery.validate.js'%}"></script>
   <script type="text/javascript" src="{%static 'js/messages_es_AR.js'%}"></script>
 
   <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
 
-  <!-- Font Awesome -->
-  <!--link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous"-->
-    
-  <!-- Moment.js -->
-  <!--script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/moment.min.js" integrity="sha256-VBLiveTKyUZMEzJd6z2mhfxIqz3ZATCuVMawPZGzIfA=" crossorigin="anonymous"></script-->
   <script type="text/javascript" src="{% static 'js/moment.min.js'%}"></script>
 
-  <!-- Tempus Dominus Bootstrap 4 -->
-  <!--link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/css/tempusdominus-bootstrap-4.min.css" integrity="sha256-XPTBwC3SBoWHSmKasAk01c08M6sIA5gF5+sRxqak2Qs=" crossorigin="anonymous" /-->
   <link href="{%static 'css/tempusdominus-bootstrap-4.min.css'%}" rel="stylesheet">
 
-  <!--script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/js/tempusdominus-bootstrap-4.min.js" integrity="sha256-z0oKYg6xiLq3yJGsp/LsY9XykbweQlHl42jHv2XTBz4=" crossorigin="anonymous"></script-->
   <script type="text/javascript" src="{% static 'js/tempusdominus-bootstrap-4.min.js'%}"></script>
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,500,600,700,700i|Montserrat:300,400,500,600,700" rel="stylesheet">
 
-  <!-- Bootstrap CSS File -->
-  <!--link href="{%static 'css/bootstrap.min.css'%}" rel="stylesheet"-->
+  <link href="{%static 'css/google-fonts.css'%}" rel="stylesheet">
 
-  <!-- Libraries CSS Files -->
   <link href="{%static 'css/bootstrap.min.css'%}" rel="stylesheet">
   <link href="{%static 'css/font-awesome.min.css'%}" rel="stylesheet">
   <link href="{%static 'css/all.css'%}" rel="stylesheet">
@@ -55,7 +36,6 @@
   <link href="{%static 'css/owl.carousel.min.css'%}" rel="stylesheet">
   <link href="{%static 'css/lightbox.min.css'%}" rel="stylesheet">
 
-  <!-- Main Stylesheet File -->
   <link href="{%static 'css/rapid.css'%}" rel="stylesheet">
 
   {% block style %}
@@ -75,32 +55,32 @@
     </div-->
     <div class="container">
       <div class="logo float-left">
-        <h1 class="text-light"><a href="#" onclick="redir('{%url 'index'%}');"><span>Odonto</span></a></h1>
+        <h1 class="text-light"><a href="{%url 'index'%}"><span>Odonto</span></a></h1>
         <!-- <a href="#header" class="scrollto"><img src="img/logo.png" alt="" class="img-fluid"></a> -->
         <!--a class="navbar-brand" href="{%url 'index'%}"><img src="/static/logo.png" class="img-fluid"></a-->
       </div>
       <nav class="main-nav float-right d-none d-lg-block">
         <ul>
           {% if user.is_authenticated %}
-            <li><a href="#" onclick="redir('{%url 'ficha_index'%}');">Fichas</a></li>
-            <li><a href="#" onclick="redir('{%url 'paciente_index'%}');">Pacientes</a></li>
-            <li><a href="#" onclick="redir('{%url 'odontologo_index'%}');">Odontologos</a></li>
+            <li><a href="{%url 'ficha_index'%}">Fichas</a></li>
+            <li><a href="{%url 'paciente_index'%}">Pacientes</a></li>
+            <li><a href="{%url 'odontologo_index'%}">Odontologos</a></li>
             <li class="drop-down"><a href="#">Obras sociales</a>
                 <ul>
-                  <li><a href="#" onclick="redir('{%url 'obra_social_index'%}');">Obras sociales</a></li>
-                  <li><a href="#" onclick="redir('{%url 'norma_trabajo_index'%}');">Normas de trabajo</a></li>
+                  <li><a href="{%url 'obra_social_index'%}">Obras sociales</a></li>
+                  <li><a href="{%url 'norma_trabajo_index'%}">Normas de trabajo</a></li>
                 </ul>
             </li>
           {% endif %}
           {% if user.is_authenticated %}
             <li class="drop-down"><a href="#">Hola {{ user.username }}!</a>
                 <ul>
-                  <li><a href="#" onclick="redir('{%url 'changepassword'%}');">Cambiar contraseña</a></li>
-                  <li><a href="#" onclick="redir('{%url 'logout'%}');">Cerrar sesión</a></li>
+                  <li><a href="{%url 'changepassword'%}">Cambiar contraseña</a></li>
+                  <li><a href="{%url 'logout'%}">Cerrar sesión</a></li>
                 </ul>
             </li>
           {% else %}
-              <li><a href="#" onclick="redir('{%url 'login'%}');">Iniciar sesión</a></li>
+              <li><a href="{%url 'login'%}">Iniciar sesión</a></li>
           {% endif %}
           
           <!--li class="drop-down"><a href="">Drop Down</a>
@@ -157,23 +137,13 @@
 
 </body>
 <script>      
-  function load_complete() {
-    $('a[onclick="redir(\''+this.location.pathname+'\');"]').parents('li').addClass('active');
-
-    {% comment %} var elements = document.getElementById("formulario").elements;
-    for (var i = 0; i < elements.length; i++) {
-      elements[i].setCustomValidity('Este campo el obligatorio');
-    } {% endcomment %}
+  $('document').ready(function() {
+    $('.main-nav a[href="'+this.location.pathname+'"]').parents('li').addClass('active');
 
     $('textarea').each(function(){
         auto_grow($(this));
     });
-  }
-  window.addEventListener("load", load_complete, false);
-
-  function redir(url){
-    location.href = url;
-  }
+  });
 
   function limpiar(input_id){
     document.getElementById(input_id).value = '';
