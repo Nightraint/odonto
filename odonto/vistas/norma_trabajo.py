@@ -66,7 +66,7 @@ class Norma_TrabajoDetalle(LoginRequiredMixin,DetailView):
 class Norma_TrabajoCrear(LoginRequiredMixin, SuccessMessageMixin, CreateView): 
     model = Norma_Trabajo
     form_class = Norma_TrabajoForm
-    success_message = 'Paciente creado correctamente!'
+    success_message = 'Norma de trabajo creada correctamente!'
  
     def get_success_url(self):        
         return reverse('norma_trabajo_index')

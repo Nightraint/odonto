@@ -5,6 +5,14 @@
 
 {% block style %}
     <style>
+        label.nueva_consulta{
+            padding-bottom:10px;
+            font-size:15px;
+            font-weight:bold;
+            margin-left:13px;
+            color:#413e66;
+        }
+
         .div_preview{
             background-color:#f0eff5;
             padding:10px 5px;
@@ -46,9 +54,9 @@
         button.accordion {
             background-color:transparent;
             border-radius: .25rem;
-            color: #444;
+            color: #413e66;
             cursor: pointer;
-            padding: 18px;
+            padding: 10px 18px 5px 18px;
             width: 100%;
             border: 1px solid;
             text-align: left;
@@ -60,7 +68,12 @@
         }
 
         button.accordion:hover {
-            background-color: #eee;
+            background-color: #f5f8fd;
+            color:#1bb1dc;
+        }
+
+        button.accordion:hover:after{
+            color:#1bb1dc;
         }
 
         button.accordion.active{
@@ -85,7 +98,7 @@
         }
 
         div.panel {
-            background-color: ##eee;
+            background-color: #f5f8fd;
             max-height: 0;
             overflow: hidden;
             opacity: 0;
@@ -176,7 +189,7 @@
                 <label style="display:block;">Consultas:</label>
                 {{ consultas_formset.management_form }}
                 {% for form in consultas_formset %}
-                    <div class="consultas-formset" style="margin-bottom:0.4em;">
+                    <div class="consultas-formset" style="margin-bottom:0.5em;">
                      <div style="display:none;">
                         {{ form.id_consulta }}
                     </div>
@@ -185,7 +198,7 @@
                         <div class="panel">
                     {% else %}
                         <div class="div_nueva_consulta">
-                        <label style="padding-bottom: 10px;font-size:15px;font-weight:bold;">Nueva consulta:</label>
+                        <label class="nueva_consulta">Nueva consulta:</label>
                     {% endif%}
                         <div class="row">
                             <div class="col-md-4">

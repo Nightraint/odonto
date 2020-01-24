@@ -42,7 +42,7 @@
                     {% endif %}
                 {% else %}
                     {% if field.name == 'bonos' or field.name == 'coseguro' %}
-                        {% if field.name == 'bonos' %} <p> {% endif %}
+                        {% if field.name == 'coseguro' %} <p> {% endif %}
                         {% if form.initial and form.initial.obra_social %}
                             {% if form.initial.obra_social.usa_bonos and field.name == 'bonos' or form.initial.obra_social.usa_coseguro and field.name == 'coseguro'%}
                                 <div id={{field.name|add:"_container"}} style="display:inline-block;margin-bottom:1em;margin-right:10px;">
@@ -59,7 +59,7 @@
                                 <p class="help">{{ field.help_text|safe }}</p>
                             {% endif %}
                         </div>
-                        {% if field.name == 'coseguro' %} <p> {% endif %}
+                        {% if field.name == 'bonos' %} </p> {% endif %}
                     {% else %}
                         <p>
                             {{ field.errors }}
