@@ -4,6 +4,12 @@ body {
   font-family: "Open Sans", sans-serif;
 }
 
+textarea {
+  resize: none;
+  overflow: hidden;
+  height: 10px;
+}
+
 .add-row{
   margin-bottom:1em;
 }
@@ -527,7 +533,11 @@ td,th {
 
 .mobile-nav-toggle i {
   margin: 18px 18px 0 0;
-  color: #065e77;
+  color: #413e66;
+}
+
+.mobile-nav-toggle:hover i {
+  color: #1bb1dc;
 }
 
 .mobile-nav-overly {

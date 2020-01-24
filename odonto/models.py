@@ -66,10 +66,10 @@ class Plan(models.Model):
 class Norma_Trabajo(models.Model):
     obra_social = models.ForeignKey('Obra_Social',on_delete=models.CASCADE)
     codigo = models.CharField(max_length=100)
+    descripcion = models.TextField('Concepto',max_length=2000)
     dias = models.IntegerField(blank=True, null=True)
     meses = models.IntegerField(blank=True, null=True)
     años = models.IntegerField(blank=True, null=True)
-    descripcion = models.TextField('Concepto',max_length=2000)
     coseguro = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
     bonos = models.IntegerField(blank=True, null=True)
     creado = models.DateTimeField(auto_now_add=True)

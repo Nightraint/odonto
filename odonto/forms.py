@@ -87,6 +87,7 @@ class Obra_SocialForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         clinica_id = kwargs.pop('clinica_id')
         super(Obra_SocialForm, self).__init__(*args, **kwargs)
+        
         for field in self.fields.values():
             if hasattr(field.widget,'input_type'):
                 if field.widget.input_type != 'checkbox':
@@ -127,6 +128,7 @@ class Norma_TrabajoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         clinica_id = kwargs.pop('clinica_id')
         super(Norma_TrabajoForm, self).__init__(*args, **kwargs)
+
         self.fields['obra_social'].queryset = Obra_Social.objects.filter(clinica_id=clinica_id)
         self.fields['obra_social'].empty_label = 'Seleccionar obra social'
         self.fields['coseguro'].widget.attrs['style'] = 'width:150px;display:inline-block;'

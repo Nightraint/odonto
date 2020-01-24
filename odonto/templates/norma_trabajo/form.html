@@ -4,12 +4,18 @@
 {% endblock %}
 
 {% block style %}
+    <style>
+        textarea {
+            resize: none;
+            overflow: hidden;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
     <form method= "POST">
         {% csrf_token %}
-        <div class="col-md-6 offset-md-3">
+        <div class="col-md-8 offset-md-2">
             {% if form.non_field_errors %}
                 <ul class="list-group" style="margin-bottom:10px;">
                 {% for error in form.non_field_errors %}
@@ -23,7 +29,7 @@
                 {% if field.name == 'dias' or field.name == 'meses' or field.name == 'años' %}
                     {% if field.name == 'dias' %}
                         <div style="display:inline-block;margin-bottom: 1em;">
-                        <label>Se puede aplicar cada:</label>
+                        <p>Se puede aplicar cada:</p>
                     {% endif %}
                         {{ field.errors }}
                         {{ field }}
@@ -36,14 +42,24 @@
                     {% endif %}
                 {% else %}
                     {% if field.name == 'bonos' or field.name == 'coseguro' %}
-                        <div id={{field.name|add:"_container"}} style="display:inline-block;margin-bottom:1em;margin-right:10px;">
+                        {% if field.name == 'bonos' %} <p> {% endif %}
+                        {% if form.initial and form.initial.obra_social %}
+                            {% if form.initial.obra_social.usa_bonos and field.name == 'bonos' or form.initial.obra_social.usa_coseguro and field.name == 'coseguro'%}
+                                <div id={{field.name|add:"_container"}} style="display:inline-block;margin-bottom:1em;margin-right:10px;">
+                            {% else %}
+                                <div id={{field.name|add:"_container"}} style="display:none;margin-bottom:1em;margin-right:10px;">
+                            {% endif %}
+                        {%else%}
+                        <div id={{field.name|add:"_container"}} style="display:none;margin-bottom:1em;margin-right:10px;">
+                        {%endif%}
                             {{ field.errors }}
                             {{ field.label_tag }}
                             {{ field }}
                             {% if field.help_text %}
                                 <p class="help">{{ field.help_text|safe }}</p>
                             {% endif %}
-                        </div>    
+                        </div>
+                        {% if field.name == 'coseguro' %} <p> {% endif %}
                     {% else %}
                         <p>
                             {{ field.errors }}
@@ -69,6 +85,10 @@
         var obra_social_object;
         var bonos_container = document.getElementById('bonos_container');
         var coseguro_container = document.getElementById('coseguro_container');
+
+        $(document).ready(function(){
+            
+        });
 
         function load_complete_norma_trabajo() {
             var obra_social = parseInt(select_obra_social.value);
