@@ -9,6 +9,30 @@
   $(function () {
     $("#{{ widget.datetimepicker_id }}").datetimepicker({
       format: 'DD/MM/YYYY HH:mm',
-    });
+    })
+
+    $("#{{ widget.datetimepicker_id }}").on("change.datetimepicker", ({
+      date,
+      oldDate
+    }) => {
+      // Global Variable
+      var lastJQueryTS = 0 ;
+
+      // Where your onChange event fires, put this at the top
+      if (typeof(event) == 'object'){
+          if (event.timeStamp - lastJQueryTS < 300){
+              send = false;
+          }
+          lastJQueryTS = event.timeStamp;
+      }
+      if (send) {
+          // Proceed with your code
+      } 
+      if(date != null && oldDate != undefined){
+        console.log("New date", date);
+        console.log("Old date", oldDate);
+        $("#{{ widget.input_id }}").change();
+      }
+    })
   });
 </script>

@@ -190,7 +190,7 @@
                 {{ consultas_formset.management_form }}
                 {% for form in consultas_formset %}
                     <div class="consultas-formset" style="margin-bottom:0.5em;">
-                     <div style="display:none;">
+                     <div style="display:none;" id="id_consulta">
                         {{ form.id_consulta }}
                     </div>
                     {% if form.initial %}
@@ -217,7 +217,7 @@
                                     {% endfor %}
                                 {% endif %}
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-4" style="display:{% if form.initial %}block{%else%}none{%endif%};">
                                 {{ form.norma_trabajo }}
                                 {% if form.norma_trabajo.errors %}
                                     {% for error in form.norma_trabajo.errors %}
@@ -259,10 +259,13 @@
     <script>
         var select_obra_social;
         var select_plan;
+        var select_paciente;
 
         $('document').ready(function(){
+
             select_obra_social = $('#id_obra_social');
             select_plan = $('#id_plan');
+            select_paciente = $('#id_paciente');
 
             $('.imagenes-formset').formset({
                 addText: '',
@@ -302,79 +305,18 @@
                 }
             }
 
-            
+             
+
+
         });
 
+        $(".fecha-consulta").change(function() {              
+            console.log('asd' + this.value);
+        })
+        
         $(".cargar_imagen").change(function() {
             readURL(this);
         });
-
-        function createCallbackChequearNorma() {
-            console.log('callback creado para chequear norma');
-            return function() {
-                if (this.readyState == 4 && this.status == 200) {
-                    var today = new Date();  
-                    console.log(today + ": " + this.readyState + " - " + this.responseText);
-                    var r = JSON.parse(this.responseText);
-                    console.log(r);
-
-                    var div_borrar = document.getElementById('mensaje_chequear_norma');
-                    if (div_borrar)
-                        div_borrar.parentNode.removeChild(div_borrar);
-                    
-                    div_mensaje = document.createElement('div');
-                    div_mensaje.id = 'mensaje_chequear_norma';
-                    div_mensaje.classList.add('alert');
-                    div_mensaje.style = 'margin-top:5px;'
-                    div_mensaje.innerHTML = '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>';
-                    div_mensaje.innerHTML += '<strong id="resultado_chequear_norma"></strong>';
-                    div_mensaje.innerHTML += '<label id="label_mensaje_chequear_norma"></label>';
-                    var clase = '';
-                    if (r.result == 'OK')
-                        clase = 'alert-success';
-                    else
-                        clase = 'alert-danger';
-                    div_mensaje.classList.add(clase);
-
-                    select_norma_trabajo.parentElement.appendChild(div_mensaje);
-
-                    var label_mensaje_chequear_norma = document.getElementById('label_mensaje_chequear_norma');
-                    var resultado_chequear_norma = document.getElementById('resultado_chequear_norma');
-                    label_mensaje_chequear_norma.innerHTML = r.message;
-                    if(r.result != 'OK')
-                    {
-                        resultado_chequear_norma.innerHTML = r.result;
-                        label_mensaje_chequear_norma.innerHTML += ' <a href="'+r.enlace+'" target="blank">VER FICHA</a>'
-                    }
-                }
-            };
-        }
-
-        function chequear_norma(){
-            var paciente = parseInt(select_paciente.value);
-            var norma_trabajo = parseInt(select_norma_trabajo.value);
-            console.log('chequear norma: paciente: ' + paciente + ". norma: " + norma_trabajo);
-            if (isNaN(paciente) == false && isNaN(norma_trabajo) == false && fecha.value){
-                xhttp_chequear_norma.open("GET", "/paciente/chequear_norma?paciente=" + paciente + "&norma_trabajo=" + norma_trabajo + "&fecha=" + fecha.value, true);
-                xhttp_chequear_norma.send();
-            }
-        }
-
-        function cargar_planes(){
-            let obra_social = parseInt($(select_obra_social).val());
-            console.log('cargar planes de la obra social ' + obra_social);
-            $(select_plan).empty();
-            $(select_plan).append(new Option('Seleccionar plan', ''))
-            if (isNaN(obra_social) == false){
-                $.getJSON("/plan/get_for_select?obra_social=" + obra_social, function( json ) {
-                    let arr = JSON.parse(JSON.stringify(json));
-                    for (i in arr) {
-                        $(select_plan).append(new Option(arr[i].descrip, arr[i].id))
-                    }
-                    $(select_plan).show();
-                });
-            }
-        }
 
         function readURL(input) {
             if (input.files && input.files[0]) {
@@ -466,6 +408,76 @@
             let url = $(contenedor).find('.url').val();
             console.log(url);
             window.open($(imagen).attr("src"),'_blank');
+        }
+
+        function cargar_planes(){
+            let obra_social = parseInt($(select_obra_social).val());
+            console.log('cargar planes de la obra social ' + obra_social);
+            $(select_plan).empty();
+            $(select_plan).append(new Option('Seleccionar plan', ''))
+            if (isNaN(obra_social) == false){
+                $.getJSON("/plan/get_for_select?obra_social=" + obra_social, function( json ) {
+                    let arr = JSON.parse(JSON.stringify(json));
+                    for (i in arr) {
+                        $(select_plan).append(new Option(arr[i].descrip, arr[i].id))
+                    }
+                    $(select_plan).show();
+                });
+            }
+        }
+
+        function chequear_norma(input){
+            let fecha = $(input).val();
+            let paciente = $(select_paciente).val();
+            console.log(fecha);
+            console.log(paciente);
+        }
+
+        function seleccionarNormaTrabajo(select){
+            var paciente = parseInt(select_paciente.value);
+            var norma_trabajo = parseInt(select.value);
+            console.log('chequear norma: paciente: ' + paciente + ". norma: " + norma_trabajo);
+            if (isNaN(paciente) == false && isNaN(norma_trabajo) == false && fecha.value){
+                $.getJSON("/paciente/chequear_norma?paciente=" + paciente + "&norma_trabajo=" + norma_trabajo + "&fecha=" + fecha.value, function( json ) {
+                    console.log(json);
+                });
+            }
+        }
+
+        function seleccionarNormaTrabajo2(select){
+            var today = new Date();  
+            console.log(today);
+            var r = JSON.parse(this.responseText);
+            console.log(r);
+
+            var div_borrar = document.getElementById('mensaje_chequear_norma');
+            if (div_borrar)
+                div_borrar.parentNode.removeChild(div_borrar);
+            
+            div_mensaje = document.createElement('div');
+            div_mensaje.id = 'mensaje_chequear_norma';
+            div_mensaje.classList.add('alert');
+            div_mensaje.style = 'margin-top:5px;'
+            div_mensaje.innerHTML = '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>';
+            div_mensaje.innerHTML += '<strong id="resultado_chequear_norma"></strong>';
+            div_mensaje.innerHTML += '<label id="label_mensaje_chequear_norma"></label>';
+            var clase = '';
+            if (r.result == 'OK')
+                clase = 'alert-success';
+            else
+                clase = 'alert-danger';
+            div_mensaje.classList.add(clase);
+
+            select_norma_trabajo.parentElement.appendChild(div_mensaje);
+
+            var label_mensaje_chequear_norma = document.getElementById('label_mensaje_chequear_norma');
+            var resultado_chequear_norma = document.getElementById('resultado_chequear_norma');
+            label_mensaje_chequear_norma.innerHTML = r.message;
+            if(r.result != 'OK')
+            {
+                resultado_chequear_norma.innerHTML = r.result;
+                label_mensaje_chequear_norma.innerHTML += ' <a href="'+r.enlace+'" target="blank">VER FICHA</a>'
+            }
         }
     </script>
 {% endblock %}

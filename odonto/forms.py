@@ -448,7 +448,8 @@ class ConsultaForm(forms.Form):
         input_formats=['%d/%m/%Y %H:%M'], 
         widget=BootstrapDateTimePickerInput(attrs={
                     'placeholder': 'Fecha',
-                })
+                },
+                optional_class = 'fecha-consulta',)
     )
     
     norma_trabajo = forms.ModelChoiceField(
