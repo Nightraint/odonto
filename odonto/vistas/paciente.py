@@ -14,7 +14,8 @@ from odonto.models import (Paciente,
     Telefono,
     Email,
     Plan,
-    PacienteObraSocial)
+    PacienteObraSocial,
+    Consulta)
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView 
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -143,17 +144,17 @@ def chequear_norma(request):
     meses = norma_trabajo.meses
     años = norma_trabajo.años
 
-    ficha = Ficha.objects.filter(paciente_id = id_paciente).filter(norma_trabajo_id = id_norma_trabajo).order_by('fecha').first()
+    consulta = Consulta.objects.filter(ficha__paciente_id = id_paciente).filter(norma_trabajo_id = id_norma_trabajo).order_by('fecha').first()
 
     response_data = {}
     
-    if ficha:
-        fecha_ultima = ficha.fecha.replace(tzinfo=None)
+    if consulta:
+        fecha_ultima = consulta.fecha.replace(tzinfo=None)
         diferencia = (fecha_ficha-fecha_ultima).days
         if (diferencia < norma_trabajo.dias):
             response_data['result'] = 'Advertencia'
             response_data['message'] = 'La norma de trabajo se puede aplicar cada <b>%s días</b> y ya se ha aplicado hace <b>%s días</b> para este paciente.' % (norma_trabajo.dias,diferencia)
-            response_data['enlace'] = '/ficha/detalle/%s' % ficha.id
+            response_data['enlace'] = '/consulta/detalle/%s' % consulta.id
         else:
             response_data['result'] = 'OK'
             response_data['message'] = 'Se puede aplicar la norma de trabajo.'

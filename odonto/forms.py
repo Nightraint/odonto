@@ -480,7 +480,9 @@ class ConsultaForm(forms.Form):
         clinica_id = kwargs.pop('clinica_id')
         super(ConsultaForm, self).__init__(*args, **kwargs)
         for visible in self.visible_fields():
-            visible.field.widget.attrs['class'] = 'form-control'
+            visible.field.widget.attrs['class'] = 'form-control '
+            if visible.name == 'norma_trabajo':
+                visible.field.widget.attrs['class'] += 'select-norma-trabajo'
 
         # if self.initial:
         #     try:
