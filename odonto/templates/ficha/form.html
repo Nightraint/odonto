@@ -48,7 +48,7 @@
             filter: alpha(opacity=50); /* For IE8 and earlier */
         }
         .add-photo:hover {
-            opacity: 1;
+            opacity: 0.3;
             filter: alpha(opacity=100); /* For IE8 and earlier */
         }
         button.accordion {
@@ -168,7 +168,7 @@
                         </div>
                         {% if not imagen_form.initial %}
                         <label for="{{imagen_form.imagen.auto_id}}" class="label-seleccionar" style="display:block !important;cursor:pointer;text-align:center;">
-                            <img class="add-photo" src="{% static '/images/add_photo.png' %}" style="margin-right:10px;width:100px;" title="Agregar imagen"/>
+                            <img class="add-photo" src="{% static '/images/add_photo.png' %}" style="width:100px;" title="Agregar imagen"/>
                         </label>
                         {% endif %}
                         {% if imagen_form.imagen.errors %}
@@ -209,7 +209,7 @@
                                     {% endfor %}
                                 {% endif %}
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 {{ form.nro_diente }}
                                 {% if form.nro_diente.errors %}
                                     {% for error in form.nro_diente.errors %}
@@ -217,7 +217,7 @@
                                     {% endfor %}
                                 {% endif %}
                             </div>
-                            <div class="col-md-4" style="display:{% if form.initial %}block{%else%}none{%endif%};">
+                            <div class="col-md-5" style="display:{% if form.initial %}block{%else%}none{%endif%};">
                                 {{ form.norma_trabajo }}
                                 {% if form.norma_trabajo.errors %}
                                     {% for error in form.norma_trabajo.errors %}
@@ -315,29 +315,20 @@
             console.log('Fecha seleccionada: ' + this.value);           
             let send = true;
             if (typeof(event) == 'object'){
-                if (event.timeStamp - lastJQueryTS < 300){
+                if (event.timeStamp - lastJQueryTS < 300)
                     send = false;
-                }
                 lastJQueryTS = event.timeStamp;
             }
-            if (send) {
-                console.log('Procede');
+            if (send)
                 chequear_norma(this);
-
-            } 
         });
 
         function chequear_norma(input){
             let fecha = $(input).val();
             let paciente = $(select_paciente).val();
             let contenedor = $(input).closest('.div_nueva_consulta');
-            console.log(contenedor);
             let select_norma_trabajo = $(contenedor).find('.select-norma-trabajo');
-            console.log(select_norma_trabajo);
             let norma_trabajo = $(select_norma_trabajo).val();
-            console.log(fecha);
-            console.log(paciente);
-            console.log(norma_trabajo);
             cargar_normas_trabajo(select_norma_trabajo);
         }
 
@@ -352,9 +343,14 @@
                     for (i in arr) {
                         $(select).append(new Option(arr[i].descrip, arr[i].id))
                     }
-                    $(select).parent().show();
+                    if(arr.length > 0)
+                        $(select).parent().show();
+                    else
+                        $(select).parent().hide();
                 });
             }
+            else
+                $(select).parent().hide();
         }
         
         $(".cargar_imagen").change(function() {
@@ -464,7 +460,10 @@
                     for (i in arr) {
                         $(select_plan).append(new Option(arr[i].descrip, arr[i].id))
                     }
-                    $(select_plan).show();
+                    if (arr.length > 0)
+                        $(select_plan).parent().show();
+                    else
+                        $(select_plan).parent().hide();
                 });
             }
         }
@@ -477,22 +476,18 @@
             console.log('chequear norma: paciente: ' + paciente + ". norma: " + norma_trabajo);
             if (isNaN(paciente) == false && isNaN(norma_trabajo) == false && fecha){
                 $.getJSON("/paciente/chequear_norma?paciente=" + paciente + "&norma_trabajo=" + norma_trabajo + "&fecha=" + fecha, function( json ) {
-                    console.log(json);
-
                     let container_mensaje = $(contenedor).find('.mensaje');
                     container_mensaje.html('');
-                    console.log(contenedor);
-                    console.log(container_mensaje);
                     
                     div_mensaje = document.createElement('div');
                     div_mensaje.id = 'mensaje_chequear_norma';
                     div_mensaje.classList.add('alert');
-                    div_mensaje.style = 'margin-top:5px;'
+                    div_mensaje.style = 'margin-top:5px;margin-bottom:0px !important;'
                     div_mensaje.innerHTML = '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>';
                     div_mensaje.innerHTML += '<strong id="resultado_chequear_norma"></strong>';
                     div_mensaje.innerHTML += '<label id="label_mensaje_chequear_norma"></label>';
-                    var clase = '';
-                    if (json.result == 'OK')
+                    let clase = '';
+                    if (json.result == 'Se puede aplicar')
                         clase = 'alert-success';
                     else
                         clase = 'alert-danger';
@@ -500,14 +495,11 @@
 
                     container_mensaje.append(div_mensaje);
 
-                    var label_mensaje_chequear_norma = document.getElementById('label_mensaje_chequear_norma');
-                    var resultado_chequear_norma = document.getElementById('resultado_chequear_norma');
-                    label_mensaje_chequear_norma.innerHTML = json.message;
-                    if(json.result != 'OK')
-                    {
-                        resultado_chequear_norma.innerHTML = json.result;
-                        label_mensaje_chequear_norma.innerHTML += ' <a href="'+json.enlace+'" target="blank">VER FICHA</a>'
-                    }
+                    let label_mensaje_chequear_norma = $('#label_mensaje_chequear_norma');
+                    let resultado_chequear_norma = $('#resultado_chequear_norma');
+                    label_mensaje_chequear_norma.append(json.message);
+                    if (json.result)
+                        resultado_chequear_norma.append(json.result);
                 });
             }
         }

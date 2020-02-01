@@ -152,16 +152,14 @@ def chequear_norma(request):
         fecha_ultima = consulta.fecha.replace(tzinfo=None)
         diferencia = (fecha_ficha-fecha_ultima).days
         if (diferencia < norma_trabajo.dias):
-            response_data['result'] = 'Advertencia'
-            response_data['message'] = 'La norma de trabajo se puede aplicar cada <b>%s días</b> y ya se ha aplicado hace <b>%s días</b> para este paciente.' % (norma_trabajo.dias,diferencia)
+            response_data['result'] = 'No se puede aplicar'
+            response_data['message'] = 'Se puede aplicar cada <b>%s días</b> y ya se ha aplicado hace <b>%s días</b> para este paciente.' % (norma_trabajo.dias,diferencia)
             response_data['enlace'] = '/consulta/detalle/%s' % consulta.id
         else:
-            response_data['result'] = 'OK'
-            response_data['message'] = 'Se puede aplicar la norma de trabajo.'
+            response_data['result'] = 'Se puede aplicar'
     else:
-        response_data['result'] = 'OK'
-        response_data['message'] = 'Se puede aplicar la norma de trabajo.'
-
+        response_data['result'] = 'Se puede aplicar'
+    response_data['norma_trabajo'] = '%s - %s' % (norma_trabajo.obra_social, norma_trabajo)
     return JsonResponse(response_data, safe=False)
 
 def days_between(d1, d2):

@@ -223,7 +223,7 @@ def editar(request,pk):
         consultas = Consulta.objects.filter(ficha = instance).order_by('id')
         consultas_data = [{'fecha': c.fecha,
                            'detalle': c.detalle,
-                           'norma_trabajo' : c.norma_trabajo,
+                           'norma_trabajo' : c.norma_trabajo_id,
                            'id_consulta': c.id,
                            'nro_diente': c.nro_diente}
                             for c in consultas]
@@ -248,9 +248,9 @@ def editar(request,pk):
                 detalle = form.cleaned_data.get('detalle')
                 id_consulta = form.cleaned_data.get('id_consulta')
                 nro_diente = form.cleaned_data.get('nro_diente')
-                if detalle and not id_consulta:
+                if (detalle or norma_trabajo) and not id_consulta:
                     nuevas_consultas.append(Consulta(ficha=instance,
-                        norma_trabajo = norma_trabajo,
+                        norma_trabajo_id = norma_trabajo,
                         detalle = detalle,
                         fecha = fecha,
                         nro_diente = nro_diente))

@@ -15,7 +15,7 @@
       date,
       oldDate
     }) => {   
-      if(date != null && oldDate != undefined){
+      if(date != null /*&& oldDate != undefined*/){
         console.log(date);
         console.log("Old date", oldDate);
         $("#{{ widget.input_id }}").change();

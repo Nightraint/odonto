@@ -398,9 +398,7 @@ class PacienteObraSocialForm(forms.Form):
             visible.field.widget.attrs['class'] = 'form-control'
         self.fields['plan'].widget.attrs['class'] = 'form-control select_plan'
         self.fields['obra_social'].widget.attrs['class'] = 'form-control select_obra_social'
-        #self.fields['obra_social'].choices = [(o.id, str(o).upper()) for o in Obra_Social.objects.filter(clinica_id=clinica_id)]
         self.fields['obra_social'].queryset = Obra_Social.objects.filter(clinica_id = clinica_id)
-        #self.fields['plan'].choices = [('','Seleccionar plan')] 
 
         if self.initial:
             os = self.initial['obra_social']
@@ -443,7 +441,6 @@ class BaseImagenFichaFormSet(BaseFormSet):
 ##################### CONSULTA #########################
 
 class ConsultaForm(forms.Form):
-
     fecha = forms.DateTimeField(
         input_formats=['%d/%m/%Y %H:%M'], 
         widget=BootstrapDateTimePickerInput(attrs={
@@ -452,7 +449,7 @@ class ConsultaForm(forms.Form):
                 optional_class = 'fecha-consulta',)
     )
     
-    norma_trabajo = forms.ModelChoiceField(
+    norma_trabajo = MyModelChoiceField(
         required = False,
         empty_label= 'Seleccionar norma trabajo',
         queryset=Norma_Trabajo.objects.none(),
@@ -484,14 +481,16 @@ class ConsultaForm(forms.Form):
             if visible.name == 'norma_trabajo':
                 visible.field.widget.attrs['class'] += 'select-norma-trabajo'
 
-        # if self.initial:
-        #     try:
-        #         os = self.initial['obra_social']
-        #         if os:
-        #             self.fields['norma_trabajo'].queryset = Norma_Trabajo.objects.filter(obra_social__id=os
-        #                 ).order_by('codigo')
-        #     except (ValueError, TypeError):
-        #         pass
+        if self.initial:
+            nt = self.initial['norma_trabajo']
+            norma_trabajo = Norma_Trabajo.objects.get(pk=nt)
+            if norma_trabajo:
+                self.fields['norma_trabajo'].queryset = Norma_Trabajo.objects.filter(obra_social = norma_trabajo.obra_social)
+            else:
+                pass#self.fields['plan'].widget.attrs['style'] += 'display:none;'
+        else:
+            pass#self.fields['plan'].widget.attrs['style'] += 'display:none;'
+
 
 class BaseConsultaFormSet(BaseFormSet):
     def clean(self):
