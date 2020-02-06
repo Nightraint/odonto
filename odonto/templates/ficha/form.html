@@ -98,7 +98,7 @@
         }
 
         div.panel {
-            background-color: #f5f8fd;
+            /*background-color: #f5f8fd;*/
             max-height: 0;
             overflow: hidden;
             opacity: 0;
@@ -217,7 +217,7 @@
                                     {% endfor %}
                                 {% endif %}
                             </div>
-                            <div class="col-md-5" style="display:{% if form.initial %}block{%else%}none{%endif%};">
+                            <div class="col-md-5" >
                                 {{ form.norma_trabajo }}
                                 {% if form.norma_trabajo.errors %}
                                     {% for error in form.norma_trabajo.errors %}
@@ -319,8 +319,16 @@
                     send = false;
                 lastJQueryTS = event.timeStamp;
             }
-            if (send)
-                chequear_norma(this);
+            if (send){
+                let contenedor = $(this).closest('.div_nueva_consulta');
+                let select_norma_trabajo = $(contenedor).find('.select-norma-trabajo');
+                let norma_trabajo = parseInt($(select_norma_trabajo).val());
+                if (isNaN(norma_trabajo) == false)
+                    chequear(select_norma_trabajo);
+                console.log('Norma trabajo: ' + norma_trabajo);
+                if(select_norma_trabajo.children('option').length == 1)
+                    cargar_normas_trabajo(select_norma_trabajo);
+            }
         });
 
         function chequear_norma(input){
@@ -329,7 +337,9 @@
             let contenedor = $(input).closest('.div_nueva_consulta');
             let select_norma_trabajo = $(contenedor).find('.select-norma-trabajo');
             let norma_trabajo = $(select_norma_trabajo).val();
-            cargar_normas_trabajo(select_norma_trabajo);
+            if (fecha && paciente && norma_trabajo)
+                chequear(select_norma_trabajo);
+            //cargar_normas_trabajo(select_norma_trabajo);
         }
 
         function cargar_normas_trabajo(select){
@@ -344,13 +354,13 @@
                         $(select).append(new Option(arr[i].descrip, arr[i].id))
                     }
                     if(arr.length > 0)
-                        $(select).parent().show();
+                        $(select).show();
                     else
-                        $(select).parent().hide();
+                        $(select).hide();
                 });
             }
             else
-                $(select).parent().hide();
+                $(select).hide();
         }
         
         $(".cargar_imagen").change(function() {
@@ -468,17 +478,16 @@
             }
         }
 
-        function seleccionarNormaTrabajo(select){
-            var paciente = parseInt(select_paciente.val());
-            var norma_trabajo = parseInt(select.value);
+        function chequear(select){
+            let paciente = parseInt(select_paciente.val());
+            let norma_trabajo = parseInt($(select).val());
             let contenedor = $(select).closest('.div_nueva_consulta');
             let fecha = $(contenedor).find('.fecha-consulta').val();
             console.log('chequear norma: paciente: ' + paciente + ". norma: " + norma_trabajo);
+            let container_mensaje = $(contenedor).find('.mensaje');
+            container_mensaje.html('');
             if (isNaN(paciente) == false && isNaN(norma_trabajo) == false && fecha){
                 $.getJSON("/paciente/chequear_norma?paciente=" + paciente + "&norma_trabajo=" + norma_trabajo + "&fecha=" + fecha, function( json ) {
-                    let container_mensaje = $(contenedor).find('.mensaje');
-                    container_mensaje.html('');
-                    
                     div_mensaje = document.createElement('div');
                     div_mensaje.id = 'mensaje_chequear_norma';
                     div_mensaje.classList.add('alert');
@@ -501,42 +510,6 @@
                     if (json.result)
                         resultado_chequear_norma.append(json.result);
                 });
-            }
-        }
-
-        function seleccionarNormaTrabajo2(select){
-            var today = new Date();  
-            console.log(today);
-            var r = JSON.parse(this.responseText);
-            console.log(r);
-
-            var div_borrar = document.getElementById('mensaje_chequear_norma');
-            if (div_borrar)
-                div_borrar.parentNode.removeChild(div_borrar);
-            
-            div_mensaje = document.createElement('div');
-            div_mensaje.id = 'mensaje_chequear_norma';
-            div_mensaje.classList.add('alert');
-            div_mensaje.style = 'margin-top:5px;'
-            div_mensaje.innerHTML = '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>';
-            div_mensaje.innerHTML += '<strong id="resultado_chequear_norma"></strong>';
-            div_mensaje.innerHTML += '<label id="label_mensaje_chequear_norma"></label>';
-            var clase = '';
-            if (r.result == 'OK')
-                clase = 'alert-success';
-            else
-                clase = 'alert-danger';
-            div_mensaje.classList.add(clase);
-
-            select_norma_trabajo.parentElement.appendChild(div_mensaje);
-
-            var label_mensaje_chequear_norma = document.getElementById('label_mensaje_chequear_norma');
-            var resultado_chequear_norma = document.getElementById('resultado_chequear_norma');
-            label_mensaje_chequear_norma.innerHTML = r.message;
-            if(r.result != 'OK')
-            {
-                resultado_chequear_norma.innerHTML = r.result;
-                label_mensaje_chequear_norma.innerHTML += ' <a href="'+r.enlace+'" target="blank">VER FICHA</a>'
             }
         }
     </script>

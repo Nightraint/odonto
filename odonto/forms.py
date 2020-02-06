@@ -454,8 +454,7 @@ class ConsultaForm(forms.Form):
         empty_label= 'Seleccionar norma trabajo',
         queryset=Norma_Trabajo.objects.none(),
         widget=forms.Select(attrs={
-            'style' : '',
-            'onChange' : 'seleccionarNormaTrabajo(this);',
+            'onChange' : 'chequear(this);',
         }))
 
     nro_diente = forms.IntegerField(
@@ -483,13 +482,14 @@ class ConsultaForm(forms.Form):
 
         if self.initial:
             nt = self.initial['norma_trabajo']
-            norma_trabajo = Norma_Trabajo.objects.get(pk=nt)
-            if norma_trabajo:
-                self.fields['norma_trabajo'].queryset = Norma_Trabajo.objects.filter(obra_social = norma_trabajo.obra_social)
+            if nt:
+                norma_trabajo = Norma_Trabajo.objects.get(pk=nt)
+                if norma_trabajo:
+                    self.fields['norma_trabajo'].queryset = Norma_Trabajo.objects.filter(obra_social = norma_trabajo.obra_social)
             else:
-                pass#self.fields['plan'].widget.attrs['style'] += 'display:none;'
+                self.fields['norma_trabajo'].widget.attrs['style'] = 'display:none;'
         else:
-            pass#self.fields['plan'].widget.attrs['style'] += 'display:none;'
+            self.fields['norma_trabajo'].widget.attrs['style'] = 'display:none;'
 
 
 class BaseConsultaFormSet(BaseFormSet):
