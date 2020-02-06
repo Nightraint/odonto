@@ -115,8 +115,8 @@ class Paciente(models.Model):
 
 class PacienteObraSocial(models.Model):
     paciente = models.ForeignKey("Paciente", on_delete = models.CASCADE)
-    obra_social = models.ForeignKey('Obra_Social',on_delete=models.PROTECT)
-    plan = models.ForeignKey('Plan',null=True,blank=True,on_delete=models.PROTECT)
+    obra_social = models.ForeignKey('Obra_Social',on_delete=models.CASCADE)
+    plan = models.ForeignKey('Plan',null=True,blank=True,on_delete=models.CASCADE)
     nro_afiliado = models.CharField('Nro. Afiliado', max_length=20)
 
 class Telefono(models.Model):

@@ -33,6 +33,7 @@ from django.shortcuts import redirect, render
 from django.db import IntegrityError, transaction
 from django.shortcuts import get_object_or_404
 from functools import partial, wraps
+from dateutil.relativedelta import relativedelta
 
 class PacienteListFilter(django_filters.FilterSet):
     filtro = django_filters.CharFilter(method='custom_filter')
@@ -150,10 +151,44 @@ def chequear_norma(request):
     
     if consulta:
         fecha_ultima = consulta.fecha.replace(tzinfo=None)
-        diferencia = (fecha_ficha-fecha_ultima).days
-        if (diferencia < norma_trabajo.dias):
-            response_data['result'] = 'No se puede aplicar'
-            response_data['message'] = 'Se puede aplicar cada <b>%s días</b> y ya se ha aplicado hace <b>%s días</b> para este paciente.' % (norma_trabajo.dias,diferencia)
+
+        if dias:
+            cantidad = dias
+            descripcion = 'días'
+            diferencia = (fecha_ficha-fecha_ultima).days
+            if (diferencia < dias):
+                result = 'No se puede aplicar'
+                if diferencia == 0:
+                    aplicada_hace = 'menos de un dia'
+                else:
+                    aplicada_hace = '%s dias' % diferencia
+        
+        if meses:
+            cantidad = meses
+            descripcion = 'meses'
+            
+            diferencia = diff_month(fecha_ficha,fecha_ultima)
+            if (diferencia < meses):
+                result = 'No se puede aplicar'
+                if diferencia == 0:
+                    aplicada_hace = 'menos de un mes'
+                else:
+                    aplicada_hace = '%s meses' % diferencia
+        
+        if años:
+            cantidad = años
+            descripcion = 'años'
+            diferencia = relativedelta(fecha_ficha, fecha_ultima).years
+            if (diferencia < años):
+                result = 'No se puede aplicar'
+                if diferencia == 0:
+                    aplicada_hace = 'menos de un año'
+                else:
+                    aplicada_hace = '% años' % diferencia
+
+        if result:
+            response_data['result'] = result
+            response_data['message'] = 'Se puede aplicar cada <b>%s %s</b> y ya se ha aplicado hace <b>%s</b> para este paciente.' % (cantidad,descripcion,aplicada_hace)
             response_data['enlace'] = '/consulta/detalle/%s' % consulta.id
         else:
             response_data['result'] = 'Se puede aplicar'
@@ -166,6 +201,9 @@ def days_between(d1, d2):
     d1 = datetime.strptime(d1, "%Y-%m-%d")
     d2 = datetime.strptime(d2, "%Y-%m-%d")
     return abs((d2 - d1).days)
+
+def diff_month(d1, d2):
+    return (d1.year - d2.year) * 12 + d1.month - d2.month
 
 @login_required
 def editar(request, pk):

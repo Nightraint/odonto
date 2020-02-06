@@ -169,12 +169,13 @@ def crear(request):
                 obra_social = form.cleaned_data.get('obra_social')
                 norma_trabajo = form.cleaned_data.get('norma_trabajo')
                 detalle = form.cleaned_data.get('detalle')
-                if detalle:
+                nro_diente = form.cleaned_data.get('nro_diente')
+                if detalle or norma_trabajo:
                     nuevas_consultas.append(Consulta(ficha=instance,
-                        obra_social= obra_social,
-                        norma_trabajo = norma_trabajo,
+                        norma_trabajo_id = norma_trabajo,
                         detalle = detalle,
-                        fecha = fecha))
+                        fecha = fecha,
+                        nro_diente= nro_diente,))
 
             nuevas_imagenes = []
             for imagen_form in imagenes_formset:
