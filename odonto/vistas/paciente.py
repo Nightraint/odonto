@@ -152,6 +152,9 @@ def chequear_norma(request):
     if consulta:
         fecha_ultima = consulta.fecha.replace(tzinfo=None)
 
+        result = 'Se puede aplicar'
+        aplicada_hace = ''
+
         if dias:
             cantidad = dias
             descripcion = 'días'
@@ -186,14 +189,12 @@ def chequear_norma(request):
                 else:
                     aplicada_hace = '% años' % diferencia
 
-        if result:
-            response_data['result'] = result
+        response_data['result'] = result
+
+        if aplicada_hace:
             response_data['message'] = 'Se puede aplicar cada <b>%s %s</b> y ya se ha aplicado hace <b>%s</b> para este paciente.' % (cantidad,descripcion,aplicada_hace)
             response_data['enlace'] = '/consulta/detalle/%s' % consulta.id
-        else:
-            response_data['result'] = 'Se puede aplicar'
-    else:
-        response_data['result'] = 'Se puede aplicar'
+            
     response_data['norma_trabajo'] = '%s - %s' % (norma_trabajo.obra_social, norma_trabajo)
     return JsonResponse(response_data, safe=False)
 
