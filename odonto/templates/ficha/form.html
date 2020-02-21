@@ -446,14 +446,13 @@
         }
 
         function ver_archivo(label){
-            let contenedor = $(label).parent().parent().parent();
+            let contenedor = $(label).parent().parent();
             let url = $(contenedor).find('.url').val();
-            console.log(url);
             window.open(url,'_blank');
         }
 
         function ver_imagen(imagen){
-            let contenedor = $(imagen).parent().parent().parent();
+            let contenedor = $(imagen).parent().parent();
             let url = $(contenedor).find('.url').val();
             console.log(url);
             window.open($(imagen).attr("src"),'_blank');

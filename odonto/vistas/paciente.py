@@ -194,7 +194,7 @@ def chequear_norma(request):
         if aplicada_hace:
             response_data['message'] = 'Se puede aplicar cada <b>%s %s</b> y ya se ha aplicado hace <b>%s</b> para este paciente.' % (cantidad,descripcion,aplicada_hace)
             response_data['enlace'] = '/consulta/detalle/%s' % consulta.id
-            
+
     response_data['norma_trabajo'] = '%s - %s' % (norma_trabajo.obra_social, norma_trabajo)
     return JsonResponse(response_data, safe=False)
 
@@ -308,8 +308,6 @@ def crear(request):
         telefonos_formset = TelefonoFormSet(request.POST,prefix='telefonos')
         emails_formset = EmailFormSet(request.POST,prefix='emails')
         obras_sociales_formset = PacienteObraSocialFormSet(request.POST,prefix='obras_sociales')
-
-        # TODO: Agregar la opcion seleccionada en las opciones del select
 
         paciente_form = PacienteForm(request.POST,clinica_id = request.user.clinica.id)
         instance = paciente_form.instance
