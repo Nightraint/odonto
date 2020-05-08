@@ -1,39 +1,26 @@
-{% extends "base.html" %}
-{% block head %}
-	<title>Detalle de norma de trabajo</title>
-{% endblock %}
+{% extends "detail.html" %}
 
-{% block style %}
-{% endblock %}
-
-{% block content %}
-        <div class="col-md-6 offset-md-3">
-            <p><b>Código:</b> {{object.codigo}}</p>
-            <p><b>Descripcion:</b> {{object.descripcion}}</p>
-            <p><b>Obra social:</b> {{object.obra_social}}</p>
-            {% if object.dias or object.meses or object.años %}
-                <p><b>Se reconoce una cada: </b>
-                {% if object.dias %}
-                    {{object.dias}} días
-                {% endif %}
-                {% if object.meses %}
-                    {{object.meses}} meses
-                {% endif %}
-                {% if object.años %}
-                    {{object.años}} años
-                {% endif %}
-                </p>
-            {% endif %}
-            {% if object.bonos %}
-                <p><b>Bonos:</b> {{object.bonos}}</p>
-            {% endif %}
-            {% if object.coseguro %}
-                <p><b>Coseguro:</b> {{object.coseguro}}</p>
-            {% endif %}
-            <p style="text-align:center;">
-                <a href="/norma_trabajo" name="obra_social-submit" class="btn-lila">Volver</a>
-            </p>
-{% endblock %}
-
-{% block script %}
+{% block detail %}
+    <p><b>Código:</b> {{object.codigo}}</p>
+    <p><b>Descripcion:</b> {{object.descripcion}}</p>
+    <p><b>Obra social:</b> {{object.obra_social}}</p>
+    {% if object.dias or object.meses or object.años %}
+        <p><b>Se reconoce una cada: </b>
+        {% if object.dias %}
+            {{object.dias}} días
+        {% endif %}
+        {% if object.meses %}
+            {{object.meses}} meses
+        {% endif %}
+        {% if object.años %}
+            {{object.años}} años
+        {% endif %}
+        </p>
+    {% endif %}
+    {% if object.bonos %}
+        <p><b>Bonos:</b> {{object.bonos}}</p>
+    {% endif %}
+    {% if object.coseguro %}
+        <p><b>Coseguro:</b> {{object.coseguro}}</p>
+    {% endif %}
 {% endblock %}

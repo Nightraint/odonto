@@ -1,47 +1,31 @@
-{% extends "base.html" %}
-{% block head %}
-	<title>Detalle de obra social</title>
-{% endblock %}
+{% extends "detail.html" %}
 
-{% block style %}
-{% endblock %}
-
-{% block content %}
-        <div class="col-md-6 offset-md-3">
-            <p><b>Código:</b> {{object.codigo}}</p>
-            <p><b>Nombre:</b> {{object.nombre}}</p>
-            <p><b>Observaciones:</b> {{object.observaciones}}</p>
-            <p><b>Planes:</b></p>
-                <ul>
-                    {% for p in object.plan_set.all %}
-                        <li>{{p}}</li>
-                    {% empty %}
-                        <p>No tiene planes asociados.</p>
-                    {% endfor %}
-                </ul>
-            <p><b>Normas de trabajo ({{object.norma_trabajo_set.count}}):</b></p>
-                <ul>
-                    {% for p in object.norma_trabajo_set.all %}
-                        <li>{{p}}</li>
-                    {% empty %}
-                        <p>No tiene normas de trabajo asociadas.</p>
-                    {% endfor %}
-                </ul>
-            <p><b>Pacientes ({{ object.pacienteobrasocial_set.count }}):</b></p>
-                <ul>
-                    {% for p in object.pacienteobrasocial_set.all %}
-                        <li>{{p.paciente}}</li>
-                    {% empty %}
-                        <p>No tiene pacientes asociados.</p>
-                    {% endfor %}
-                </ul>
-            {% if user.is_superuser%}
-                <p><b>Clinica: </b>{{object.clinica}}</p>
-            {% endif %}
-            <p style="text-align:center;">
-                <a href="/obra_social" name="obra_social-submit" class="btn-lila">Volver</a>
-            </p>
-{% endblock %}
-
-{% block script %}
+{% block detail %}
+    <p><b>Código:</b> {{object.codigo}}</p>
+    <p><b>Nombre:</b> {{object.nombre}}</p>
+    <p><b>Observaciones:</b> {{object.observaciones}}</p>
+    <p><b>Planes:</b></p>
+        <ul>
+            {% for p in object.plan_set.all %}
+                <li>{{p}}</li>
+            {% empty %}
+                <p>No tiene planes asociados.</p>
+            {% endfor %}
+        </ul>
+    <p><b>Normas de trabajo ({{object.norma_trabajo_set.count}}):</b></p>
+        <ul>
+            {% for p in object.norma_trabajo_set.all %}
+                <li>{{p}}</li>
+            {% empty %}
+                <p>No tiene normas de trabajo asociadas.</p>
+            {% endfor %}
+        </ul>
+    <p><b>Pacientes ({{ object.pacienteobrasocial_set.count }}):</b></p>
+        <ul>
+            {% for p in object.pacienteobrasocial_set.all %}
+                <li>{{p.paciente}}</li>
+            {% empty %}
+                <p>No tiene pacientes asociados.</p>
+            {% endfor %}
+        </ul>
 {% endblock %}

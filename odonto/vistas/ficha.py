@@ -63,6 +63,7 @@ class FichaList(LoginRequiredMixin,FilterView):
 
 class FichaDetalle(LoginRequiredMixin,DetailView):
     model = Ficha
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['now'] = timezone.now()
@@ -199,7 +200,7 @@ def crear(request):
         'ficha_form': ficha_form,
         'imagenes_formset': imagenes_formset,
         'consultas_formset': consultas_formset,
-        'funcion' : 'Editar',
+        'funcion' : 'Agregar',
     }
     return render(request, 'ficha/form.html', context)
 

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block head %}
-	<title>{{ funcion }} ficha</title>
+	<title>{{ funcion }} {{ficha_form.instance.model_name_lower}}</title>
 {% endblock %}
 
 {% block style %}
@@ -126,7 +126,7 @@
 {% endblock %}
 
 {% block content %}
-{% load staticfiles %}
+    {% load staticfiles %}
     <div class="col-md-8 offset-md-2">
         {% if messages %}
             {% for message in messages %}

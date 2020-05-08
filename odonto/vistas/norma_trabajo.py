@@ -70,6 +70,11 @@ class Norma_TrabajoCrear(LoginRequiredMixin, SuccessMessageMixin, CreateView):
  
     def get_success_url(self):        
         return reverse('norma_trabajo_index')
+
+    def get_context_data(self, **kwargs):
+        context = super(Norma_TrabajoCrear, self).get_context_data(**kwargs)
+        context['funcion']='Crear'
+        return context
     
     def form_valid(self, form):
         form.instance.clinica = self.request.user.clinica
@@ -92,6 +97,11 @@ class Norma_TrabajoEditar(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
  
     def get_success_url(self):        
         return reverse('norma_trabajo_index')
+    
+    def get_context_data(self, **kwargs):
+        context = super(Norma_TrabajoEditar, self).get_context_data(**kwargs)
+        context['funcion']='Editar'
+        return context
 
     def get_form_kwargs(self):
         kwargs = super(Norma_TrabajoEditar, self).get_form_kwargs()

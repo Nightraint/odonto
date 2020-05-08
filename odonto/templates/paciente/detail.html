@@ -1,54 +1,39 @@
-{% extends "base.html" %}
-{% block head %}
-	<title>Detalle de paciente</title>
-{% endblock %}
+{% extends "detail.html" %}
 
-{% block style %}
-{% endblock %}
-
-{% block content %}
-    <div class="col-md-6">
-        <p><b>Nombre y apellido:</b> {{object.nombre_apellido}}</p>
-        <p><b>DNI:</b> {{object.dni}}</p>
-        <p><b>Domicilio:</b> {{object.domicilio}}</p>
-        
-        <p><b>Odontologos:</b></p>
-            <ul>
-                {% for odo in object.odontologos.all %}
-                    <li>{{odo}}</li>
-                {% empty %}
-                    <p>No tiene odontologos</p>
-                {% endfor %}
-            </ul>
-        <p><b>Obras sociales:</b></p>
-            <ul>
-                {% for os in object.obras_sociales.all %}
-                    <li>{{os}}</li>
-                {% empty %}
-                    <p>No tiene obras sociales</p>
-                {% endfor %}
-            </ul>
-        <p><b>Teléfonos:</b></p>
-            <ul>
-                {% for tel in object.telefono_set.all %}
-                    <li>{{tel}}</li>
-                {% empty %}
-                    <p>No tiene teléfonos</p>
-                {% endfor %}
-            </ul>
-        <p><b>Emails:</b></p>
-            <ul>
-                {% for tel in object.email_set.all %}
-                    <li>{{tel}}</li>
-                {% empty %}
-                    <p>No tiene emails</p>
-                {% endfor %}
-            </ul>
-        <p style="text-align:center;">
-            <a href="/paciente" type="submit" name="paciente-submit" class="btn-lila">Volver</a>
-        </p>
-    </div>
-{% endblock %}
-
-{% block script %}
+{% block detail %}
+    <p><b>Nombre y apellido:</b> {{object.nombre_apellido}}</p>
+    <p><b>DNI:</b> {{object.dni}}</p>
+    <p><b>Domicilio:</b> {{object.domicilio}}</p>
+    <p><b>Odontologos:</b></p>
+        <ul>
+            {% for odo in object.odontologos.all %}
+                <li>{{odo}}</li>
+            {% empty %}
+                <p>No tiene odontologos</p>
+            {% endfor %}
+        </ul>
+    <p><b>Obras sociales:</b></p>
+        <ul>
+            {% for os in object.obras_sociales.all %}
+                <li>{{os}}</li>
+            {% empty %}
+                <p>No tiene obras sociales</p>
+            {% endfor %}
+        </ul>
+    <p><b>Teléfonos:</b></p>
+        <ul>
+            {% for tel in object.telefono_set.all %}
+                <li>{{tel}}</li>
+            {% empty %}
+                <p>No tiene teléfonos</p>
+            {% endfor %}
+        </ul>
+    <p><b>Emails:</b></p>
+        <ul>
+            {% for tel in object.email_set.all %}
+                <li>{{tel}}</li>
+            {% empty %}
+                <p>No tiene emails</p>
+            {% endfor %}
+        </ul>
 {% endblock %}

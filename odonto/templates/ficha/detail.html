@@ -1,23 +1,23 @@
-{% extends "base.html" %}
-{% block head %}
-	<title>Detalle de ficha</title>
-{% endblock %}
+{% extends "detail.html" %}
 
-{% block style %}
-{% endblock %}
-
-{% block content %}
-        <div class="col-md-6 col-md-offset-3">
-            <p><b>Paciente:</b> {{object.paciente}}</p>
-            <p><b>Odontólogo:</b> {{object.odontologo}}</p>
-            <p><b>Obra social:</b> {{object.obra_social}}</p>
-            <p><b>Fecha:</b> {{object.fecha}}</p>
-            <p><b>Norma de trabajo:</b> {{object.norma_trabajo}}</p>
-            <p><b>Detalle:</b> {{object.detalle}}</p>
-            <p style="text-align:center;">
-                <a href="/ficha" name="ficha-submit" class="btn">Volver</a>
-            </p>
-{% endblock %}
-
-{% block script %}
+{% block detail %}
+    <p><b>Fecha:</b> {{object.fecha}}</p>
+    <p><b>Odontólogo:</b> {{object.odontologo}}</p>
+    <p><b>Paciente:</b> {{object.paciente}}</p>
+    <p><b>Obra social:</b> {{object.obra_social}}</p>
+    <p><b>Nro. Afiliado:</b> {{object.nro_afiliado}}</p>
+    <p><b>Plan:</b> {{object.plan|default_if_none:'-' }}</p>
+    <p><b>Observaciones:</b> {{object.observaciones}}</p>
+    <p><b>Consultas ({{object.consulta_set.count}}):</b></p>
+        <ul>
+            {% for consulta in object.consulta_set.all %}
+                <li>
+                    <b>Fecha:</b> {{consulta.fecha}} - {% if consulta.nro_diente %}<b>Diente:</b> {{consulta.nro_diente}} {% endif %}<br/>
+                    {% if consulta.norma_trabajo %}<b>Norma de trabajo:</b> {{consulta.norma_trabajo}}<br/>{% endif %}
+                    {% if consulta.detalle %}<b>Detalle:</b> {{consulta.detalle}}{% endif %}
+                </li>
+            {% empty %}
+                <p>No tiene consultas</p>
+            {% endfor %}
+        </ul>
 {% endblock %}

@@ -1,42 +1,25 @@
-{% extends "base.html" %}
-{% block head %}
-	<title>Detalle de odontologo</title>
-{% endblock %}
+{% extends "detail.html" %}
 
-{% block style %}
-{% endblock %}
-
-{% block content %}
-        <div class="col-md-6 col-md-offset-3">
-            <p><b>Nombre y apellido:</b> {{object.nombre_apellido}}</p>
-            <p><b>Matricula:</b> {{object.matricula}}</p>
-            <p><b>DNI:</b> {{object.dni}}</p>
-            <p><b>Domicilio:</b> {{object.domicilio}}</p>
-            <p><b>Telefono:</b> {{object.telefono}}</p>
-            <p><b>Pacientes:</b></p>
-            {% if object.paciente_set %}
-                <ul>
-                    {% for p in object.paciente_set.all %}
-                        <li>{{p}}</li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p>No tiene odontologos asociados.</p>
-            {% endif %}
-            <p><b>Obras sociales:</b></p>
-            {% if object.obras_sociales %}
-                <ul>
-                    {% for os in object.obras_sociales.all %}
-                        <li>{{os}}</li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p>No tiene obras sociales asociados.</p>
-            {% endif %}
-            <p style="text-align:center;">
-                <a href="/odontologo" type="submit" name="odontologo-submit" class="btn">Volver</a>
-            </p>
-{% endblock %}
-
-{% block script %}
+{% block detail %}
+    <p><b>Nombre y apellido:</b> {{object.nombre_apellido}}</p>
+    <p><b>Matricula:</b> {{object.matricula}}</p>
+    <p><b>DNI:</b> {{object.dni}}</p>
+    <p><b>Domicilio:</b> {{object.domicilio}}</p>
+    <p><b>Telefono:</b> {{object.telefono}}</p>
+    <p><b>Pacientes ({{ object.paciente_set.count }}):</b></p>
+    <ul>
+        {% for p in object.paciente_set.all %}
+            <li>{{p}}</li>
+        {% empty %}
+            <p>No tiene pacientes asociados.</p>
+        {% endfor %}
+    </ul>
+    <p><b>Obras sociales ({{ object.obras_sociales.count }}):</b></p>
+    <ul>
+        {% for os in object.obras_sociales.all %}
+            <li>{{os}}</li>
+        {% empty %}
+            <p>No tiene obras sociales asociadas.</p>
+        {% endfor %}
+    </ul>
 {% endblock %}

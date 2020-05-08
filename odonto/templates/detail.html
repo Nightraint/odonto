@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block head %}
+	<title>Detalle de {{object.model_name_lower}}</title>
+{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+    <div class="col-md-6 offset-md-3">
+        {% block detail %}
+        {% endblock %}
+        {% if user.is_superuser%}
+            <p><b>Clinica: </b>{{object.clinica}}</p>
+        {% endif %}
+        <p style="text-align:center;">
+            <a href="../" type="button" class="btn-lila">Volver</a>
+        </p>
+    </div>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

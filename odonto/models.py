@@ -35,6 +35,12 @@ class Obra_Social(models.Model):
         unique_together = (("codigo", "clinica"),)
         ordering = ('nombre',)
 
+    def model_name(self):
+        return "Obra social"
+    
+    def model_name_lower(self):
+        return "obra social"
+
 class Plan(models.Model):
     nombre = models.CharField(max_length=100)
     obra_social = models.ForeignKey('Obra_Social',on_delete=models.CASCADE)
@@ -82,6 +88,12 @@ class Norma_Trabajo(models.Model):
 
     def __str__(self):
         return self.codigo + ' - ' + self.descripcion
+    
+    def model_name(self):
+        return "Norma de trabajo"
+    
+    def model_name_lower(self):
+        return "norma de trabajo"
 
 class Odontologo(models.Model):
     nombre_apellido = models.CharField("Nombre y apellido",max_length=100)
@@ -96,6 +108,12 @@ class Odontologo(models.Model):
 
     def __str__(self):
     	return self.nombre_apellido
+
+    def model_name(self):
+        return "Odontólogo"
+    
+    def model_name_lower(self):
+        return "odontólogo"
 
 class Paciente(models.Model):
     nombre_apellido = models.CharField("Nombre y apellido",max_length=100)
@@ -112,6 +130,12 @@ class Paciente(models.Model):
 
     class Meta:
         ordering = ('nombre_apellido',)
+
+    def model_name(self):
+        return "Paciente"
+    
+    def model_name_lower(self):
+        return "paciente"
 
 class PacienteObraSocial(models.Model):
     paciente = models.ForeignKey("Paciente", on_delete = models.CASCADE)
@@ -146,6 +170,12 @@ class Ficha(models.Model):
     creada = models.DateTimeField(auto_now_add=True)
     actualizada = models.DateTimeField(auto_now=True)
     clinica = models.ForeignKey('Clinica',on_delete=models.PROTECT)
+
+    def model_name(self):
+        return "Ficha"
+    
+    def model_name_lower(self):
+        return "ficha"
 
 class Consulta(models.Model):
     fecha = models.DateTimeField(null=True,blank=True)
