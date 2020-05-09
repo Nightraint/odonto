@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head %}
+  <link href="{% static 'css/calendar.css'%}" rel='stylesheet' />
+  <link href="{% static 'packages/core/main.min.css'%}" rel='stylesheet' />
+  <link href="{% static 'packages/daygrid/main.min.css'%}" rel='stylesheet' />
+  <link href="{% static 'packages/timegrid/main.min.css'%}" rel='stylesheet' />
+  <link href="{% static 'packages/list/main.min.css'%}" rel='stylesheet' />
+  <script src="{% static 'packages/core/main.min.js'%}"></script>
+  <script src="{% static 'packages/core/locales-all.min.js'%}"></script>
+  <script src="{% static 'packages/interaction/main.min.js'%}"></script>
+  <script src="{% static 'packages/daygrid/main.min.js'%}"></script>
+  <script src="{% static 'packages/timegrid/main.min.js'%}"></script>
+  <script src="{% static 'packages/list/main.min.js'%}"></script>
+  <script>
+    var calendar;
+    document.addEventListener('DOMContentLoaded', function() {
+      var calendarEl = document.getElementById('calendar');
+
+      calendar = new FullCalendar.Calendar(calendarEl, {
+        plugins: [ 'interaction', 'dayGrid', 'timeGrid', 'list' ],
+        header: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+        },
+        //defaultDate: '2020-02-12',
+        locale: 'es',
+        buttonIcons: true, // show the prev/next text
+        weekNumbers: false,
+        navLinks: true, // can click day/week names to navigate views
+        selectable: true,
+        editable: true,
+        eventLimit: true, // allow "more" link when too many events
+        events: [
+          {
+            title: 'Emiliano Rua',
+            start: '2020-02-12T12:00:00'
+          },
+          {
+            title: 'Emiliano Rua',
+            start: '2020-02-12T14:30:00'
+          },
+          {
+            title: 'Emiliano Rua',
+            start: '2020-02-12T17:30:00'
+          },
+          {
+            title: 'Emiliano Rua',
+            start: '2020-02-12T20:00:00'
+          },
+          {
+            title: 'Emiliano Rua',
+            start: '2020-02-13T07:00:00'
+          },
+          {
+            id: '128',
+            title: 'Emiliano Rua',
+            start: '2020-05-09T22:15:00',
+            end: '2020-05-09T22:30:00'
+          },
+          {
+            title: 'Emiliano Rua',
+            url: 'http://google.com/',
+            start: '2020-02-28'
+          }
+        ],
+        eventRender: function(info) {
+            console.log(info);
+            $(info.el).append('<span class="closeon remove-event" id="delete"">×</span>');
+            console.log(info.event._def.publicId);
+            $(info.el).find("#delete").click(function() {
+              console.log(info.event._def.publicId);
+              let e = calendar.getEventById(info.event._def.publicId);
+              var x = confirm("¿Está seguro que desea eliminar el turno?");
+              if (x)
+                  e.remove();
+            });
+        },
+        eventClick: function(info) {
+          // TODO: Hacer modal que pregunte que hacer
+          console.log(info);
+          alert('Event: ' + info.event.title + " - " + info.event.id);
+          alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
+          alert('View: ' + info.view.type);
+        },
+        eventDrop: function(info) {
+          if (!confirm("¿Mover el turno de " + info.event.title + " al " + formatDate(info.event.start) + "?"))
+            info.revert();
+          //else
+            // TODO: actualizar la base de datos
+        },
+        dateClick: function(info) {
+          // TODO: Preguntar si agregar evento o ver eventos del dia
+          alert('Clicked on: ' + info.dateStr);
+          alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
+          alert('Current view: ' + info.view.type);
+          calendar.changeView('timeGridDay', info.dateStr);
+        }
+      });
+      calendar.render();
+    });
+
+    function formatDate(date) {
+      let hours = date.getHours();
+      let minutes = date.getMinutes();
+      //var ampm = hours >= 12 ? 'pm' : 'am';
+      //hours = hours % 12;
+      //hours = hours ? hours : 12; // the hour '0' should be '12'
+      minutes = minutes < 10 ? '0'+minutes : minutes;
+      let strTime = hours + ':' + minutes;
+      let months = date.getMonth()+1;
+      months =  months < 10 ? '0'+months:months;
+      return date.getDate() + "/" + months + "/" + date.getFullYear() + " " + strTime;
+    }
+  </script>
+{% endblock %}
+{% block style %}
+  <style>
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+      font-size: 14px;
+    }
+
+    #top {
+      background: #eee;
+      border-bottom: 1px solid #ddd;
+      padding: 0 10px;
+      line-height: 40px;
+      font-size: 12px;
+    }
+
+    #calendar {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 10px;
+    }
+
+    .remove-event {
+      color:black;
+      position: absolute;
+      top: 0;
+      right: 0;
+      width:13px;
+      height: 13px;
+      text-align:center;
+      border-radius:50%;
+      font-size: 10px;
+      cursor: pointer;
+          background-color: #FFF
+    }
+  </style>
+{% endblock %}
+{% block content %}
+
+  <div id='calendar'></div>
+
+{% endblock %}

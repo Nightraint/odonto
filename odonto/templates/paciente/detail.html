@@ -14,8 +14,8 @@
         </ul>
     <p><b>Obras sociales:</b></p>
         <ul>
-            {% for os in object.obras_sociales.all %}
-                <li>{{os}}</li>
+            {% for pos in object.pacienteobrasocial_set.all %}
+                <li>{{pos.obra_social}}{% if pos.plan %} ({{pos.plan}}) {% endif %}</li>
             {% empty %}
                 <p>No tiene obras sociales</p>
             {% endfor %}

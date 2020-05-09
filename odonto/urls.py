@@ -18,13 +18,15 @@ from django.urls import path, include
 from django.views.generic.base import TemplateView
 from django import views
 from . import views, settings
-from .vistas import paciente, odontologo, norma_trabajo, ficha, obra_social, plan
+from .vistas import paciente, odontologo, norma_trabajo, ficha, obra_social, plan, turno
 from django.contrib.auth import views as auth_views
 from odonto.forms import UserLoginForm, PasswordForm
 from django.contrib.staticfiles.urls import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
+    path('turno/', turno.index, name='index'),
+
     path('ficha/crear', ficha.crear, name='crear'),
     path('ficha/eliminar/<int:pk>', ficha.FichaEliminar.as_view(), name='eliminar'),
     path('ficha/editar/<int:pk>', ficha.editar, name='editar'),

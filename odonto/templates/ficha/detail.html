@@ -9,15 +9,15 @@
     <p><b>Plan:</b> {{object.plan|default_if_none:'-' }}</p>
     <p><b>Observaciones:</b> {{object.observaciones}}</p>
     <p><b>Consultas ({{object.consulta_set.count}}):</b></p>
-        <ul>
-            {% for consulta in object.consulta_set.all %}
-                <li>
-                    <b>Fecha:</b> {{consulta.fecha}} - {% if consulta.nro_diente %}<b>Diente:</b> {{consulta.nro_diente}} {% endif %}<br/>
-                    {% if consulta.norma_trabajo %}<b>Norma de trabajo:</b> {{consulta.norma_trabajo}}<br/>{% endif %}
-                    {% if consulta.detalle %}<b>Detalle:</b> {{consulta.detalle}}{% endif %}
-                </li>
-            {% empty %}
-                <p>No tiene consultas</p>
-            {% endfor %}
-        </ul>
+    <ul>
+        {% for consulta in object.consulta_set.all %}
+            <li style="border:1px solid;border-radius:10px;padding:5px;margin-bottom:5px;">
+                <b>Fecha:</b> {{consulta.fecha}} - {% if consulta.nro_diente %}<b>Diente:</b> {{consulta.nro_diente}} {% endif %}<br/>
+                {% if consulta.norma_trabajo %}<b>Norma de trabajo:</b> {{consulta.norma_trabajo}}<br/>{% endif %}
+                {% if consulta.detalle %}<b>Detalle:</b> {{consulta.detalle}}{% endif %}
+            </li>
+        {% empty %}
+            <p>No tiene consultas</p>
+        {% endfor %}
+    </ul>
 {% endblock %}

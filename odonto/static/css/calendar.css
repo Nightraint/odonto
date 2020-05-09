@@ -1,0 +1,22 @@
+.fc-title{
+    color:white;
+}
+
+.fc-time{
+    color:white;
+    background-color: #413e66;
+}
+
+.fc-content{
+    /*background-color: #413e66;*/
+}
+
+.fc-event{
+    border:1px solid #413e66 !important;
+    background-color: #413e66 !important;
+    min-height: 15px;
+}
+
+.fc-button-primary{
+    background-color: #413e66 !important;
+}

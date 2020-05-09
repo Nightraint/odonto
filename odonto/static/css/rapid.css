@@ -54,7 +54,7 @@ h6 {
   margin: auto;
 }
 
-td,th {
+.table-list td,.table-list th {
   white-space: nowrap;
   overflow: hidden;
   text-overflow:ellipsis;
@@ -62,7 +62,7 @@ td,th {
   min-width: 50px;
 }
 
- table{
+.table-list{
   table-layout: fixed;
 }  
 
