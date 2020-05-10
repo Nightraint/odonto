@@ -12,109 +12,9 @@
   <script src="{% static 'packages/daygrid/main.min.js'%}"></script>
   <script src="{% static 'packages/timegrid/main.min.js'%}"></script>
   <script src="{% static 'packages/list/main.min.js'%}"></script>
-  <script>
-    var calendar;
-    document.addEventListener('DOMContentLoaded', function() {
-      var calendarEl = document.getElementById('calendar');
 
-      calendar = new FullCalendar.Calendar(calendarEl, {
-        plugins: [ 'interaction', 'dayGrid', 'timeGrid', 'list' ],
-        header: {
-          left: 'prev,next today',
-          center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
-        },
-        //defaultDate: '2020-02-12',
-        locale: 'es',
-        buttonIcons: true, // show the prev/next text
-        weekNumbers: false,
-        navLinks: true, // can click day/week names to navigate views
-        selectable: true,
-        editable: true,
-        eventLimit: true, // allow "more" link when too many events
-        events: [
-          {
-            title: 'Emiliano Rua',
-            start: '2020-02-12T12:00:00'
-          },
-          {
-            title: 'Emiliano Rua',
-            start: '2020-02-12T14:30:00'
-          },
-          {
-            title: 'Emiliano Rua',
-            start: '2020-02-12T17:30:00'
-          },
-          {
-            title: 'Emiliano Rua',
-            start: '2020-02-12T20:00:00'
-          },
-          {
-            title: 'Emiliano Rua',
-            start: '2020-02-13T07:00:00'
-          },
-          {
-            id: '128',
-            title: 'Emiliano Rua',
-            start: '2020-05-09T22:15:00',
-            end: '2020-05-09T22:30:00'
-          },
-          {
-            title: 'Emiliano Rua',
-            url: 'http://google.com/',
-            start: '2020-02-28'
-          }
-        ],
-        eventRender: function(info) {
-            console.log(info);
-            $(info.el).append('<span class="closeon remove-event" id="delete"">×</span>');
-            console.log(info.event._def.publicId);
-            $(info.el).find("#delete").click(function() {
-              console.log(info.event._def.publicId);
-              let e = calendar.getEventById(info.event._def.publicId);
-              var x = confirm("¿Está seguro que desea eliminar el turno?");
-              if (x)
-                  e.remove();
-            });
-        },
-        eventClick: function(info) {
-          // TODO: Hacer modal que pregunte que hacer
-          console.log(info);
-          alert('Event: ' + info.event.title + " - " + info.event.id);
-          alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
-          alert('View: ' + info.view.type);
-        },
-        eventDrop: function(info) {
-          if (!confirm("¿Mover el turno de " + info.event.title + " al " + formatDate(info.event.start) + "?"))
-            info.revert();
-          //else
-            // TODO: actualizar la base de datos
-        },
-        dateClick: function(info) {
-          // TODO: Preguntar si agregar evento o ver eventos del dia
-          alert('Clicked on: ' + info.dateStr);
-          alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
-          alert('Current view: ' + info.view.type);
-          calendar.changeView('timeGridDay', info.dateStr);
-        }
-      });
-      calendar.render();
-    });
-
-    function formatDate(date) {
-      let hours = date.getHours();
-      let minutes = date.getMinutes();
-      //var ampm = hours >= 12 ? 'pm' : 'am';
-      //hours = hours % 12;
-      //hours = hours ? hours : 12; // the hour '0' should be '12'
-      minutes = minutes < 10 ? '0'+minutes : minutes;
-      let strTime = hours + ':' + minutes;
-      let months = date.getMonth()+1;
-      months =  months < 10 ? '0'+months:months;
-      return date.getDate() + "/" + months + "/" + date.getFullYear() + " " + strTime;
-    }
-  </script>
 {% endblock %}
+
 {% block style %}
   <style>
 
@@ -152,10 +52,219 @@
       cursor: pointer;
           background-color: #FFF
     }
+
   </style>
 {% endblock %}
 {% block content %}
 
   <div id='calendar'></div>
+  
+  <div class="modal" tabindex="-1" role="dialog" id="menu-modal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">¿Qué desea hacer?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <button type="button" class="btn-lila" id="btn_add_event" style="margin-right:10px;">Agregar turno</button>
+          <button type="button" class="btn-lila" id="btn_view_day">Ver turnos del día</button>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-lila" data-dismiss="modal" style="display:block;">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal" tabindex="-1" role="dialog" id="menu-event-modal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" style="text-align:center;">
+          <button type="button" class="btn-lila" id="btn-wsp" style="width:230px;">Avisar por Whatsapp</button>
+          <br/>
+          <button type="button" class="btn-lila" id="btn-delete" style="margin-top:10px;width:230px;">Eliminar turno</button>
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
 
+{% block script %}
+  <script>
+    var calendar;
+    var calendarEl;
+
+    $('document').ready(function(){
+      calendarEl = document.getElementById('calendar');
+       loadCalendar();
+    });
+
+    function viewDay(dateStr){
+      $('#btn_view_day').removeAttr('onclick');
+      $('#btn_add_event').removeAttr('onclick');
+      $('#menu-modal').modal('hide');
+      calendar.changeView('timeGridDay', dateStr);
+    }
+
+    function addEvent(dateStr){
+      $('#btn_view_day').removeAttr('onclick');
+      $('#btn_add_event').removeAttr('onclick');
+      $('#menu-modal').modal('hide');
+
+      if ($('#div-add-modal').length == 0)
+        $('body').append('<div id="div-add-modal"></div>');
+
+      $.get("/turno/crear?fecha="+format(dateStr), function(data) {
+          $('#div-add-modal').html(data);
+          $('#form-turno').submit(submitAdd);
+          $('#add-modal').modal('show');
+      });
+    }
+    
+    function submitAdd(e){
+      var formData = new FormData(this);
+      $.ajax({
+            type: "POST",
+            url: "/turno/crear",
+            dataType: "json",
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function(responseData) {
+              console.log('success');
+              console.log(responseData);
+              console.log(responseData.success == 'true');
+              if(responseData.success == 'true'){
+                $('#btn_add_event').removeAttr('onclick');
+                $('#add-modal').modal('hide');
+                calendar.refetchEvents();
+              }
+            },
+            error: function(errorThrown) {
+              console.log('Error');
+              console.log(errorThrown);
+            }
+      });
+      e.preventDefault();
+    }
+
+    function format(inputDate) {
+      let dia = inputDate.split('-')[2];
+      let mes = inputDate.split('-')[1];
+      let año = inputDate.split('-')[0];
+      let date = dia + '/' + mes + '/' + año;
+      return date;
+    }
+
+    function formatDate(date){
+      let hours = date.getHours();
+      let minutes = date.getMinutes();
+      let month = date.getMonth()+1;
+      month =  month < 10 ? '0'+month:month;
+      return date.getDate() + "/" + month + "/" + date.getFullYear();
+    }
+
+    function formatDateTime(date) {
+      let hours = date.getHours();
+      let minutes = date.getMinutes();
+      //var ampm = hours >= 12 ? 'pm' : 'am';
+      //hours = hours % 12;
+      //hours = hours ? hours : 12; // the hour '0' should be '12'
+      minutes = minutes < 10 ? '0'+minutes : minutes;
+      let strTime = hours + ':' + minutes;
+      let month = date.getMonth()+1;
+      month =  month < 10 ? '0'+month:month;
+      return date.getDate() + "/" + month + "/" + date.getFullYear() + " " + strTime;
+    }
+
+    function formatTime(date) {
+      let hours = date.getHours();
+      let minutes = date.getMinutes();
+      //var ampm = hours >= 12 ? 'pm' : 'am';
+      //hours = hours % 12;
+      //hours = hours ? hours : 12; // the hour '0' should be '12'
+      minutes = minutes < 10 ? '0'+minutes : minutes;
+      let strTime = hours + ':' + minutes;
+      return strTime;
+    }
+
+    function loadCalendar(json){
+      //$.getJSON("/turno/get_all", function( json ) {
+        calendar = new FullCalendar.Calendar(calendarEl, {
+          plugins: [ 'interaction', 'dayGrid', 'timeGrid', 'list' ],
+          timeZone: 'utc',
+          header: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+          },
+          locale: 'es',
+          buttonIcons: true,
+          weekNumbers: false,
+          navLinks: true,  // can click day/week names to navigate views
+          selectable: true,
+          editable: true,
+          eventLimit: true, // allow "more" link when too many events
+          //events: json,
+          eventSources:["/turno/get_all"],
+          eventRender: function(info) {
+            /*
+              $(info.el).append('<span class="closeon remove-event" id="delete"">×</span>');
+              $(info.el).find("#delete").click(function() {
+                console.log(info.event._def.publicId);
+                let e = calendar.getEventById(info.event._def.publicId);
+                var x = confirm("¿Está seguro que desea eliminar el turno?");
+                if (x)
+                    e.remove();
+              });
+              */
+          },
+          eventClick: function(info) {
+            // TODO: Hacer modal que pregunte que hacer
+            console.log(info);
+            let fecha = formatDate(info.event.start);
+            let hora = formatTime(info.event.start);
+            let fecha_hora = formatDateTime(info.event.start);
+            $('#menu-event-modal #btn-wsp').removeAttr('onclick');
+            let wsp = info.event.extendedProps.wsp;
+            if(wsp){
+              let m = 'Hola! te recordamos que tenés un turno el dia ' + fecha + ' a las ' + hora;
+              $('#menu-event-modal #btn-wsp').attr('onClick', 'sendWhatsapp("'+wsp+'","'+m+'");');
+            }
+
+            $('#menu-event-modal .modal-title').html('Turno de ' + info.event.title + ' ' + fecha_hora);
+            $('#menu-event-modal #btn-delete').removeAttr('onclick');
+            $('#menu-event-modal #btn-delete').attr('onClick', 'deleteEvent("'+info.event.id+'");');
+            $('#menu-event-modal').modal('show');
+          },
+          eventDrop: function(info) {
+            if (!confirm("¿Mover el turno de " + info.event.title + " al " + formatDate(info.event.start) + "?"))
+              info.revert();
+            //else
+              // TODO: actualizar la base de datos
+          },
+          dateClick: function(info) {
+            $('#btn_view_day').removeAttr('onclick');
+            $('#btn_view_day').attr('onClick', 'viewDay("'+info.dateStr+'");');
+
+            $('#btn_add_event').removeAttr('onclick');
+            $('#btn_add_event').attr('onClick', 'addEvent("'+info.dateStr+'");');
+
+            $('#menu-modal').modal('show');
+          }
+          });
+        calendar.render();
+      //});      
+    }
+  </script>
 {% endblock %}

@@ -119,6 +119,7 @@ class Paciente(models.Model):
     nombre_apellido = models.CharField("Nombre y apellido",max_length=100)
     odontologos = models.ManyToManyField(Odontologo,blank=True)
     domicilio = models.CharField(max_length=100,blank=True)
+    whatsapp = models.CharField(max_length=20,blank=True)
     dni = models.CharField(max_length=100,blank=True)
     fecha_nacimiento = models.DateField(blank=True, null=True)
     creado = models.DateTimeField(auto_now_add=True)
@@ -195,4 +196,22 @@ class Imagen(models.Model):
 
     def filename(self):
         return os.path.basename(self.imagen.name)
+
+class Turno(models.Model):
+    paciente = models.ForeignKey('Paciente',on_delete=models.PROTECT)
+    odontologo = models.ForeignKey('Odontologo',on_delete=models.PROTECT)
+    fecha_inicio = models.DateTimeField()
+    fecha_fin = models.DateTimeField()
+    observaciones = models.TextField(max_length=1000,blank=True)
+    creada = models.DateTimeField(auto_now_add=True)
+    actualizada = models.DateTimeField(auto_now=True)
+    clinica = models.ForeignKey('Clinica',on_delete=models.PROTECT)
     
+    def __str__(self):
+    	return self.paciente.nombre_apellido
+
+    def model_name(self):
+        return "Turno"
+    
+    def model_name_lower(self):
+        return "turno"

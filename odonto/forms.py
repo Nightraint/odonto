@@ -9,7 +9,8 @@ from .models import (Obra_Social,
                     Ficha,
                     Clinica,
                     Telefono,
-                    Plan)
+                    Plan,
+                    Turno)
 from django.contrib.auth.forms import AuthenticationForm,UserCreationForm,UserChangeForm,PasswordChangeForm
 from django.forms import DateTimeField, EmailField
 from .widgets import BootstrapDateTimePickerInput, BootstrapDatePickerInput
@@ -149,6 +150,52 @@ class OdontologoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         clinica_id = kwargs.pop('clinica_id')
         super(OdontologoForm, self).__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
+
+##################### TURNOS #################### 
+
+class TurnoForm(forms.ModelForm):
+    class Meta:
+        model = Turno
+        exclude = ('clinica',)
+
+    fecha_inicio = forms.DateTimeField(
+        input_formats=['%d/%m/%Y %H:%M'],
+        widget=BootstrapDateTimePickerInput(attrs={
+                    'placeholder': 'Fecha',
+                },
+                optional_class = '',)
+    )
+
+    fecha_fin = forms.DateTimeField(
+        input_formats=['%d/%m/%Y %H:%M'],
+        widget=BootstrapDateTimePickerInput(attrs={
+                    'placeholder': 'Fecha',
+                },
+                optional_class='')
+    )
+
+    observaciones = forms.CharField(
+                widget=forms.Textarea(attrs={
+                    'style' : 'height:100px;',
+                }),
+                required=False)
+    
+    def __init__(self, *args, **kwargs):
+        clinica_id = kwargs.pop('clinica_id')
+        fecha = kwargs.pop('fecha')
+        super(TurnoForm, self).__init__(*args, **kwargs)
+
+        if fecha and not self.fields['fecha_inicio'].initial:
+            self.fields['fecha_inicio'].initial = fecha
+
+        if fecha and not self.fields['fecha_fin'].initial:
+            self.fields['fecha_fin'].initial = fecha
+
+        self.fields['odontologo'].queryset = Odontologo.objects.filter(clinica_id = clinica_id)
+        self.fields['paciente'].queryset = Paciente.objects.filter(clinica_id=clinica_id)
+
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
 

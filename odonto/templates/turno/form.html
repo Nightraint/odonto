@@ -1,0 +1,49 @@
+{% block head %}
+	<title>{{ funcion }} {{form.instance.model_name_lower}}</title>
+{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+    <div class="modal" tabindex="-1" role="dialog" id="add-modal">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title">Agregar turno</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            
+            <form method= "POST" id="form-turno" action="crear">
+            <div class="modal-body">
+                {% csrf_token %}
+                <div class="col-md-8 offset-md-2">
+                    {{form.as_p}}
+                </div>
+            
+            </div>
+            <div class="modal-footer">
+                <input type="submit" class="btn-lila" value="Aceptar" />
+            </div>
+            </form>
+            
+        </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        $('#add-modal').modal('show');
+        $("#id_paciente").select2({
+            placeholder: 'Paciente',
+            allowClear: true
+        });
+        $("#id_odontologo").select2({
+            placeholder: 'Odontólogo',
+            allowClear: true
+        });
+    </script>
+{% endblock %}

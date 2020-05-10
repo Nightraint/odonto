@@ -25,8 +25,6 @@ from django.contrib.staticfiles.urls import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
-    path('turno/', turno.index, name='index'),
-
     path('ficha/crear', ficha.crear, name='crear'),
     path('ficha/eliminar/<int:pk>', ficha.FichaEliminar.as_view(), name='eliminar'),
     path('ficha/editar/<int:pk>', ficha.editar, name='editar'),
@@ -63,6 +61,11 @@ urlpatterns = [
     path('norma_trabajo/detalle/<int:pk>', norma_trabajo.Norma_TrabajoDetalle.as_view(template_name = "norma_trabajo/detail.html"), name='detalle'),
     path('norma_trabajo/', norma_trabajo.Norma_TrabajoList.as_view(template_name='norma_trabajo/list.html'), name='norma_trabajo_index'),
     path(r'norma_trabajo/get_for_select/', norma_trabajo.get_for_select, name='get_for_select'),
+
+    #path('turno/crear', turno.TurnoCrear.as_view(template_name="turno/form.html"), name='crear'),
+    path('turno/crear', turno.crear, name='crear'),
+    path('turno/', turno.index, name='turno_index'),
+    path('turno/get_all', turno.get_all, name='get_all'),
 
     path('',TemplateView.as_view(template_name='index.html'), name='index'),
     path('admin/', admin.site.urls),

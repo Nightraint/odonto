@@ -298,6 +298,7 @@ h6 {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
+  cursor: pointer;
 }
 
 .btn-lila:focus{
@@ -1700,6 +1701,14 @@ h6 {
 }
 
 .select2-container--default .select2-selection--multiple{
+  border-color: #413e66;
+}
+
+.select2-container .select2-selection--single{
+  min-height: 32px;
+}
+
+.select2-container--default .select2-selection--single{
   border-color: #413e66;
 }
 
