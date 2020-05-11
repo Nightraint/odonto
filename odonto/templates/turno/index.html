@@ -97,6 +97,24 @@
       </div>
     </div>
   </div>
+  <div class="modal" tabindex="-1" role="dialog" id="delete-event-modal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" style="text-align:center;">
+          <button type="button" class="btn-lila" id="btn-delete-event" style="">Si, eliminar</button>
+          <button type="button" class="btn-lila" data-dismiss="modal" style="margin-right:10px;">Cancelar</button>
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}
 
 {% block script %}
@@ -239,7 +257,7 @@
             $('#menu-event-modal #btn-wsp').removeAttr('onclick');
             let wsp = info.event.extendedProps.wsp;
             if(wsp){
-              let m = 'Hola! te recordamos que tenés un turno el dia ' + fecha + ' a las ' + hora;
+              let m = 'Hola! te recordamos que tenés un turno el día ' + fecha + ' a las ' + hora;
               $('#menu-event-modal #btn-wsp').attr('onClick', 'sendWhatsapp("'+wsp+'","'+m+'");');
             }
 
@@ -266,6 +284,47 @@
           });
         calendar.render();
       //});      
+    }
+
+    function deleteEvent(id){
+      let event = calendar.getEventById(id);
+      let fecha = formatDate(event.start);
+      let hora = formatTime(event.start);
+      $('#menu-event-modal').modal('hide');
+      $('#delete-event-modal .modal-title').html('¿Desea eliminar el turno de ' + event.title + ' del dia ' + fecha + ' a las ' + hora + '?');
+      $('#delete-event-modal #btn-delete-event').removeAttr('onclick');
+      $('#delete-event-modal #btn-delete-event').attr('onClick', 'confirmDelete("'+id+'");');
+      $('#delete-event-modal').modal('show');
+    }
+
+    function confirmDelete(id){
+      $.ajax({
+            url: "/turno/eliminar/"+id,
+            dataType: "json",
+            contentType: false,
+            processData: false,
+            success: function(responseData) {
+              console.log('success');
+              console.log(responseData);
+              console.log(responseData.success == 'true');
+              if(responseData.success == 'true'){
+                $('#delete-event-modal #btn-delete').removeAttr('onclick');
+                $('#delete-event-modal').modal('hide');
+                calendar.refetchEvents();
+              }
+            },
+            error: function(errorThrown) {
+              console.log('Error');
+              console.log(errorThrown);
+            }
+      });
+    }
+
+    function sendWhatsapp(nro,msg){
+      url = 'https://wa.me/'+nro+'?text='+msg;
+      url = encodeURI(url);
+      console.log(url);
+      window.open(url);
     }
   </script>
 {% endblock %}

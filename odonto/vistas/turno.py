@@ -42,6 +42,15 @@ class TurnoCrear(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         return kwargs
 
 @login_required
+def eliminar(request, pk):
+    try:
+        t = Turno.objects.filter(pk=pk)
+        t.delete()
+    except IntegrityError:
+        return JsonResponse({'success':'false', 'error':IntegrityError})
+    return JsonResponse({'success':'true'})
+
+@login_required
 def crear(request):
     if request.method == 'GET':
         form = TurnoForm(clinica_id = request.user.clinica.id, fecha = request.GET['fecha'])
