@@ -16,6 +16,8 @@ from django.forms import DateTimeField, EmailField
 from .widgets import BootstrapDateTimePickerInput, BootstrapDatePickerInput
 from django.forms import modelformset_factory
 from django.forms.formsets import BaseFormSet
+from odonto.vistas.util import CustomErrorList
+import math
 
 class MyModelChoiceField(forms.ModelChoiceField):
     def to_python(self, value):
@@ -108,13 +110,13 @@ class PacienteForm(forms.ModelForm):
 
     fecha_nacimiento = forms.DateTimeField(
         input_formats=['%d/%m/%Y'], 
-        widget=BootstrapDatePickerInput()
+        widget=BootstrapDatePickerInput(),
+        required=False
     )
 
     def __init__(self, *args, **kwargs):
         clinica_id = kwargs.pop('clinica_id')
         super(PacienteForm, self).__init__(*args, **kwargs)
-        #self.fields['obras_sociales'].queryset = Obra_Social.objects.filter(clinica_id=clinica_id)
         self.fields['odontologos'].queryset = Odontologo.objects.filter(clinica_id=clinica_id)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
@@ -129,6 +131,20 @@ class Norma_TrabajoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         clinica_id = kwargs.pop('clinica_id')
         super(Norma_TrabajoForm, self).__init__(*args, **kwargs)
+
+        if 'obra_social' in self.data:
+            try:
+                obra_social_seleccionada = self.data.get('obra_social')
+                is_number = obra_social_seleccionada.isdigit()
+                if not is_number: # Si la obra social no es numerica, es porque no es un id (entonces no existe, hay que agregarla)
+                    os = Obra_Social()
+                    os.nombre = obra_social_seleccionada
+                    os.clinica_id = clinica_id
+                    os.save()
+                    self.data = self.data.copy()     # Copiamos la data porque no se puede modificar
+                    self.data['obra_social'] = os.id # Seleccionamos el id de la nueva obra social
+            except (ValueError, TypeError):
+                pass
 
         self.fields['obra_social'].queryset = Obra_Social.objects.filter(clinica_id=clinica_id)
         self.fields['obra_social'].empty_label = 'Seleccionar obra social'
@@ -185,6 +201,7 @@ class TurnoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         clinica_id = kwargs.pop('clinica_id')
         fecha = kwargs.pop('fecha')
+        kwargs.update({'error_class': CustomErrorList})
         super(TurnoForm, self).__init__(*args, **kwargs)
 
         if fecha and not self.fields['fecha_inicio'].initial:
@@ -192,6 +209,34 @@ class TurnoForm(forms.ModelForm):
 
         if fecha and not self.fields['fecha_fin'].initial:
             self.fields['fecha_fin'].initial = fecha
+
+        if 'paciente' in self.data:
+            try:
+                paciente_seleccionado = self.data.get('paciente')
+                is_number = paciente_seleccionado.isdigit()
+                if not is_number: # Si el paciente no es numerico, es porque no es un id (entonces no existe, hay que agregarlo)
+                    p = Paciente()
+                    p.nombre_apellido = paciente_seleccionado
+                    p.clinica_id = clinica_id
+                    p.save()
+                    self.data = self.data.copy() # Copiamos la data porque no se puede modificar
+                    self.data['paciente'] = p.id # Seleccionamos el id del nuevo paciente
+            except (ValueError, TypeError):
+                pass
+
+        if 'odontologo' in self.data:
+            try:
+                odontologo_seleccionado = self.data.get('odontologo')
+                is_number = odontologo_seleccionado.isdigit()
+                if not is_number: # Si el odontologo no es numerico, es porque no es un id (entonces no existe, hay que agregarlo)
+                    o = Odontologo()
+                    o.nombre_apellido = odontologo_seleccionado
+                    o.clinica_id = clinica_id
+                    o.save()
+                    self.data = self.data.copy() # Copiamos la data porque no se puede modificar
+                    self.data['odontologo'] = o.id # Seleccionamos el id del nuevo odontologo
+            except (ValueError, TypeError):
+                pass
 
         self.fields['odontologo'].queryset = Odontologo.objects.filter(clinica_id = clinica_id)
         self.fields['paciente'].queryset = Paciente.objects.filter(clinica_id=clinica_id)

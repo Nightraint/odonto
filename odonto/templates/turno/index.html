@@ -153,6 +153,7 @@
             error: function(errorThrown) {
               console.log('Error');
               console.log(errorThrown);
+              $('#div-add-modal').html(errorThrown.responseText);
             }
       });
       e.preventDefault();

@@ -4,10 +4,10 @@
     <p><b>Fecha:</b> {{object.fecha}}</p>
     <p><b>Odontólogo:</b> {{object.odontologo}}</p>
     <p><b>Paciente:</b> {{object.paciente}}</p>
-    <p><b>Obra social:</b> {{object.obra_social}}</p>
-    <p><b>Nro. Afiliado:</b> {{object.nro_afiliado}}</p>
+    <p><b>Obra social:</b> {{object.obra_social|default_if_none:'-'}}</p>
+    <p><b>Nro. Afiliado:</b> {{object.nro_afiliado|default_if_none:'-'}}</p>
     <p><b>Plan:</b> {{object.plan|default_if_none:'-' }}</p>
-    <p><b>Observaciones:</b> {{object.observaciones}}</p>
+    <p><b>Observaciones:</b> {{object.observaciones|default_if_none:'-'}}</p>
     <p><b>Consultas ({{object.consulta_set.count}}):</b></p>
     <ul>
         {% for consulta in object.consulta_set.all %}

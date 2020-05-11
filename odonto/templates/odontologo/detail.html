@@ -2,10 +2,10 @@
 
 {% block detail %}
     <p><b>Nombre y apellido:</b> {{object.nombre_apellido}}</p>
-    <p><b>Matricula:</b> {{object.matricula}}</p>
-    <p><b>DNI:</b> {{object.dni}}</p>
-    <p><b>Domicilio:</b> {{object.domicilio}}</p>
-    <p><b>Telefono:</b> {{object.telefono}}</p>
+    <p><b>Matricula:</b> {{object.matricula|default_if_none:'-'}}</p>
+    <p><b>DNI:</b> {{object.dni|default_if_none:'-'}}</p>
+    <p><b>Domicilio:</b> {{object.domicilio|default_if_none:'-'}}</p>
+    <p><b>Telefono:</b> {{object.telefono|default_if_none:'-'}}</p>
     <p><b>Pacientes ({{ object.paciente_set.count }}):</b></p>
     <ul>
         {% for p in object.paciente_set.all %}

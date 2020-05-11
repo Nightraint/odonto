@@ -2,8 +2,8 @@
 
 {% block detail %}
     <p><b>Nombre y apellido:</b> {{object.nombre_apellido}}</p>
-    <p><b>DNI:</b> {{object.dni}}</p>
-    <p><b>Domicilio:</b> {{object.domicilio}}</p>
+    <p><b>DNI:</b> {{object.dni|default_if_none:'-'}}</p>
+    <p><b>Domicilio:</b> {{object.domicilio|default_if_none:'-'}}</p>
     <p><b>Odontologos:</b></p>
         <ul>
             {% for odo in object.odontologos.all %}

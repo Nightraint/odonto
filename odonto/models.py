@@ -17,7 +17,7 @@ class CustomUser(AbstractUser):
     	return self.username
 
 class Obra_Social(models.Model):
-    codigo = models.IntegerField()
+    codigo = models.IntegerField(blank=True,null=True)
     nombre = models.CharField(max_length=100) 
     usa_bonos = models.BooleanField(default=False)
     usa_coseguro = models.BooleanField(default=False)
@@ -97,10 +97,10 @@ class Norma_Trabajo(models.Model):
 
 class Odontologo(models.Model):
     nombre_apellido = models.CharField("Nombre y apellido",max_length=100)
-    domicilio = models.CharField(max_length=100,blank=True)
-    telefono = models.CharField(max_length=100,blank=True)
-    dni = models.CharField(max_length=100,blank=True)
-    matricula = models.CharField(max_length=100,blank=True)
+    domicilio = models.CharField(max_length=100,blank=True,null=True)
+    telefono = models.CharField(max_length=100,blank=True,null=True)
+    dni = models.CharField(max_length=100,blank=True,null=True)
+    matricula = models.CharField(max_length=100,blank=True,null=True)
     obras_sociales = models.ManyToManyField('Obra_Social',blank=True)
     creado = models.DateTimeField(auto_now_add=True)
     actualizado = models.DateTimeField(auto_now=True)
@@ -118,9 +118,9 @@ class Odontologo(models.Model):
 class Paciente(models.Model):
     nombre_apellido = models.CharField("Nombre y apellido",max_length=100)
     odontologos = models.ManyToManyField(Odontologo,blank=True)
-    domicilio = models.CharField(max_length=100,blank=True)
-    whatsapp = models.CharField(max_length=20,blank=True)
-    dni = models.CharField(max_length=100,blank=True)
+    domicilio = models.CharField(max_length=100,blank=True, null=True)
+    whatsapp = models.CharField(max_length=20,blank=True, null=True)
+    dni = models.CharField(max_length=100,blank=True, null=True)
     fecha_nacimiento = models.DateField(blank=True, null=True)
     creado = models.DateTimeField(auto_now_add=True)
     actualizado = models.DateTimeField(auto_now=True)

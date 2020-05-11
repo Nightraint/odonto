@@ -52,7 +52,7 @@
                         {%else%}
                         <div id={{field.name|add:"_container"}} style="display:none;margin-bottom:1em;margin-right:10px;">
                         {%endif%}
-                            {{ field.errors }}
+                            {{ field.errors|safe }}
                             {{ field.label_tag }}
                             {{ field }}
                             {% if field.help_text %}
@@ -62,7 +62,7 @@
                         {% if field.name == 'bonos' %} </p> {% endif %}
                     {% else %}
                         <p>
-                            {{ field.errors }}
+                            {{ field.errors|safe }}
                             {{ field.label_tag }}
                             {{ field }}
                             {% if field.help_text %}
@@ -88,6 +88,12 @@
 
         $(document).ready(function(){
             
+        });
+
+        $("#id_obra_social").select2({
+            tags:true,
+            placeholder: 'Obra social',
+            allowClear: true
         });
 
         function load_complete_norma_trabajo() {

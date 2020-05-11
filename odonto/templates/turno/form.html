@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="modal" tabindex="-1" role="dialog" id="add-modal">
+    <div class="modal" role="dialog" id="add-modal">
         <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -19,10 +19,17 @@
             <form method= "POST" id="form-turno" action="crear">
             <div class="modal-body">
                 {% csrf_token %}
-                <div class="col-md-8 offset-md-2">
-                    {{form.as_p}}
+                <div class="col-md-10 offset-md-1">
+                    {% for field in form %}
+                        <div style="margin-bottom:5px;">
+                        {{ field.label_tag }} {{ field }}
+                        {% if field.help_text %}
+                            <p class="help">{{ field.help_text|safe }}</p>
+                        {% endif %}
+                        {{field.errors|safe}}
+                        </div>
+                    {% endfor %}
                 </div>
-            
             </div>
             <div class="modal-footer">
                 <input type="submit" class="btn-lila" value="Aceptar" />
@@ -38,10 +45,12 @@
     <script>
         $('#add-modal').modal('show');
         $("#id_paciente").select2({
+            tags:true,
             placeholder: 'Paciente',
             allowClear: true
         });
         $("#id_odontologo").select2({
+            tags:true,
             placeholder: 'Odontólogo',
             allowClear: true
         });

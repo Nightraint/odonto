@@ -18,6 +18,9 @@ class BootstrapDateTimePickerInput(DateTimeInput):
         context['widget']['datetimepicker_id'] = datetimepicker_id
         context['widget']['input_id'] = input_id
         return context
+
+    def __str__(self):
+        return 'BootstrapDateTimePickerInput'
     
 class BootstrapDatePickerInput(DateInput):
     template_name = 'widgets/bootstrap_datepicker.html'

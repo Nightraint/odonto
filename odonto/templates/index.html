@@ -54,21 +54,22 @@
       </div>
     </section>
   {% else %}
-    <!--section id="intro" class="clearfix">
+    <section id="intro" class="clearfix">
       <div class="container d-flex h-100">
         <div class="row justify-content-center align-self-center">
-          <div class="col-md-6 intro-info order-md-first order-last">
-            <h2>Odonto <br>para tu <span>consultorio!</span></h2>
+          <div class="col-md-12 intro-info order-md-first order-last">
+            <h2><span>Sistema</span> Odonto</h2>
+            <h5><span>Debes iniciar sesión para usar el sistema</span></h5>
             <div>
-              <a href="#about" class="btn-get-started scrollto">Información</a>
+              <a href="{%url 'login'%}" class="btn-get-started scrollto">Iniciar sesión</a>
             </div>
           </div>
-          <div class="col-md-6 intro-img order-md-last order-first">
-            <img src="img/intro-img.svg" alt="" class="img-fluid">
-          </div>
+          <!--div class="col-md-6 intro-img order-md-last order-first">
+            <img src="img/add_photo.png" alt="" class="img-fluid">
+          </div-->
         </div>
       </div>
-    </section-->
+    </section>
   {% endif %}
     
   <footer id="footer" class="section-bg">
@@ -83,6 +84,7 @@
                     <p>Sitio en desarrollo.</p>
                   </div>
                 </div>
+                {% if user.is_authenticated %}
                 <div class="col-sm-6">
                   <div class="footer-links">
                     <h4>Enlaces útiles</h4>
@@ -95,6 +97,7 @@
                     </ul>
                   </div>
                 </div>
+                {% endif %}
             </div>
           </div>
         </div>

@@ -44,26 +44,31 @@ class PacienteListFilter(django_filters.FilterSet):
         fields = {'filtro'}
 
     def custom_filter(self, queryset, name, value):
-         return queryset.filter(
-             nombre_apellido__icontains=value
-         ) | queryset.filter(
-             odontologos__nombre_apellido__icontains=value
-         ) | queryset.filter(
-             obras_sociales__nombre__icontains=value
-         ) | queryset.filter(
-             dni__icontains=value
-         ) | queryset.filter(
-             domicilio__icontains=value
-         ) | queryset.filter(
-             telefono__icontains=value
-         )
+        return queryset.filter(
+            nombre_apellido__icontains=value
+            ) | queryset.filter(
+                odontologos__nombre_apellido__icontains=value
+            ) | queryset.filter(
+                pacienteobrasocial__obra_social__nombre__icontains=value
+            ) | queryset.filter(
+                dni__icontains=value
+            ) | queryset.filter(
+                domicilio__icontains=value
+            ) | queryset.filter(
+                telefono__telefono__icontains=value
+            ) | queryset.filter(
+                 whatsapp__icontains=value
+            ) | queryset.filter(
+                 email__email__icontains=value
+            ) | queryset.filter(
+                pacienteobrasocial__nro_afiliado__icontains=value
+            )
 
 class PacienteList(LoginRequiredMixin,FilterView):
     model = Paciente
     paginate_by = 10
     context_object_name = 'paciente'
     filterset_class = PacienteListFilter
-    ordering = ['nombre_apellido']
 
     def model_name(self):
         return "Pacientes"
@@ -73,11 +78,10 @@ class PacienteList(LoginRequiredMixin,FilterView):
 
     def get_context_data(self, **kwargs):
         context = super(PacienteList, self).get_context_data(**kwargs)
-        #Para agregar variables 
         return context
     
     def get_queryset(self):
-        return Paciente.objects.filter(clinica=self.request.user.clinica)
+        return Paciente.objects.filter(clinica=self.request.user.clinica).order_by('-id')
 
 class PacienteDetalle(LoginRequiredMixin,DetailView):
     model = Paciente
@@ -85,40 +89,6 @@ class PacienteDetalle(LoginRequiredMixin,DetailView):
         context = super().get_context_data(**kwargs)
         context['now'] = timezone.now()
         return context
-
-class PacienteCrear(LoginRequiredMixin, SuccessMessageMixin, CreateView): 
-    model = Paciente
-    form_class = PacienteForm
-    success_message = 'Paciente creado correctamente!'
- 
-    def get_success_url(self):        
-        return reverse('paciente_index')
-    
-    def form_valid(self, form):
-        form.instance.clinica = self.request.user.clinica
-        self.object = form.save()
-        return super().form_valid(form)
-        #return HttpResponseRedirect(self.get_success_url())
-    
-    def get_form_kwargs(self):
-        kwargs = super(PacienteCrear, self).get_form_kwargs()
-        kwargs.update({'clinica_id': self.request.user.clinica.id})
-        kwargs.update({'error_class': CustomErrorList})
-        return kwargs
-
-class PacienteEditar(LoginRequiredMixin, SuccessMessageMixin, UpdateView): 
-    model = Paciente
-    form_class = PacienteForm
-    success_message = 'Paciente modificado correctamente!'
- 
-    def get_success_url(self):        
-        return reverse('paciente_index')
-
-    def get_form_kwargs(self):
-        kwargs = super(PacienteEditar, self).get_form_kwargs()
-        kwargs.update({'clinica_id': self.request.user.clinica.id})
-        kwargs.update({'error_class': CustomErrorList})
-        return kwargs
 
 class PacienteEliminar(LoginRequiredMixin, SuccessMessageMixin, DeleteView): 
     model = Paciente 

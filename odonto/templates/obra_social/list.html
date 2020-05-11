@@ -6,6 +6,6 @@
 {% endblock %}
 
 {% block datos %}                   
-    <td style="vertical-align: middle;">{{ object.codigo }}</td>
+    <td style="vertical-align: middle;">{{ object.codigo|default_if_none:'' }}</td>
     <td style="vertical-align: middle;">{{ object.nombre }}</td>
 {% endblock %}
