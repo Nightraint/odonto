@@ -68,9 +68,10 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body">
-          <button type="button" class="btn-lila" id="btn_add_event" style="margin-right:10px;">Agregar turno</button>
-          <button type="button" class="btn-lila" id="btn_view_day">Ver turnos del día</button>
+        <div class="modal-body" style="text-align:center;">
+          <button type="button" class="btn-lila" id="btn_add_event" style="width:230px;">Agregar turno</button>
+          <br/>
+          <button type="button" class="btn-lila" id="btn_view_day" style="margin-top:10px;width:230px;">Ver turnos del día</button>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn-lila" data-dismiss="modal" style="display:block;">Cancelar</button>
@@ -139,11 +140,14 @@
       $('#btn_add_event').removeAttr('onclick');
       $('#menu-modal').modal('hide');
 
-      if ($('#div-add-modal').length == 0)
-        $('body').append('<div id="div-add-modal"></div>');
+      //if ($('#div-add-modal').length == 0)
+      //  $('body').append('<div id="div-add-modal"></div>');
 
       $.get("/turno/crear?fecha="+format(dateStr), function(data) {
-          $('#div-add-modal').html(data);
+          //$('#div-add-modal').html(data);
+          if ($('body #add-modal').length > 0)
+            $('body #add-modal').remove();
+          $('body').append(data);
           $('#form-turno').submit(submitAdd);
           $('#add-modal').modal('show');
       });
@@ -171,7 +175,14 @@
             error: function(errorThrown) {
               console.log('Error');
               console.log(errorThrown);
-              $('#div-add-modal').html(errorThrown.responseText);
+              $('#add-modal').modal('hide');
+              if ($('body #add-modal').length > 0)
+                $('body #add-modal').remove();
+              $('body').append(errorThrown.responseText);
+              /*if ($(".modal-backdrop").length > 1) {
+                $(".modal-backdrop").not(':first').remove();
+              }*/
+              $('#form-turno').submit(submitAdd);
             }
       });
       e.preventDefault();
@@ -251,9 +262,13 @@
           eventClick: function(info) {
             // TODO: Hacer modal que pregunte que hacer
             console.log(info);
-            let fecha = formatDate(info.event.start);
-            let hora = formatTime(info.event.start);
-            let fecha_hora = formatDateTime(info.event.start);
+            console.log(info.event.start);
+            let start = info.event.start;
+            let utc = new Date(start.getTime() + start.getTimezoneOffset() * 60000);
+
+            let fecha = formatDate(utc);
+            let hora = formatTime(utc);
+            let fecha_hora = formatDateTime(utc);
             $('#menu-event-modal #btn-wsp').removeAttr('onclick');
             let wsp = info.event.extendedProps.wsp;
             if(wsp){

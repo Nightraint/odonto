@@ -204,6 +204,9 @@ class TurnoForm(forms.ModelForm):
         kwargs.update({'error_class': CustomErrorList})
         super(TurnoForm, self).__init__(*args, **kwargs)
 
+        if fecha:
+            fecha += '00:00'
+
         if fecha and not self.fields['fecha_inicio'].initial:
             self.fields['fecha_inicio'].initial = fecha
 

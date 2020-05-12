@@ -8,6 +8,9 @@
   $(function () {
     $("#{{ widget.datetimepicker_id }}").datetimepicker({
       format: 'DD/MM/YYYY HH:mm',
+      constrainInput: false,
+      autoclose:true,
+      forceParse: false
     })
 
     $("#{{ widget.datetimepicker_id }}").on("change.datetimepicker", ({
