@@ -62,10 +62,19 @@
       <nav class="main-nav float-right d-none d-lg-block">
         <ul>
           {% if user.is_authenticated %}
-            <li><a href="{%url 'ficha_index'%}">Fichas</a></li>
-            <li><a href="{%url 'paciente_index'%}">Pacientes</a></li>
-            <li><a href="{%url 'odontologo_index'%}">Odontologos</a></li>
-            <li class="drop-down"><a href="#">Obras sociales</a>
+            <li class="drop-down" style="margin-right:10px;"><a href="#">Pacientes</a>
+              <ul>
+                <li><a href="{%url 'paciente_index'%}">Pacientes</a></li>
+                <li><a href="{%url 'ficha_index'%}">Fichas</a></li>
+              </ul>
+            </li>
+            <li class="drop-down" style="margin-right:10px;"><a href="#">Consultorio</a>
+                <ul>
+                  <li><a href="{%url 'odontologo_index'%}">Odontologos</a></li>
+                  <li><a href="{%url 'turno_index'%}">Turnos</a></li>
+                </ul>
+            </li>
+            <li class="drop-down" style="margin-right:10px;"><a href="#">Obras sociales</a>
                 <ul>
                   <li><a href="{%url 'obra_social_index'%}">Obras sociales</a></li>
                   <li><a href="{%url 'norma_trabajo_index'%}">Normas de trabajo</a></li>
