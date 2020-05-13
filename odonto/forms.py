@@ -133,7 +133,7 @@ class Norma_TrabajoForm(forms.ModelForm):
         clinica_id = kwargs.pop('clinica_id')
         super(Norma_TrabajoForm, self).__init__(*args, **kwargs)
 
-        if 'obra_social' in self.data:
+        if 'obra_social' in self.data and self.data.get('obra_social') != '':
             try:
                 obra_social_seleccionada = self.data.get('obra_social')
                 is_number = obra_social_seleccionada.isdigit()
@@ -220,7 +220,7 @@ class TurnoForm(forms.ModelForm):
             if final_date and not self.fields['fecha_fin'].initial:
                 self.fields['fecha_fin'].initial = final_date.strftime('%d/%m/%Y %H:%M')
 
-        if 'paciente' in self.data:
+        if 'paciente' in self.data and self.data.get('paciente') != '':
             try:
                 paciente_seleccionado = self.data.get('paciente')
                 is_number = paciente_seleccionado.isdigit()
@@ -234,7 +234,7 @@ class TurnoForm(forms.ModelForm):
             except (ValueError, TypeError):
                 pass
 
-        if 'odontologo' in self.data:
+        if 'odontologo' in self.data and self.data.get('odontologo') != '':
             try:
                 odontologo_seleccionado = self.data.get('odontologo')
                 is_number = odontologo_seleccionado.isdigit()
@@ -276,7 +276,7 @@ class FichaForm(forms.ModelForm):
         clinica_id = kwargs.pop('clinica_id')
         super(FichaForm, self).__init__(*args, **kwargs)
 
-        if 'paciente' in self.data:
+        if 'paciente' in self.data and self.data.get('paciente') != '':
             try:
                 paciente_seleccionado = self.data.get('paciente')
                 is_number = paciente_seleccionado.isdigit()
@@ -290,7 +290,7 @@ class FichaForm(forms.ModelForm):
             except (ValueError, TypeError):
                 pass
 
-        if 'odontologo' in self.data:
+        if 'odontologo' in self.data and self.data.get('odontologo') != '':
             try:
                 odontologo_seleccionado = self.data.get('odontologo')
                 is_number = odontologo_seleccionado.isdigit()
@@ -304,7 +304,7 @@ class FichaForm(forms.ModelForm):
             except (ValueError, TypeError):
                 pass
 
-        if 'obra_social' in self.data:
+        if 'obra_social' in self.data and self.data.get('obra_social') != '':
             try:
                 os_seleccionada = self.data.get('obra_social')
                 is_number = os_seleccionada.isdigit()
@@ -318,18 +318,18 @@ class FichaForm(forms.ModelForm):
             except (ValueError, TypeError):
                 pass
 
-        if 'plan' in self.data and 'obra_social' in self.data:
+        if 'plan' in self.data and self.data.get('plan') != '' and 'obra_social' in self.data:
             try:
                 p_seleccionado = self.data.get('plan')
                 is_number = p_seleccionado.isdigit()
                 if not is_number:
-                    p = Plan()
-                    p.obra_social_id = os.id
-                    p.nombre = p_seleccionado
-                    p.clinica_id = clinica_id
-                    p.save()
+                    plan = Plan()
+                    plan.obra_social_id = self.data['obra_social']
+                    plan.nombre = p_seleccionado
+                    plan.clinica_id = clinica_id
+                    plan.save()
                     self.data = self.data.copy()
-                    self.data['plan'] = p.id
+                    self.data['plan'] = plan.id
             except (ValueError, TypeError):
                 pass
         
