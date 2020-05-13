@@ -140,10 +140,9 @@
       $('#btn_add_event').removeAttr('onclick');
       $('#menu-modal').modal('hide');
 
-      //if ($('#div-add-modal').length == 0)
-      //  $('body').append('<div id="div-add-modal"></div>');
+      let url = "/turno/crear?fecha=" + dateStr;
 
-      $.get("/turno/crear?fecha="+format(dateStr), function(data) {
+      $.get(encodeURI(url), function(data) {
           //$('#div-add-modal').html(data);
           if ($('body #add-modal').length > 0)
             $('body #add-modal').remove();
@@ -288,6 +287,10 @@
               // TODO: actualizar la base de datos
           },
           dateClick: function(info) {
+            console.log(info.dateStr);
+            //let start = info.dateStr;
+            //let utc = new Date(start.getTime() + start.getTimezoneOffset() * 60000);
+
             $('#btn_view_day').removeAttr('onclick');
             $('#btn_view_day').attr('onClick', 'viewDay("'+info.dateStr+'");');
 
@@ -336,6 +339,9 @@
     }
 
     function sendWhatsapp(nro,msg){
+      nro = nro.replace('+','').replace('-','').replace('.','').replace(' ','').replace('(','').replace(')','').trim();
+      if (nro.substring(0,2) != '54')
+        nro = '54' + nro;
       url = 'https://wa.me/'+nro+'?text='+msg;
       url = encodeURI(url);
       console.log(url);

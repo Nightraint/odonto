@@ -9,5 +9,5 @@
 {% block datos %}                   
     <td>{{ object.id }}</td>
     <td>{{ object.nombre_apellido }}</td>
-    <td>{{ object.matricula }}</td>
+    <td>{{ object.matricula|default_if_none:'' }}</td>
 {% endblock %}

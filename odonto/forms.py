@@ -18,6 +18,7 @@ from django.forms import modelformset_factory
 from django.forms.formsets import BaseFormSet
 from odonto.vistas.util import CustomErrorList
 import math
+import datetime
 
 class MyModelChoiceField(forms.ModelChoiceField):
     def to_python(self, value):
@@ -205,13 +206,19 @@ class TurnoForm(forms.ModelForm):
         super(TurnoForm, self).__init__(*args, **kwargs)
 
         if fecha:
-            fecha += '00:00'
+            if len(fecha) == 10:
+                date = datetime.datetime.strptime(fecha,'%Y-%m-%d')
+                final_date = date
+            else:
+                date = datetime.datetime.strptime(fecha,'%Y-%m-%dT%H:%M:%S')
+                minutes = datetime.timedelta(minutes = 30)
+                final_date = date + minutes
 
-        if fecha and not self.fields['fecha_inicio'].initial:
-            self.fields['fecha_inicio'].initial = fecha
+            if date and not self.fields['fecha_inicio'].initial:
+                self.fields['fecha_inicio'].initial = date.strftime('%d/%m/%Y %H:%M')
 
-        if fecha and not self.fields['fecha_fin'].initial:
-            self.fields['fecha_fin'].initial = fecha
+            if final_date and not self.fields['fecha_fin'].initial:
+                self.fields['fecha_fin'].initial = final_date.strftime('%d/%m/%Y %H:%M')
 
         if 'paciente' in self.data:
             try:
@@ -268,6 +275,63 @@ class FichaForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         clinica_id = kwargs.pop('clinica_id')
         super(FichaForm, self).__init__(*args, **kwargs)
+
+        if 'paciente' in self.data:
+            try:
+                paciente_seleccionado = self.data.get('paciente')
+                is_number = paciente_seleccionado.isdigit()
+                if not is_number: # Si el paciente no es numerico, es porque no es un id (entonces no existe, hay que agregarlo)
+                    p = Paciente()
+                    p.nombre_apellido = paciente_seleccionado
+                    p.clinica_id = clinica_id
+                    p.save()
+                    self.data = self.data.copy() # Copiamos la data porque no se puede modificar
+                    self.data['paciente'] = p.id # Seleccionamos el id del nuevo paciente
+            except (ValueError, TypeError):
+                pass
+
+        if 'odontologo' in self.data:
+            try:
+                odontologo_seleccionado = self.data.get('odontologo')
+                is_number = odontologo_seleccionado.isdigit()
+                if not is_number:
+                    o = Odontologo()
+                    o.nombre_apellido = odontologo_seleccionado
+                    o.clinica_id = clinica_id
+                    o.save()
+                    self.data = self.data.copy()
+                    self.data['odontologo'] = o.id
+            except (ValueError, TypeError):
+                pass
+
+        if 'obra_social' in self.data:
+            try:
+                os_seleccionada = self.data.get('obra_social')
+                is_number = os_seleccionada.isdigit()
+                if not is_number:
+                    os = Obra_Social()
+                    os.nombre = os_seleccionada
+                    os.clinica_id = clinica_id
+                    os.save()
+                    self.data = self.data.copy()
+                    self.data['obra_social'] = os.id
+            except (ValueError, TypeError):
+                pass
+
+        if 'plan' in self.data and 'obra_social' in self.data:
+            try:
+                p_seleccionado = self.data.get('plan')
+                is_number = p_seleccionado.isdigit()
+                if not is_number:
+                    p = Plan()
+                    p.obra_social_id = os.id
+                    p.nombre = p_seleccionado
+                    p.clinica_id = clinica_id
+                    p.save()
+                    self.data = self.data.copy()
+                    self.data['plan'] = p.id
+            except (ValueError, TypeError):
+                pass
         
         self.fields['odontologo'].queryset = Odontologo.objects.filter(clinica_id = clinica_id)
         self.fields['obra_social'].queryset = Obra_Social.objects.filter(clinica_id = clinica_id)

@@ -129,9 +129,28 @@
             $('.obras-sociales-formset').formset({
                 addText: 'Agregar obra social',
                 deleteText: 'Eliminar',
-                prefix: "{{ obras_sociales_formset.prefix }}"
+                prefix: "{{ obras_sociales_formset.prefix }}",
+                added:NuevaObraSocial
             });
 
+            function NuevaObraSocial(){
+                /*
+                $(".select_obra_social").select2({
+                    tags:true,
+                    placeholder: 'Obra social',
+                    allowClear: true
+                });
+                */
+            }
+
+            /*
+            $(".select_obra_social").select2({
+                tags:true,
+                placeholder: 'Obra social',
+                allowClear: true
+            });
+            */
+            
             var xhttp_plan = new XMLHttpRequest();
             var xhttp_os = new XMLHttpRequest();
 

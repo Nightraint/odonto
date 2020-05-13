@@ -119,7 +119,7 @@ class Paciente(models.Model):
     nombre_apellido = models.CharField("Nombre y apellido",max_length=100)
     odontologos = models.ManyToManyField(Odontologo,blank=True)
     domicilio = models.CharField(max_length=100,blank=True, null=True)
-    whatsapp = models.CharField(max_length=20,blank=True, null=True)
+    whatsapp = models.CharField(max_length=20,blank=True, null=True, help_text='Con código de area sin el cero. Ejemplo: 3492591438')
     dni = models.CharField(max_length=100,blank=True, null=True)
     fecha_nacimiento = models.DateField(blank=True, null=True)
     creado = models.DateTimeField(auto_now_add=True)

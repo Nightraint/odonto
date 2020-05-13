@@ -307,6 +307,30 @@
                     this.nextElementSibling.classList.toggle("show");
                 }
             }
+
+            select_paciente.select2({
+                tags:true,
+                placeholder: 'Seleccionar paciente',
+                allowClear: true
+            });
+
+            select_obra_social.select2({
+                tags:true,
+                placeholder: 'Seleccionar obra social',
+                allowClear: true
+            });
+
+            $("#id_odontologo").select2({
+                tags:true,
+                placeholder: 'Seleccionar odontólogo',
+                allowClear: true
+            });
+
+            select_plan.select2({
+                tags:true,
+                placeholder: 'Seleccionar plan',
+                allowClear: true
+            });
         });
 
         var lastJQueryTS = 0 ;
