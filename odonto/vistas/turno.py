@@ -56,12 +56,18 @@ def actualizar(request, pk):
     try:
         start = request.GET['start']
         end = request.GET['end']
-        turno = Turno.objects.get(pk=pk)
+        turno = Turno.objects.get(pk=pk,clinica_id = request.user.clinica_id)
         if start:
             turno.fecha_inicio = start
         if end:
             turno.fecha_fin = end
+        else:
+            turno.fecha_fin = start
         turno.save()
+    except Employee.DoesNotExist:
+        return JsonResponse({'success':'false', 'error':DoesNotExist})
+    except Employee.MultipleObjectsReturned:
+        return JsonResponse({'success':'false', 'error':MultipleObjectsReturned})
     except IntegrityError:
         return JsonResponse({'success':'false', 'error':IntegrityError})
     return JsonResponse({'success':'true'})
