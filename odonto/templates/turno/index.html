@@ -216,6 +216,18 @@
       return date.getDate() + "/" + month + "/" + date.getFullYear() + " " + strTime;
     }
 
+    function formatUpdate(date) {
+      if (!date)
+        return '';
+      let hours = date.getHours();
+      let minutes = date.getMinutes();
+      minutes = minutes < 10 ? '0'+minutes : minutes;
+      let strTime = hours + ':' + minutes;
+      let month = date.getMonth()+1;
+      month =  month < 10 ? '0'+month:month;
+      return date.getFullYear() + "-" +  month + "-" + date.getDate() + " " + strTime;
+    }
+
     function formatTime(date) {
       let hours = date.getHours();
       let minutes = date.getMinutes();
@@ -228,86 +240,94 @@
     }
 
     function loadCalendar(json){
-      //$.getJSON("/turno/get_all", function( json ) {
-        calendar = new FullCalendar.Calendar(calendarEl, {
-          plugins: [ 'interaction', 'dayGrid', 'timeGrid', 'list' ],
-          timeZone: 'utc',
-          header: {
-            left: 'prev,next today',
-            center: 'title',
-            right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
-          },
-          locale: 'es',
-          buttonIcons: true,
-          weekNumbers: false,
-          navLinks: true,  // can click day/week names to navigate views
-          selectable: true,
-          editable: true,
-          eventLimit: true, // allow "more" link when too many events
-          //events: json,
-          eventSources:["/turno/get_all"],
-          eventRender: function(info) {
-            /*
-              $(info.el).append('<span class="closeon remove-event" id="delete"">×</span>');
-              $(info.el).find("#delete").click(function() {
-                console.log(info.event._def.publicId);
-                let e = calendar.getEventById(info.event._def.publicId);
-                var x = confirm("¿Está seguro que desea eliminar el turno?");
-                if (x)
-                    e.remove();
-              });
-              */
-          },
-          eventClick: function(info) {
-            // TODO: Hacer modal que pregunte que hacer
-            console.log(info);
-            console.log(info.event.start);
-            let start = info.event.start;
-            let utc = new Date(start.getTime() + start.getTimezoneOffset() * 60000);
+      calendar = new FullCalendar.Calendar(calendarEl, {
+        plugins: [ 'interaction', 'dayGrid', 'timeGrid', 'list' ],
+        timeZone: 'utc',
+        header: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+        },
+        locale: 'es',
+        buttonIcons: true,
+        weekNumbers: false,
+        navLinks: true,  // can click day/week names to navigate views
+        selectable: true,
+        editable: true,
+        eventLimit: true, // allow "more" link when too many events
+        eventSources:["/turno/get_all"],
+        eventRender: function(info) {
+          /*
+            $(info.el).append('<span class="closeon remove-event" id="delete"">×</span>');
+            $(info.el).find("#delete").click(function() {
+              console.log(info.event._def.publicId);
+              let e = calendar.getEventById(info.event._def.publicId);
+              var x = confirm("¿Está seguro que desea eliminar el turno?");
+              if (x)
+                  e.remove();
+            });
+          */
+        },
+        eventClick: function(info) {
+          console.log(info);
+          let start = info.event.start;
+          let utc = new Date(start.getTime() + start.getTimezoneOffset() * 60000);
 
-            let fecha = formatDate(utc);
-            let hora = formatTime(utc);
-            let fecha_hora = formatDateTime(utc);
-            $('#menu-event-modal #btn-wsp').removeAttr('onclick');
-            let wsp = info.event.extendedProps.wsp;
-            if(wsp){
-              let m = 'Hola! te recordamos que tenés un turno el día ' + fecha + ' a las ' + hora;
-              $('#menu-event-modal #btn-wsp').attr('onClick', 'sendWhatsapp("'+wsp+'","'+m+'");');
-            }
-
-            $('#menu-event-modal .modal-title').html('Turno de ' + info.event.title + ' ' + fecha_hora);
-            $('#menu-event-modal #btn-delete').removeAttr('onclick');
-            $('#menu-event-modal #btn-delete').attr('onClick', 'deleteEvent("'+info.event.id+'");');
-            $('#menu-event-modal').modal('show');
-          },
-          eventDrop: function(info) {
-            if (!confirm("¿Mover el turno de " + info.event.title + " al " + formatDate(info.event.start) + "?"))
-              info.revert();
-            //else
-              // TODO: actualizar la base de datos
-          },
-          dateClick: function(info) {
-            console.log(info.dateStr);
-            //let start = info.dateStr;
-            //let utc = new Date(start.getTime() + start.getTimezoneOffset() * 60000);
-
-            $('#btn_view_day').removeAttr('onclick');
-            $('#btn_view_day').attr('onClick', 'viewDay("'+info.dateStr+'");');
-
-            $('#btn_add_event').removeAttr('onclick');
-            $('#btn_add_event').attr('onClick', 'addEvent("'+info.dateStr+'");');
-
-            $('#menu-modal').modal('show');
+          let fecha = formatDate(utc);
+          let hora = formatTime(utc);
+          let fecha_hora = formatDateTime(utc);
+          $('#menu-event-modal #btn-wsp').removeAttr('onclick');
+          let wsp = info.event.extendedProps.wsp;
+          if(wsp){
+            let m = 'Hola! te recordamos que tenés un turno el día ' + fecha + ' a las ' + hora;
+            $('#menu-event-modal #btn-wsp').attr('onClick', 'sendWhatsapp("'+wsp+'","'+m+'");');
           }
-          });
-        calendar.render();
-      //});      
+
+          $('#menu-event-modal .modal-title').html('Turno de ' + info.event.title + ' ' + fecha_hora);
+          $('#menu-event-modal #btn-delete').removeAttr('onclick');
+          $('#menu-event-modal #btn-delete').attr('onClick', 'deleteEvent("'+info.event.id+'");');
+          $('#menu-event-modal').modal('show');
+        },
+        eventDrop: function(info) {
+          let start_utc = new Date(info.event.start.getTime() + info.event.start.getTimezoneOffset() * 60000);
+          if (!confirm("¿Mover el turno de " + info.event.title + " al " + formatDateTime(start_utc) + "?"))
+            info.revert();
+          else{
+            console.log(info);
+            let start = info.event.start;
+            let start_utc = new Date(start.getTime() + start.getTimezoneOffset() * 60000);
+            let end = info.event.end;
+            let end_utc = '';
+            if (end)
+              end_utc = new Date(end.getTime() + end.getTimezoneOffset() * 60000);
+            let id = info.event.id;
+            updateEvent(id,formatUpdate(start_utc),formatUpdate(end_utc));
+          }
+        },
+        dateClick: function(info) {
+          console.log('Día seleccionado: ' + info.dateStr);
+
+          $('#btn_view_day').removeAttr('onclick');
+          $('#btn_view_day').attr('onClick', 'viewDay("'+info.dateStr+'");');
+
+          $('#btn_add_event').removeAttr('onclick');
+          $('#btn_add_event').attr('onClick', 'addEvent("'+info.dateStr+'");');
+
+          $('#menu-modal').modal('show');
+        }
+        });
+      calendar.render();
     }
 
     function deleteEvent(id){
       let event = calendar.getEventById(id);
-      let fecha = formatDate(event.start);
-      let hora = formatTime(event.start);
+
+      let start = event.start;
+      let utc = new Date(start.getTime() + start.getTimezoneOffset() * 60000);
+      
+      let fecha = formatDate(utc);
+      let hora = formatTime(utc);
+
       $('#menu-event-modal').modal('hide');
       $('#delete-event-modal .modal-title').html('¿Desea eliminar el turno de ' + event.title + ' del dia ' + fecha + ' a las ' + hora + '?');
       $('#delete-event-modal #btn-delete-event').removeAttr('onclick');
@@ -328,6 +348,30 @@
               if(responseData.success == 'true'){
                 $('#delete-event-modal #btn-delete').removeAttr('onclick');
                 $('#delete-event-modal').modal('hide');
+                calendar.refetchEvents();
+              }
+            },
+            error: function(errorThrown) {
+              console.log('Error');
+              console.log(errorThrown);
+            }
+      });
+    }
+
+    function updateEvent(id,start,end){
+      let url = '/turno/actualizar/' + id + '/?start=' + start + '&end=' + end;
+      $.ajax({
+            url: encodeURI(url),
+            dataType: "json",
+            contentType: false,
+            processData: false,
+            success: function(responseData) {
+              console.log('success');
+              console.log(responseData);
+              console.log(responseData.success == 'true');
+              if(responseData.success == 'true'){
+                //$('#delete-event-modal #btn-delete').removeAttr('onclick');
+                //$('#delete-event-modal').modal('hide');
                 calendar.refetchEvents();
               }
             },

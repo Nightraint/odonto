@@ -67,6 +67,7 @@ urlpatterns = [
     path('turno/', turno.index, name='turno_index'),
     path('turno/get_all', turno.get_all, name='get_all'),
     path('turno/eliminar/<int:pk>', turno.eliminar, name='eliminar_turno'),
+    path('turno/actualizar/<int:pk>/', turno.actualizar, name='actualizar_turno'),
 
     path('',TemplateView.as_view(template_name='index.html'), name='index'),
     path('admin/', admin.site.urls),

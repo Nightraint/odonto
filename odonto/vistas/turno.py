@@ -11,6 +11,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse
 from django.views.generic.edit import CreateView
 from odonto.forms import (TurnoForm)
+from django.db import IntegrityError
 
 class TurnoCrear(LoginRequiredMixin, SuccessMessageMixin, CreateView): 
     model = Turno
@@ -46,6 +47,21 @@ def eliminar(request, pk):
     try:
         t = Turno.objects.filter(pk=pk)
         t.delete()
+    except IntegrityError:
+        return JsonResponse({'success':'false', 'error':IntegrityError})
+    return JsonResponse({'success':'true'})
+
+@login_required
+def actualizar(request, pk):
+    try:
+        start = request.GET['start']
+        end = request.GET['end']
+        turno = Turno.objects.get(pk=pk)
+        if start:
+            turno.fecha_inicio = start
+        if end:
+            turno.fecha_fin = end
+        turno.save()
     except IntegrityError:
         return JsonResponse({'success':'false', 'error':IntegrityError})
     return JsonResponse({'success':'true'})
