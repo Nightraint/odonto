@@ -63,7 +63,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">¿Qué desea hacer?</h5>
+          <h5 class="modal-title"></h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -110,6 +110,25 @@
         <div class="modal-body" style="text-align:center;">
           <button type="button" class="btn-lila" id="btn-delete-event" style="">Si, eliminar</button>
           <button type="button" class="btn-lila" data-dismiss="modal" style="margin-right:10px;">Cancelar</button>
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal" tabindex="-1" role="dialog" id="move-event-modal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" style="text-align:center;">
+          <button type="button" class="btn-lila" id="btn-move-event" style="">Si</button>
+          <input type="hidden" id="move-confirmed"/>
+          <button type="button" class="btn-lila" id="btn-cancel-move-event" data-dismiss="modal" style="margin-right:10px;">Cancelar</button>
         </div>
         <div class="modal-footer">
         </div>
@@ -289,26 +308,57 @@
           $('#menu-event-modal').modal('show');
         },
         eventDrop: function(info) {
-          let start_utc = new Date(info.event.start.getTime() + info.event.start.getTimezoneOffset() * 60000);
-          if (!confirm("¿Mover el turno de " + info.event.title + " al " + formatDateTime(start_utc) + "?"))
-            info.revert();
-          else{
-            console.log(info);
-            let start = info.event.start;
-            let start_utc = new Date(start.getTime() + start.getTimezoneOffset() * 60000);
-            let end = info.event.end;
-            let end_utc = '';
-            if (end)
-              end_utc = new Date(end.getTime() + end.getTimezoneOffset() * 60000);
-            let id = info.event.id;
+          let start = info.event.start;
+          let start_utc = new Date(start.getTime() + start.getTimezoneOffset() * 60000);
+          let m = "¿Mover el turno de " + info.event.title + " al " + formatDateTime(start_utc) + "?";
+
+          console.log(info);
+          let end = info.event.end;
+          let end_utc = '';
+          if (end)
+            end_utc = new Date(end.getTime() + end.getTimezoneOffset() * 60000);
+          let id = info.event.id;
+
+          $('#move-event-modal .modal-title').html(m);
+          $('#move-event-modal #move-confirmed').val(0);
+
+          $('#move-event-modal #btn-move-event').unbind();
+          $('#move-event-modal #btn-move-event').click(function(){
+            $('#move-event-modal #move-confirmed').val(1);
+            console.log('boton yes clicked');
             updateEvent(id,formatUpdate(start_utc),formatUpdate(end_utc));
-          }
+          });
+
+          $('#move-event-modal').unbind();
+          $('#move-event-modal').on('hidden.bs.modal', function (e) {
+            console.log('close modal event ' + $('#move-event-modal #move-confirmed').val());
+            if ($('#move-event-modal #move-confirmed').val() == 0)
+              info.revert();
+          });
+          
+          $('#move-event-modal').modal('show');
         },
         dateClick: function(info) {
-          console.log('Día seleccionado: ' + info.dateStr);
+          console.log(info);
+          let title = '';
+
+          if(info.view.type == 'dayGridMonth')
+            title = format(info.dateStr);
+          else{
+            let date = info.date;
+            let date_utc = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
+            title = formatDateTime(date);
+          }
+
+          $('#menu-modal .modal-title').html(title);
 
           $('#btn_view_day').removeAttr('onclick');
           $('#btn_view_day').attr('onClick', 'viewDay("'+info.dateStr+'");');
+
+          if(info.view.type == 'dayGridMonth')
+            $('#btn_view_day').show();
+          else
+            $('#btn_view_day').hide();
 
           $('#btn_add_event').removeAttr('onclick');
           $('#btn_add_event').attr('onClick', 'addEvent("'+info.dateStr+'");');
@@ -370,8 +420,7 @@
               console.log(responseData);
               console.log(responseData.success == 'true');
               if(responseData.success == 'true'){
-                //$('#delete-event-modal #btn-delete').removeAttr('onclick');
-                //$('#delete-event-modal').modal('hide');
+                $('#move-event-modal').modal('hide');
                 calendar.refetchEvents();
               }
             },
@@ -390,6 +439,10 @@
       url = encodeURI(url);
       console.log(url);
       window.open(url);
+    }
+
+    function cancelMove(info){
+      info.revert();
     }
   </script>
 {% endblock %}
