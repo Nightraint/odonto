@@ -18,7 +18,7 @@ from django.urls import path, include
 from django.views.generic.base import TemplateView
 from django import views
 from . import views, settings
-from .vistas import paciente, odontologo, norma_trabajo, ficha, obra_social, plan, turno
+from .vistas import paciente, odontologo, norma_trabajo, ficha, obra_social, plan, turno, tutorial
 from django.contrib.auth import views as auth_views
 from odonto.forms import UserLoginForm, PasswordForm
 from django.contrib.staticfiles.urls import static
@@ -68,6 +68,10 @@ urlpatterns = [
     path('turno/get_all', turno.get_all, name='get_all'),
     path('turno/eliminar/<int:pk>', turno.eliminar, name='eliminar_turno'),
     path('turno/actualizar/<int:pk>/', turno.actualizar, name='actualizar_turno'),
+    path('turno/cancelar/', turno.cancelar, name='cancelar_turno'),
+
+    path('tutoriales/', tutorial.TutorialList.as_view(template_name="tutorial/list.html"), name='tutorial_index'),
+    path('tutoriales/<int:pk>', tutorial.TutorialDetalle.as_view(template_name="tutorial/detail.html"), name='tutorial_detail'),
 
     path('',TemplateView.as_view(template_name='index.html'), name='index'),
     path('admin/', admin.site.urls),

@@ -251,6 +251,9 @@ class TurnoForm(forms.ModelForm):
         self.fields['odontologo'].queryset = Odontologo.objects.filter(clinica_id = clinica_id)
         self.fields['paciente'].queryset = Paciente.objects.filter(clinica_id=clinica_id)
 
+        self.fields['odontologo'].required = True
+        self.fields['paciente'].required = True
+
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
 

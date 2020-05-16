@@ -80,6 +80,8 @@
                   <li><a href="{%url 'norma_trabajo_index'%}">Normas de trabajo</a></li>
                 </ul>
             </li>
+            <li style="margin-right:10px;"><a href="{%url 'tutorial_index'%}">Tutoriales</a>
+            </li>
           {% endif %}
           {% if user.is_authenticated %}
             <li class="drop-down"><a href="#">Hola {{ user.username }}!</a>

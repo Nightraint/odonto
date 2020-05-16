@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block head %}
+	<title>{{view.model_name}}</title>
+{% endblock %}
+
+{% block style %}
+<style>
+    .vertical-menu {
+        width: 200px;
+    }
+
+    .vertical-menu a {
+        
+        display: block;
+        padding: 12px;
+        text-decoration: none;
+    }
+
+    .vertical-menu a:hover {
+    }
+
+    .vertical-menu a.active {
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <!--div class="row">
+        <div class="col-md-8 filter-col offset-4">
+            <form method="get" style="display:inline-block;float:left;" autocomplete="off">
+                {{filter.form.filtro}}
+            </form>
+            <a href="." class="btn-lila" style="margin-left:10px;float:left;"><i class="fa fa-remove"></i> Limpiar</a>
+        </div>
+    </div-->
+    <section id="services" class="section-bg">
+        <div class="container">
+            <header class="section-header">
+                <h3>Tutoriales</h3>
+                <p>Aquí encontraras ayuda para aprender a usar las funciones del sistema.</p>
+            </header>
+            <div class="row">
+                <div class="col-md-6 offset-3 vertical-menu">
+                    {% for object in object_list %}
+                        <a href="/tutoriales/{{object.id}}" class="btn-lila" style="margin-bottom:5px;">{{ object.titulo }}</a>
+                    {% empty %}
+                        <p> No hay tutoriales disponibles.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    {% if object_list %}
+        <!--div style="text-align:center;">
+            <div class="pagination">
+                <span class="page-links">
+                    {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}" class="btn-lila" style="margin-right:10px;">Anterior</a>
+                    {% endif %}
+                    <span class="page-current">
+                        Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.
+                    </span>
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}" class="btn-lila" style="margin-left:10px;">Siguiente</a>
+                    {% endif %}
+                </span>
+            </div>
+        </div-->
+    {% endif %}
+{% endblock %}
+
+{% block script %}
+     <script type="text/javascript">
+        function list_load_complete() {
+            if ($('#id_filtro').length)
+                focus('id_filtro');
+        }
+        window.addEventListener("load", list_load_complete, false);
+    </script>
+{% endblock %}

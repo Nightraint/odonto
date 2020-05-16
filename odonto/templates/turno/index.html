@@ -72,6 +72,8 @@
           <button type="button" class="btn-lila" id="btn_add_event" style="width:230px;">Agregar turno</button>
           <br/>
           <button type="button" class="btn-lila" id="btn_view_day" style="margin-top:10px;width:230px;">Ver turnos del día</button>
+          <br/>
+          <button type="button" class="btn-lila" id="btn_cancel_day" style="margin-top:10px;width:230px;"></button>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn-lila" data-dismiss="modal" style="display:block;">Cancelar</button>
@@ -275,6 +277,14 @@
         editable: true,
         eventLimit: true, // allow "more" link when too many events
         eventSources:["/turno/get_all"],
+        constraint:{
+          startTime: '10:00', // a start time (10am in this example)
+          endTime: '18:00', // an end time (6pm in this example)
+
+          daysOfWeek: [ 1, 2, 3, 4 ]
+          // days of week. an array of zero-based day of week integers (0=Sunday)
+          // (Monday-Thursday in this example)
+        },
         eventRender: function(info) {
           /*
             $(info.el).append('<span class="closeon remove-event" id="delete"">×</span>');
@@ -308,11 +318,11 @@
           $('#menu-event-modal').modal('show');
         },
         eventDrop: function(info) {
+          console.log(info);
           let start = info.event.start;
           let start_utc = new Date(start.getTime() + start.getTimezoneOffset() * 60000);
           let m = "¿Mover el turno de " + info.event.title + " al " + formatDateTime(start_utc) + "?";
 
-          console.log(info);
           let end = info.event.end;
           let end_utc = '';
           if (end)
@@ -342,18 +352,23 @@
           console.log(info);
           let title = '';
 
-          if(info.view.type == 'dayGridMonth')
+          if(info.view.type == 'dayGridMonth'){
             title = format(info.dateStr);
+          }
           else{
             let date = info.date;
             let date_utc = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
-            title = formatDateTime(date);
+            title = formatDateTime(date_utc);
           }
 
           $('#menu-modal .modal-title').html(title);
 
           $('#btn_view_day').removeAttr('onclick');
           $('#btn_view_day').attr('onClick', 'viewDay("'+info.dateStr+'");');
+
+          $('#btn_cancel_day').removeAttr('onclick');
+          $('#btn_cancel_day').attr('onClick', 'cancelDay("'+info.dateStr+'");');
+          $('#btn_cancel_day').text('Marcar día no hábil');
 
           if(info.view.type == 'dayGridMonth')
             $('#btn_view_day').show();
@@ -364,8 +379,41 @@
           $('#btn_add_event').attr('onClick', 'addEvent("'+info.dateStr+'");');
 
           $('#menu-modal').modal('show');
+        },
+        eventResize: function(info) {
+          console.log(info);
+          let start = info.event.start;
+          let start_utc = new Date(start.getTime() + start.getTimezoneOffset() * 60000);
+          
+          let end = info.event.end;
+          let end_utc = '';
+          if (end)
+            end_utc = new Date(end.getTime() + end.getTimezoneOffset() * 60000);
+          let id = info.event.id;
+
+          let m = "¿Modificar el turno de " + info.event.title + " al " + formatDateTime(end_utc) + "?";
+
+
+          $('#move-event-modal .modal-title').html(m);
+          $('#move-event-modal #move-confirmed').val(0);
+
+          $('#move-event-modal #btn-move-event').unbind();
+          $('#move-event-modal #btn-move-event').click(function(){
+            $('#move-event-modal #move-confirmed').val(1);
+            console.log('boton yes clicked');
+            updateEvent(id,formatUpdate(start_utc),formatUpdate(end_utc));
+          });
+
+          $('#move-event-modal').unbind();
+          $('#move-event-modal').on('hidden.bs.modal', function (e) {
+            console.log('close modal event ' + $('#move-event-modal #move-confirmed').val());
+            if ($('#move-event-modal #move-confirmed').val() == 0)
+              info.revert();
+          });
+          
+          $('#move-event-modal').modal('show');
         }
-        });
+      });
       calendar.render();
     }
 
@@ -431,6 +479,29 @@
       });
     }
 
+    function cancelDay(day){
+      let url = '/turno/cancelar/?day='+day;
+      $.ajax({
+            url: encodeURI(url),
+            dataType: "json",
+            contentType: false,
+            processData: false,
+            success: function(responseData) {
+              console.log('success');
+              console.log(responseData);
+              console.log(responseData.success == 'true');
+              if(responseData.success == 'true'){
+                $('#menu-event-modal').modal('hide');
+                calendar.refetchEvents();
+              }
+            },
+            error: function(errorThrown) {
+              console.log('Error');
+              console.log(errorThrown);
+            }
+      });
+    }
+
     function sendWhatsapp(nro,msg){
       nro = nro.replace('+','').replace('-','').replace('.','').replace(' ','').replace('(','').replace(')','').trim();
       if (nro.substring(0,2) != '54')
@@ -439,10 +510,6 @@
       url = encodeURI(url);
       console.log(url);
       window.open(url);
-    }
-
-    function cancelMove(info){
-      info.revert();
     }
   </script>
 {% endblock %}

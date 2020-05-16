@@ -198,11 +198,12 @@ class Imagen(models.Model):
         return os.path.basename(self.imagen.name)
 
 class Turno(models.Model):
-    paciente = models.ForeignKey('Paciente',on_delete=models.PROTECT)
-    odontologo = models.ForeignKey('Odontologo',on_delete=models.PROTECT)
+    paciente = models.ForeignKey('Paciente',on_delete=models.PROTECT,blank=True,null=True)
+    odontologo = models.ForeignKey('Odontologo',on_delete=models.PROTECT,blank=True,null=True)
     fecha_inicio = models.DateTimeField()
     fecha_fin = models.DateTimeField()
     observaciones = models.TextField(max_length=1000,blank=True)
+    todo_el_dia = models.BooleanField(blank=True,null=True)
     creada = models.DateTimeField(auto_now_add=True)
     actualizada = models.DateTimeField(auto_now=True)
     clinica = models.ForeignKey('Clinica',on_delete=models.PROTECT)
@@ -215,3 +216,19 @@ class Turno(models.Model):
     
     def model_name_lower(self):
         return "turno"
+
+class Tutorial(models.Model):
+    titulo = models.CharField(max_length=200,null=True,blank=True)
+    descripcion = models.CharField(max_length=1000,null=True,blank=True)
+    url = models.CharField(max_length=500,null=True,blank=True)
+    categoria = models.CharField(max_length=100,null=True,blank=True)
+
+    def __str__(self):
+    	return self.titulo
+
+    def model_name(self):
+        return "Tutorial"
+    
+    def model_name_lower(self):
+        return "tutorial"
+

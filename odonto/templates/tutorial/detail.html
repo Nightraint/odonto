@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content%}
+<section id="services" class="section-bg">
+      <div class="container">
+        <header class="section-header">
+            <h3>{{object.titulo}}</h3>
+            <p>{{object.descripcion}}</p>
+        </header>
+        <div class="col" align="center">
+            <iframe width="560" height="315" src="{{object.url}}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <p style="text-align:center;margin-top:15px;">
+            <a href="/tutoriales" type="button" class="btn-lila">Volver</a>
+        </p>
+    </div>
+</section>
+{% endblock %}

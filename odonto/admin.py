@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 
-from .models import Obra_Social,Paciente,Norma_Trabajo,Odontologo,CustomUser,Clinica,Ficha
+from .models import Obra_Social,Paciente,Norma_Trabajo,Odontologo,CustomUser,Clinica,Ficha,Turno,Tutorial
 
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 from .models import CustomUser
@@ -19,6 +19,8 @@ class CustomUserAdmin(UserAdmin):
         (None, {'fields': ['clinica']}),
     )
 
+admin.site.register(Tutorial)
+admin.site.register(Turno)
 admin.site.register(Ficha)
 admin.site.register(Obra_Social)
 admin.site.register(Paciente)

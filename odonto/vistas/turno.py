@@ -64,9 +64,27 @@ def actualizar(request, pk):
         else:
             turno.fecha_fin = start
         turno.save()
-    except Employee.DoesNotExist:
+    except Turno.DoesNotExist:
         return JsonResponse({'success':'false', 'error':DoesNotExist})
-    except Employee.MultipleObjectsReturned:
+    except Turno.MultipleObjectsReturned:
+        return JsonResponse({'success':'false', 'error':MultipleObjectsReturned})
+    except IntegrityError:
+        return JsonResponse({'success':'false', 'error':IntegrityError})
+    return JsonResponse({'success':'true'})
+
+@login_required
+def cancelar(request):
+    try:
+        day = request.GET['day']
+        turno = Turno()
+        turno.fecha_inicio = day
+        turno.fecha_fin = day
+        turno.todo_el_dia = True
+        turno.clinica_id = request.user.clinica_id
+        turno.save()
+    except Turno.DoesNotExist:
+        return JsonResponse({'success':'false', 'error':DoesNotExist})
+    except Turno.MultipleObjectsReturned:
         return JsonResponse({'success':'false', 'error':MultipleObjectsReturned})
     except IntegrityError:
         return JsonResponse({'success':'false', 'error':IntegrityError})
@@ -110,7 +128,8 @@ def get_all(request):
         ).annotate(title = F('paciente__nombre_apellido')
         ).annotate(start = F('fecha_inicio')
         ).annotate(end = F('fecha_fin')
-        ).annotate(wsp = F('paciente__whatsapp')) # or simply .values() to get all fields
+        ).annotate(wsp = F('paciente__whatsapp')
+        ).annotate(allDay = F('todo_el_dia')) # or simply .values() to get all fields
 
     p_list = list(turnos)  # important: convert the QuerySet to a list object
 
