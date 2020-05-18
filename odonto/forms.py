@@ -175,7 +175,7 @@ class OdontologoForm(forms.ModelForm):
 class TurnoForm(forms.ModelForm):
     class Meta:
         model = Turno
-        exclude = ('clinica',)
+        exclude = ('clinica','todo_el_dia',)
 
     fecha_inicio = forms.DateTimeField(
         input_formats=['%d/%m/%Y %H:%M'],
