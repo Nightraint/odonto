@@ -1,5 +1,25 @@
 {% extends "base.html" %}
-
+{% block head %}
+    <title>{{object}}</title>
+{% endblock %}
+{% block style%}
+<style>
+    .video-responsive {
+        height: 0;
+        overflow: hidden;
+        padding-bottom: 56.25%;
+        padding-top: 30px;
+        position: relative;
+    }
+    .video-responsive iframe, .video-responsive object, .video-responsive embed {
+        height: 100%;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 100%;
+    }
+</style>
+{% endblock %}
 {% block content%}
 <section id="services" class="section-bg">
       <div class="container">
@@ -7,8 +27,8 @@
             <h3>{{object.titulo}}</h3>
             <p>{{object.descripcion}}</p>
         </header>
-        <div class="col" align="center">
-            <iframe width="560" height="315" src="{{object.url}}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <div class="video-responsive">
+            <iframe src="{{object.url}}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
         <p style="text-align:center;margin-top:15px;">
             <a href="/tutoriales" type="button" class="btn-lila">Volver</a>

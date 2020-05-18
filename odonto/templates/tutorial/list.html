@@ -6,7 +6,7 @@
 {% block style %}
 <style>
     .vertical-menu {
-        width: 200px;
+        /*width: 200px;*/
     }
 
     .vertical-menu a {
@@ -39,8 +39,8 @@
                 <h3>Tutoriales</h3>
                 <p>Aquí encontraras ayuda para aprender a usar las funciones del sistema.</p>
             </header>
-            <div class="row">
-                <div class="col-md-6 offset-3 vertical-menu">
+            <div class="row justify-content-around">
+                <div class="col-md-6  vertical-menu">
                     {% for object in object_list %}
                         <a href="/tutoriales/{{object.id}}" class="btn-lila" style="margin-bottom:5px;">{{ object.titulo }}</a>
                     {% empty %}

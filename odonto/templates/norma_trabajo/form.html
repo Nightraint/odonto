@@ -81,28 +81,28 @@
 
 {% block script %}
     <script>
-        var select_obra_social = document.getElementById('id_obra_social');
+        var select_obra_social;
         var obra_social_object;
-        var bonos_container = document.getElementById('bonos_container');
-        var coseguro_container = document.getElementById('coseguro_container');
+        var bonos_container;
+        var coseguro_container;
 
         $(document).ready(function(){
-            
-        });
+            select_obra_social = $('#id_obra_social');
+            bonos_container = $('#bonos_container');
+            coseguro_container = $('#coseguro_container');
 
-        $("#id_obra_social").select2({
-            tags:true,
-            placeholder: 'Obra social',
-            allowClear: true
-        });
+            $("#id_obra_social").select2({
+                tags:true,
+                placeholder: 'Obra social',
+                allowClear: true
+            });
 
-        function load_complete_norma_trabajo() {
-            var obra_social = parseInt(select_obra_social.value);
+            let obra_social = parseInt(select_obra_social.val());
             if (isNaN(obra_social) == false)
                 cargar_obra_social();
-            select_obra_social.addEventListener("change", cargar_obra_social);
-        }
-        window.addEventListener("load", load_complete_norma_trabajo, false);
+            select_obra_social.change(cargar_obra_social);
+
+        });
 
         var xhttp_os = new XMLHttpRequest();
         xhttp_os.onreadystatechange = function() {
@@ -111,27 +111,27 @@
                     obra_social_object = JSON.parse(this.responseText)[0].fields;
                     console.log(obra_social_object);
                     if (obra_social_object.usa_bonos)
-                        bonos_container.style.display = 'inline-block';
+                        bonos_container.css('display', 'inline-block');
                     else
-                        bonos_container.style.display = 'none';
+                        bonos_container.hide();
                     
                     if (obra_social_object.usa_coseguro)
-                        coseguro_container.style.display = 'inline-block';
+                        coseguro_container.css('display', 'inline-block');
                     else
-                        coseguro_container.style.display = 'none';
+                        coseguro_container.hide();
                 }
             };
 
         function cargar_obra_social(){
-            var obra_social = parseInt(select_obra_social.value);
+            let obra_social = parseInt(select_obra_social.val());
             console.log('cargar obra social ' + obra_social);
             if (isNaN(obra_social) == false){
                 xhttp_os.open("GET", "/obra_social/"+ obra_social, true);
                 xhttp_os.send();
             }
             else{
-                bonos_container.style.display = 'none';
-                coseguro_container.style.display = 'none';
+                bonos_container.hide();
+                coseguro_container.hide();
             }
         }
     </script>
