@@ -43,12 +43,12 @@
 {% block script %}
     <script>
         $('#add-modal').modal('show');
-        $("#id_paciente").select2({
+        $('#form-turno #id_paciente').select2({
             tags:true,
             placeholder: 'Paciente',
             allowClear: true
         });
-        $("#id_odontologo").select2({
+        $('#form-turno #id_odontologo').select2({
             tags:true,
             placeholder: 'Odontólogo',
             allowClear: true

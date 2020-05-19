@@ -56,6 +56,9 @@
   </style>
 {% endblock %}
 {% block content %}
+  <div align="center" id="div-filter">
+    {{form.odontologo}}
+  </div>
 
   <div id='calendar'></div>
   
@@ -146,7 +149,10 @@
 
     $('document').ready(function(){
       calendarEl = document.getElementById('calendar');
-       loadCalendar();
+
+      $('#div-filter #id_odontologo').change(refreshCalendar);
+
+      loadCalendar();
     });
 
     function viewDay(dateStr){
@@ -169,6 +175,8 @@
             $('body #add-modal').remove();
           $('body').append(data);
           $('#form-turno').submit(submitAdd);
+          let odontologo = $('#div-filter #id_odontologo').val();
+          $('#form-turno #id_odontologo').val(odontologo).trigger('change');
           $('#add-modal').modal('show');
       });
     }
@@ -260,7 +268,26 @@
       return strTime;
     }
 
-    function loadCalendar(json){
+    function refreshCalendar(){
+      $('#div-filter #id_odontologo').prop("disabled",true);
+      var eventSource = calendar.getEventSources();
+      let odontologo = $('#div-filter #id_odontologo').val();
+
+      let console_msg = 'refreshCalendar - eventSource.length:' + eventSource.length + ' - odontologo:' + odontologo;
+      console.log(console_msg);
+
+      if(isNaN(odontologo))
+        return;
+      if (eventSource[0])
+        eventSource[0].remove();
+      calendar.addEventSource('/turno/get_all?odontologo='+odontologo);
+      calendar.refetchEvents();
+    }
+
+    function loadCalendar(){
+      let odontologo = $('#div-filter #id_odontologo').val();
+      if(isNaN(odontologo))
+        return;
       calendar = new FullCalendar.Calendar(calendarEl, {
         plugins: [ 'interaction', 'dayGrid', 'timeGrid', 'list' ],
         timeZone: 'utc',
@@ -276,7 +303,7 @@
         selectable: true,
         editable: true,
         eventLimit: true, // allow "more" link when too many events
-        eventSources:["/turno/get_all"],
+        eventSources:['/turno/get_all?odontologo='+odontologo],
         constraint:{
           startTime: '10:00', // a start time (10am in this example)
           endTime: '18:00', // an end time (6pm in this example)
@@ -412,7 +439,11 @@
           });
           
           $('#move-event-modal').modal('show');
-        }
+        },
+        loading: function(bool){
+          if (bool == false)
+            $('#div-filter #id_odontologo').prop( "disabled", false );
+        },
       });
       calendar.render();
     }

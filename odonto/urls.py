@@ -69,6 +69,7 @@ urlpatterns = [
     path('turno/eliminar/<int:pk>', turno.eliminar, name='eliminar_turno'),
     path('turno/actualizar/<int:pk>/', turno.actualizar, name='actualizar_turno'),
     path('turno/cancelar/', turno.cancelar, name='cancelar_turno'),
+    path('turno/ver_turnos/', turno.ver_turnos, name='ver_turnos'),
 
     path('tutoriales/', tutorial.TutorialList.as_view(template_name="tutorial/list.html"), name='tutorial_index'),
     path('tutoriales/<int:pk>', tutorial.TutorialDetalle.as_view(template_name="tutorial/detail.html"), name='tutorial_detail'),

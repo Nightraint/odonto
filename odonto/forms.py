@@ -257,6 +257,33 @@ class TurnoForm(forms.ModelForm):
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
 
+##################### VER TURNOS ################
+
+class VerTurnosForm(forms.Form):
+    odontologo = forms.ModelChoiceField(label='Odontologo',
+        label_suffix=':',
+        required=True,
+        queryset=Odontologo.objects.none(),
+        widget=forms.Select(attrs={
+            'style' : 'max-width:880px;',
+        }))
+
+    class meta:
+        fields = ('odontologo',)
+        #exclude = ()
+        # widgets = {
+		# 	'mensaje': forms.Textarea(attrs={'rows':4, 'cols':15}),
+		# }
+
+    def __init__(self, *args, **kwargs):
+        clinica_id = kwargs.pop('clinica_id')
+        super(VerTurnosForm, self).__init__(*args, **kwargs)
+        self.fields['odontologo'].queryset = Odontologo.objects.filter(clinica_id = clinica_id)
+        for visible in self.visible_fields():
+            visible.field.widget.attrs['class'] = 'form-control'
+        self.fields['odontologo'].empty_label = 'Seleccionar odontólogo'
+    
+
 ##################### FICHAS #################### 
 
 class FichaForm(forms.ModelForm):

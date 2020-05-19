@@ -3,14 +3,14 @@ from django.core import serializers
 from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from odonto.models import Turno
+from odonto.models import Turno, Odontologo
 from datetime import datetime,timezone
 from django.db.models import F
 from odonto.vistas.util import CustomErrorList
 from django.contrib.messages.views import SuccessMessageMixin 
 from django.urls import reverse
 from django.views.generic.edit import CreateView
-from odonto.forms import (TurnoForm)
+from odonto.forms import (TurnoForm,VerTurnosForm)
 from django.db import IntegrityError
 
 class TurnoCrear(LoginRequiredMixin, SuccessMessageMixin, CreateView): 
@@ -115,22 +115,40 @@ def index(request):
     prueba = today.strftime('%Y-%m-%dT%H:%M:%S %p')
     formatedDay = today.strftime('%Y-%m-%d')
 
+    odontologo = request.GET.get('odontologo',0)
+    if not odontologo:
+        odontologo = Odontologo.objects.filter(clinica_id = request.user.clinica.id).order_by('id').first()
+    form = VerTurnosForm(clinica_id = request.user.clinica.id, initial = {'odontologo' : odontologo})
+
     context = {
         'today': formatedDay,
-        'prueba':prueba
+        'prueba':prueba,
+        'form': form,
     }
     return render(request, 'turno/index.html',context)
 
 @login_required
 def get_all(request):
-    turnos = Turno.objects.filter(clinica = request.user.clinica
-        ).values('id',
-        ).annotate(title = F('paciente__nombre_apellido')
-        ).annotate(start = F('fecha_inicio')
-        ).annotate(end = F('fecha_fin')
-        ).annotate(wsp = F('paciente__whatsapp')
-        ).annotate(allDay = F('todo_el_dia')) # or simply .values() to get all fields
+    if request.GET['odontologo']:
+        turnos = Turno.objects.filter(clinica = request.user.clinica
+            ).filter(odontologo_id = request.GET['odontologo']
+            ).values('id',
+            ).annotate(title = F('paciente__nombre_apellido')
+            ).annotate(start = F('fecha_inicio')
+            ).annotate(end = F('fecha_fin')
+            ).annotate(wsp = F('paciente__whatsapp')
+            ).annotate(allDay = F('todo_el_dia')) # or simply .values() to get all fields
+    else:
+        turnos = Turno.objects.none()
 
     p_list = list(turnos)  # important: convert the QuerySet to a list object
 
     return JsonResponse(p_list, safe=False)
+
+@login_required
+def ver_turnos(request):
+    form = VerTurnosForm(clinica_id = request.user.clinica.id)
+    context = {
+        'form': form,
+    }
+    return render(request, 'turno/ver_turnos.html', context)
