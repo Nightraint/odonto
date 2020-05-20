@@ -102,9 +102,9 @@ class PacienteEliminar(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
 
 @login_required
 def chequear_norma(request):
-    id_paciente = int(request.GET.get('paciente'))
-    id_norma_trabajo = int(request.GET.get('norma_trabajo'))
-    fecha = request.GET.get('fecha')
+    id_paciente = int(request.GET.get('paciente',0))
+    id_norma_trabajo = int(request.GET.get('norma_trabajo',0))
+    fecha = request.GET.get('fecha','')
 
     fecha_ficha = datetime.strptime(fecha , '%d/%m/%Y %H:%M')
     
@@ -115,8 +115,11 @@ def chequear_norma(request):
     meses = norma_trabajo.meses
     años = norma_trabajo.años
 
-    consulta = Consulta.objects.filter(ficha__paciente_id = id_paciente).filter(norma_trabajo_id = id_norma_trabajo).order_by('fecha').first()
-
+    consulta = Consulta.objects.filter(ficha__paciente_id = id_paciente
+        ).filter(norma_trabajo_id = id_norma_trabajo
+        ).order_by('fecha'
+        ).first()
+    
     response_data = {}
     
     if consulta:

@@ -227,7 +227,8 @@ def editar(request,pk):
                            'detalle': c.detalle,
                            'norma_trabajo' : c.norma_trabajo_id,
                            'id_consulta': c.id,
-                           'nro_diente': c.nro_diente}
+                           'nro_diente': c.nro_diente,
+                           'descripcion_norma_trabajo': c.norma_trabajo}
                             for c in consultas]
         consultas_formset = ConsultaFormSet(prefix='consultas',initial=consultas_data)
     else:

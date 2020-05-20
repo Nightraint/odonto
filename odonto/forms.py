@@ -632,6 +632,7 @@ class BaseImagenFichaFormSet(BaseFormSet):
 class ConsultaForm(forms.Form):
     fecha = forms.DateTimeField(
         input_formats=['%d/%m/%Y %H:%M'], 
+        required=False,
         widget=BootstrapDateTimePickerInput(attrs={
                     'placeholder': 'Fecha',
                 },
@@ -660,6 +661,8 @@ class ConsultaForm(forms.Form):
                 required=False)
 
     id_consulta = forms.IntegerField(required=False)
+
+    descripcion_norma_trabajo = forms.CharField(required=False)
 
     def __init__(self, *args, **kwargs):
         clinica_id = kwargs.pop('clinica_id')

@@ -6,10 +6,10 @@
 {% block style %}
     <style>
         label.nueva_consulta{
-            padding-bottom:5px;
+            padding-bottom:10px;
             font-size:15px;
             font-weight:bold;
-            /*margin-left:13px;*/
+            margin-left:13px;
             color:#413e66;
         }
 
@@ -118,9 +118,9 @@
         }
 
         .div_nueva_consulta{
-            padding-bottom:10px;
-            border-bottom: 1px solid #413e66;
-            /*border-radius:.25rem;*/
+            padding:10px 5px;
+            border: 1px solid #413e66;
+            border-radius:.25rem;
         }
     </style>
 {% endblock %}
@@ -187,38 +187,20 @@
                 </div>
             </div>
              <div style="margin-bottom:1em">
-                <label style="display:block;color:#413e66;font-size:18px;font-weight:bold;">Historia:</label>
+                <label style="display:block;">Historia:</label>
                 {{ consultas_formset.management_form }}
                 {% for form in consultas_formset %}
                     <div class="consultas-formset" style="margin-bottom:0.5em;">
-                    <div style="display:none;" id="id_consulta">
+                     <div style="display:none;" id="id_consulta">
                         {{ form.id_consulta }}
                     </div>
                     {% if form.initial %}
-                        <div class="row">
-                            <div class="col-md-4">
-                                <b>Fecha: </b>{{form.initial.fecha}}
-                            </div>
-                            <div class="col-md-2">
-                            {% if form.initial.nro_diente %}
-                                <b>Diente: </b>{{form.initial.nro_diente}}
-                            {% endif %}
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <b>Norma de trabajo: </b>{{form.initial.descripcion_norma_trabajo}}
-                            </div>
-                        </div>
-                        <div class="row" style="border-bottom: 1px solid #413e66;margin-bottom:10px;">
-                            <div class="col-md-12">
-                                <b>Detalle: </b>{{form.initial.detalle}}
-                            </div>
-                        </div>
+                        <button type="button" class="accordion">Consulta del {{form.initial.fecha}}</button>
+                        <div class="panel">
                     {% else %}
                         <div class="div_nueva_consulta">
-                        <label class="nueva_consulta">Nueva historia:</label>
-                    
+                        <label class="nueva_consulta">Nueva consulta:</label>
+                    {% endif%}
                         <div class="row">
                             <div class="col-md-4">
                                 {{ form.fecha }}
@@ -259,8 +241,7 @@
                                 {% endif %}
                             </div>
                         </div>
-                        </div>
-                    {% endif%}
+                    </div>
                 </div>
                 {% endfor %}
                 {% if consultas_formset.non_form_errors %}
@@ -297,7 +278,7 @@
             });
 
             $('.consultas-formset').formset({
-                addText: 'Agregar historia',
+                addText: 'Agregar consulta',
                 deleteText: '',
                 prefix: "{{ consultas_formset.prefix }}"
             });
