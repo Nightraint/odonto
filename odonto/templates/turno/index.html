@@ -441,6 +441,7 @@
           $('#move-event-modal').modal('show');
         },
         loading: function(bool){
+          console.log('loading:'+bool);
           if (bool == false)
             $('#div-filter #id_odontologo').prop( "disabled", false );
         },

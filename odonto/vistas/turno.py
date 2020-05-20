@@ -54,8 +54,8 @@ def eliminar(request, pk):
 @login_required
 def actualizar(request, pk):
     try:
-        start = request.GET['start']
-        end = request.GET['end']
+        start = request.GET.get('start','')
+        end = request.GET.get('end','')
         turno = Turno.objects.get(pk=pk,clinica_id = request.user.clinica_id)
         if start:
             turno.fecha_inicio = start
@@ -129,9 +129,17 @@ def index(request):
 
 @login_required
 def get_all(request):
-    if request.GET['odontologo']:
+    start = request.GET.get('start','')
+    start_ = datetime.strptime(start,'%Y-%m-%dT%H:%M:%S')
+
+    end = request.GET.get('end','')
+    end_ = datetime.strptime(end,'%Y-%m-%dT%H:%M:%S')
+
+    odontologo = request.GET.get('odontologo',0)
+    if odontologo:
         turnos = Turno.objects.filter(clinica = request.user.clinica
-            ).filter(odontologo_id = request.GET['odontologo']
+            ).filter(odontologo_id = odontologo
+            ).filter(fecha_inicio__range = (start_,end_)
             ).values('id',
             ).annotate(title = F('paciente__nombre_apellido')
             ).annotate(start = F('fecha_inicio')
