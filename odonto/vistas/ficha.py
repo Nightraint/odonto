@@ -259,6 +259,9 @@ def editar(request,pk):
                         nro_diente = nro_diente))
                 elif id_consulta:
                         id_consultas.append(id_consulta)
+                        cons = Consulta.objects.get(pk=id_consulta)
+                        cons.detalle = detalle
+                        cons.save()
             
             nuevas_imagenes = []
             id_existentes = []
@@ -294,3 +297,8 @@ def editar(request,pk):
         'funcion' : 'Editar',
     }
     return render(request, 'ficha/form.html', context)
+
+@login_required
+def odontograma(request):
+    context = {}
+    return render(request, 'ficha/odontograma.html', context)

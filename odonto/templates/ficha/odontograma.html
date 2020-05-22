@@ -1,0 +1,473 @@
+{% extends "base.html" %}
+
+{% block head %}
+<style>
+    .existente{
+        background-color:red;
+    }
+
+    .realizar{
+        background-color:blue;
+    }
+
+    .span-diente{
+        display:block;
+        width:100%;
+        font-weight:bold;
+        text-align:center;
+        margin-top:-5px;
+    }
+
+    .div-diente{
+        /*display:inline-block;*/
+        margin-left:5px;
+
+        moz-user-select: none;
+        -khtml-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    canvas{
+        border:2px solid black;
+        cursor:pointer;
+    }
+
+    .separador{
+        margin-left:5px;
+        width:2px;
+        background-color:black;
+        display:inline-block;
+        height:140px;
+    }
+
+    .separador-h{
+        height:2px;
+        background-color:black;
+        margin-bottom:5px;
+        margin-right:-10px;
+        margin-left:-5px;
+    }
+
+    .span-derecha{
+        font-weight: bold;
+        position: absolute;
+        margin-left: -100px;
+        margin-top: 60px;
+    }
+
+    .span-izquierda{
+        font-weight: bold;
+        position: absolute;
+        margin-left: 30px;
+        margin-top: 60px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div align="center">
+    <div style="display:inline-block;">
+        <div class="div-diente div-diente-arriba" id="div_diente_18">
+            <span class="span-diente">18</span>
+            <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+            <input type="hidden" value="" id="state"/>
+        </div>
+        <div class="separador-h"></div>
+        <div class="div-diente" id="div_diente_48">
+            <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+            <span class="span-diente">48</span>
+            <input type="hidden" value="" id="state"/>
+        </div>
+    </div>
+    <div style="display:inline-block;">
+        <div class="div-diente" id="div_diente_17">
+            <span class="span-diente">17</span>
+            <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+            <input type="hidden" value="" id="state"/>
+        </div>
+        <div class="separador-h"></div>
+        <div class="div-diente" id="div_diente_47">
+            <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+            <span class="span-diente">47</span>
+            <input type="hidden" value="" id="state"/>
+        </div>
+    </div>
+    <div style="display:inline-block;">
+        <div class="div-diente" id="div_diente_16">
+            <span class="span-diente">16</span>
+            <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+            <input type="hidden" value="" id="state"/>
+        </div>
+        <div class="separador-h"></div>
+        <div class="div-diente" id="div_diente_46">
+            <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+            <span class="span-diente">46</span>
+            <input type="hidden" value="" id="state"/>
+        </div>
+    </div>
+    <div style="display:inline-block;">
+        <div class="div-diente" id="div_diente_15">
+            <span class="span-diente">15</span>
+            <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+            <input type="hidden" value="" id="state"/>
+        </div>
+        <div class="separador-h"></div>
+        <div class="div-diente" id="div_diente_45">
+            <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+            <span class="span-diente">45</span>
+            <input type="hidden" value="" id="state"/>
+        </div>
+    </div>
+    <div style="display:inline-block;">
+        <div class="div-diente" id="div_diente_14">
+            <span class="span-diente">14</span>
+            <canvas id="canvas" width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+            <input type="hidden" value="" id="state"/>
+        </div>
+        <div class="separador-h"></div>
+        <div class="div-diente" id="div_diente_44">
+            <canvas id="canvas" width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+            <span class="span-diente">44</span>
+            <input type="hidden" value="" id="state"/>
+        </div>
+    </div>
+    <div style="display:inline-block;">
+        <div class="div-diente" id="div_diente_13">
+            <span class="span-diente">13</span>
+            <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+            <input type="hidden" value="" id="state"/>
+        </div>
+        <div class="separador-h"></div>
+        <div class="div-diente" id="div_diente_43">
+            <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+            <span class="span-diente">43</span>
+            <input type="hidden" value="" id="state"/>
+        </div>
+    </div>
+    <div style="display:inline-block;">
+        <div class="div-diente" id="div_diente_12">
+            <span class="span-diente">12</span>
+            <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+            <input type="hidden" value="" id="state"/>
+        </div>
+        <div class="separador-h"></div>
+        <div class="div-diente" id="div_diente_42">
+            <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+            <span class="span-diente">42</span>
+            <input type="hidden" value="" id="state"/>
+        </div>
+    </div>
+    <div style="display:inline-block;">
+        <div class="div-diente" id="div_diente_11">
+            <span class="span-diente">11</span>
+            <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+            <input type="hidden" value="" id="state"/>
+        </div>
+        <div class="separador-h"></div>
+        <div class="div-diente" id="div_diente_41">
+            <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+            <span class="span-diente">41</span>
+            <input type="hidden" value="" id="state"/>
+        </div>
+    </div>
+    <div class="separador">
+    </div>
+    <div style="display:inline-block;">
+        <div class="div-diente" id="div_diente_11">
+            <span class="span-diente">21</span>
+            <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+            <input type="hidden" value="" id="state"/>
+        </div>
+        <div class="separador-h"></div>
+        <div class="div-diente" id="div_diente_41">
+            <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+            <span class="span-diente">31</span>
+            <input type="hidden" value="" id="state"/>
+        </div>
+    </div>
+     <div style="display:inline-block;">
+        <div class="div-diente" id="div_diente_11">
+            <span class="span-diente">22</span>
+            <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+            <input type="hidden" value="" id="state"/>
+        </div>
+        <div class="separador-h"></div>
+        <div class="div-diente" id="div_diente_41">
+            <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+            <span class="span-diente">32</span>
+            <input type="hidden" value="" id="state"/>
+        </div>
+    </div>
+     <div style="display:inline-block;">
+        <div class="div-diente" id="div_diente_11">
+            <span class="span-diente">23</span>
+            <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+            <input type="hidden" value="" id="state"/>
+        </div>
+        <div class="separador-h"></div>
+        <div class="div-diente" id="div_diente_41">
+            <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+            <span class="span-diente">33</span>
+            <input type="hidden" value="" id="state"/>
+        </div>
+    </div>
+     <div style="display:inline-block;">
+        <div class="div-diente" id="div_diente_11">
+            <span class="span-diente">24</span>
+            <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+            <input type="hidden" value="" id="state"/>
+        </div>
+        <div class="separador-h"></div>
+        <div class="div-diente" id="div_diente_41">
+            <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+            <span class="span-diente">34</span>
+            <input type="hidden" value="" id="state"/>
+        </div>
+    </div>
+     <div style="display:inline-block;">
+        <div class="div-diente" id="div_diente_11">
+            <span class="span-diente">25</span>
+            <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+            <input type="hidden" value="" id="state"/>
+        </div>
+        <div class="separador-h"></div>
+        <div class="div-diente" id="div_diente_41">
+            <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+            <span class="span-diente">35</span>
+            <input type="hidden" value="" id="state"/>
+        </div>
+    </div>
+     <div style="display:inline-block;">
+        <div class="div-diente" id="div_diente_11">
+            <span class="span-diente">26</span>
+            <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+            <input type="hidden" value="" id="state"/>
+        </div>
+        <div class="separador-h"></div>
+        <div class="div-diente" id="div_diente_41">
+            <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+            <span class="span-diente">36</span>
+            <input type="hidden" value="" id="state"/>
+        </div>
+    </div>
+     <div style="display:inline-block;">
+        <div class="div-diente" id="div_diente_11">
+            <span class="span-diente">27</span>
+            <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+            <input type="hidden" value="" id="state"/>
+        </div>
+        <div class="separador-h"></div>
+        <div class="div-diente" id="div_diente_41">
+            <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+            <span class="span-diente">37</span>
+            <input type="hidden" value="" id="state"/>
+        </div>
+    </div>
+     <div style="display:inline-block;">
+        <div class="div-diente" id="div_diente_11">
+            <span class="span-diente">28</span>
+            <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+            <input type="hidden" value="" id="state"/>
+        </div>
+        <div class="separador-h"></div>
+        <div class="div-diente" id="div_diente_41">
+            <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+            <span class="span-diente">38</span>
+            <input type="hidden" value="" id="state"/>
+        </div>
+    </div>
+    <div style="margin-top:15px;">
+        <span class="span-derecha">DERECHA</span>
+        <div style="display:inline-block;">
+            <div class="div-diente" id="div_diente_15">
+                <span class="span-diente">55</span>
+                <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+                <input type="hidden" value="" id="state"/>
+            </div>
+            <div class="separador-h"></div>
+            <div class="div-diente" id="div_diente_45">
+                <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+                <span class="span-diente">85</span>
+                <input type="hidden" value="" id="state"/>
+            </div>
+        </div>
+        <div style="display:inline-block;">
+            <div class="div-diente" id="div_diente_14">
+                <span class="span-diente">54</span>
+                <canvas id="canvas" width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+                <input type="hidden" value="" id="state"/>
+            </div>
+            <div class="separador-h"></div>
+            <div class="div-diente" id="div_diente_44">
+                <canvas id="canvas" width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+                <span class="span-diente">84</span>
+                <input type="hidden" value="" id="state"/>
+            </div>
+        </div>
+        <div style="display:inline-block;">
+            <div class="div-diente" id="div_diente_13">
+                <span class="span-diente">53</span>
+                <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+                <input type="hidden" value="" id="state"/>
+            </div>
+            <div class="separador-h"></div>
+            <div class="div-diente" id="div_diente_43">
+                <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+                <span class="span-diente">83</span>
+                <input type="hidden" value="" id="state"/>
+            </div>
+        </div>
+        <div style="display:inline-block;">
+            <div class="div-diente" id="div_diente_12">
+                <span class="span-diente">52</span>
+                <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+                <input type="hidden" value="" id="state"/>
+            </div>
+            <div class="separador-h"></div>
+            <div class="div-diente" id="div_diente_42">
+                <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+                <span class="span-diente">82</span>
+                <input type="hidden" value="" id="state"/>
+            </div>
+        </div>
+        <div style="display:inline-block;">
+            <div class="div-diente" id="div_diente_11">
+                <span class="span-diente">51</span>
+                <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+                <input type="hidden" value="" id="state"/>
+            </div>
+            <div class="separador-h"></div>
+            <div class="div-diente" id="div_diente_41">
+                <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+                <span class="span-diente">81</span>
+                <input type="hidden" value="" id="state"/>
+            </div>
+        </div>
+        <div class="separador">
+        </div>
+        <div style="display:inline-block;">
+            <div class="div-diente" id="div_diente_11">
+                <span class="span-diente">61</span>
+                <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+                <input type="hidden" value="" id="state"/>
+            </div>
+            <div class="separador-h"></div>
+            <div class="div-diente" id="div_diente_41">
+                <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+                <span class="span-diente">71</span>
+                <input type="hidden" value="" id="state"/>
+            </div>
+        </div>
+        <div style="display:inline-block;">
+            <div class="div-diente" id="div_diente_11">
+                <span class="span-diente">62</span>
+                <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+                <input type="hidden" value="" id="state"/>
+            </div>
+            <div class="separador-h"></div>
+            <div class="div-diente" id="div_diente_41">
+                <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+                <span class="span-diente">72</span>
+                <input type="hidden" value="" id="state"/>
+            </div>
+        </div>
+        <div style="display:inline-block;">
+            <div class="div-diente" id="div_diente_11">
+                <span class="span-diente">63</span>
+                <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+                <input type="hidden" value="" id="state"/>
+            </div>
+            <div class="separador-h"></div>
+            <div class="div-diente" id="div_diente_41">
+                <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+                <span class="span-diente">73</span>
+                <input type="hidden" value="" id="state"/>
+            </div>
+        </div>
+        <div style="display:inline-block;">
+            <div class="div-diente" id="div_diente_11">
+                <span class="span-diente">64</span>
+                <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+                <input type="hidden" value="" id="state"/>
+            </div>
+            <div class="separador-h"></div>
+            <div class="div-diente" id="div_diente_41">
+                <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+                <span class="span-diente">74</span>
+                <input type="hidden" value="" id="state"/>
+            </div>
+        </div>
+        <div style="display:inline-block;">
+            <div class="div-diente" id="div_diente_11">
+                <span class="span-diente">65</span>
+                <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+                <input type="hidden" value="" id="state"/>
+            </div>
+            <div class="separador-h"></div>
+            <div class="div-diente" id="div_diente_41">
+                <canvas width="30" height="40" onclick="cambiarEstado($(this));"></canvas>
+                <span class="span-diente">75</span>
+                <input type="hidden" value="" id="state"/>
+            </div>
+        </div>
+        <span class="span-izquierda">IZQUIERDA</span>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    $('document').ready(function(){
+        draw();
+    });
+
+    function draw(){
+        $('canvas').each(function(){
+            console.log($(this));
+
+            let context = $(this)[0].getContext("2d");
+
+            context.lineWidth = 2;
+
+            context.rect(7,7,16,26);
+
+            context.moveTo(0, 0);
+            context.lineTo(7,7);
+
+            context.moveTo(30, 0);
+            context.lineTo(23,7);
+
+            context.moveTo(30, 40);
+            context.lineTo(23,33);
+            
+            context.moveTo(0, 40);
+            context.lineTo(7,33);
+
+            context.stroke();
+        });
+    }
+
+    function cambiarEstado(canvas){
+        console.log(canvas);
+        let div = canvas.parent();
+        let input = div.find('#state');
+        c = canvas.attr('class');
+        if (c && c.includes('realizar')){
+            canvas.attr('class','');
+            canvas.addClass('existente');
+            input.val('existente');
+        }
+        else if (c && c.includes('existente')){
+            canvas.attr('class','');
+            input.val('');
+        }
+        else{
+            canvas.attr('class','');
+            canvas.addClass('realizar');
+            input.val('realizar');
+        }
+    }
+</script>
+{% endblock %}

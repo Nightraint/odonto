@@ -243,8 +243,7 @@
                 </div>
             </div>
              <div style="margin-bottom:1em">
-                <button type="button" class="accordion">Historia </button>
-                <div class="panel">
+                <label style="display:block;color:#413e66;font-size:18px;font-weight:bold;">Historia:</label>
                 {{ consultas_formset.management_form }}
                 {% for form in consultas_formset %}
                     <div class="consultas-formset" style="margin-bottom:0.5em;">
@@ -332,7 +331,6 @@
                         {{ error|escape }}
                     {% endfor %}
                 {% endif %}
-                </div>
             </div>
             <p style="text-align:center;">
                 <input type="submit" name="ficha-submit" class="btn-lila" value="Aceptar" />

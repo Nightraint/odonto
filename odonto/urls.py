@@ -30,6 +30,7 @@ urlpatterns = [
     path('ficha/editar/<int:pk>', ficha.editar, name='editar'),
     path('ficha/detalle/<int:pk>', ficha.FichaDetalle.as_view(template_name = "ficha/detail.html"), name='detalle'),
     path('ficha/', ficha.FichaList.as_view(template_name='ficha/list.html'), name='ficha_index'),
+    path('ficha/odontograma/', ficha.odontograma, name='ficha_odontograma'),
 
     path('odontologo/crear', odontologo.OdontologoCrear.as_view(template_name = "odontologo/form.html"), name='crear'),
     path('odontologo/eliminar/<int:pk>', odontologo.OdontologoEliminar.as_view(), name='eliminar'),

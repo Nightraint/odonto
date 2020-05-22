@@ -117,15 +117,16 @@ def chequear_norma(request):
 
     consulta = Consulta.objects.filter(ficha__paciente_id = id_paciente
         ).filter(norma_trabajo_id = id_norma_trabajo
-        ).order_by('fecha'
+        ).order_by('-fecha'
         ).first()
     
     response_data = {}
-    
+
+    result = True
+
     if consulta:
         fecha_ultima = consulta.fecha.replace(tzinfo=None)
 
-        result = 'Se puede aplicar'
         aplicada_hace = ''
 
         if dias:
@@ -133,7 +134,7 @@ def chequear_norma(request):
             descripcion = 'días'
             diferencia = (fecha_ficha-fecha_ultima).days
             if (diferencia < dias):
-                result = 'No se puede aplicar'
+                result = False
                 if diferencia == 0:
                     aplicada_hace = 'menos de un dia'
                 else:
@@ -145,7 +146,7 @@ def chequear_norma(request):
             
             diferencia = diff_month(fecha_ficha,fecha_ultima)
             if (diferencia < meses):
-                result = 'No se puede aplicar'
+                result = False
                 if diferencia == 0:
                     aplicada_hace = 'menos de un mes'
                 else:
@@ -156,19 +157,18 @@ def chequear_norma(request):
             descripcion = 'años'
             diferencia = relativedelta(fecha_ficha, fecha_ultima).years
             if (diferencia < años):
-                result = 'No se puede aplicar'
+                result = False
                 if diferencia == 0:
                     aplicada_hace = 'menos de un año'
                 else:
                     aplicada_hace = '% años' % diferencia
-
-        response_data['result'] = result
 
         if aplicada_hace:
             response_data['message'] = 'Se puede aplicar cada <b>%s %s</b> y ya se ha aplicado hace <b>%s</b> para este paciente.' % (cantidad,descripcion,aplicada_hace)
             response_data['enlace'] = '/consulta/detalle/%s' % consulta.id
 
     response_data['norma_trabajo'] = '%s - %s' % (norma_trabajo.obra_social, norma_trabajo)
+    response_data['result'] = result
     return JsonResponse(response_data, safe=False)
 
 def days_between(d1, d2):
