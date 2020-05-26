@@ -132,6 +132,75 @@
             /*border-bottom: 1px solid #413e66;*/
             /*border-radius:.25rem;*/
         }
+
+        .existente{
+            background-color:red;
+        }
+
+        .realizar{
+            background-color:blue;
+        }
+
+        .span-diente{
+            display:block;
+            width:100%;
+            font-weight:bold;
+            text-align:center;
+            margin-top:-5px;
+        }
+
+        .div-diente{
+            /*display:inline-block;*/
+            margin-left:5px;
+            moz-user-select: none;
+            -khtml-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .no-selectable{
+            moz-user-select: none;
+            -khtml-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        canvas{
+            /*border:2px solid black;*/
+            cursor:pointer;
+        }
+
+        .separador{
+            margin-left:5px;
+            width:2px;
+            background-color:#566573;
+            display:inline-block;
+            height:140px;
+        }
+
+        .separador-h{
+            height:2px;
+            background-color:#566573;
+            margin-bottom:5px;
+            margin-right:-10px;
+            margin-left:-5px;
+        }
+
+        .span-derecha{
+            font-weight: bold;
+            position: absolute;
+            margin-left: -100px;
+            margin-top: 60px;
+        }
+
+        .span-izquierda{
+            font-weight: bold;
+            position: absolute;
+            margin-left: 30px;
+            margin-top: 60px;
+        }
     </style>
 {% endblock %}
 
@@ -223,10 +292,9 @@
                             {{ imagen_form.descripcion }}
                         </div>
                         {% if not imagen_form.initial %}
-                        <label for="{{imagen_form.imagen.auto_id}}" class="label-seleccionar" style="display:block !important;cursor:pointer;text-align:center;">
-                            <!--img class="add-photo" src="{% static '/images/add_photo.png' %}" style="width:100px;" title="Agregar imagen"/-->
-                            <span class="btn-lila">Agregar imagen</span>
-                        </label>
+                            <label for="{{imagen_form.imagen.auto_id}}" class="label-seleccionar" style="display:block !important;cursor:pointer;text-align:center;">
+                                <span class="btn-lila">Agregar imagen</span>
+                            </label>
                         {% endif %}
                         {% if imagen_form.imagen.errors %}
                             {% for error in imagen_form.imagen.errors %}
@@ -242,7 +310,7 @@
                 {% endif %}
                 </div>
             </div>
-             <div style="margin-bottom:1em">
+            <div style="margin-bottom:1em">
                 <button type="button" class="accordion">Historia </button>
                 <div class="panel">
                 {{ consultas_formset.management_form }}
@@ -282,7 +350,6 @@
                     {% else %}
                         <div class="div_nueva_consulta">
                         <label class="nueva_consulta">Nueva historia:</label>
-                    
                         <div class="row">
                             <div class="col-md-4">
                                 {{ form.fecha }}
@@ -334,6 +401,359 @@
                 {% endif %}
                 </div>
             </div>
+            <div style="margin-bottom:1em">
+                <button type="button" class="accordion">Odontograma </button>
+                <div class="panel" id="odontograma">
+                    <div align="center" style="min-width:700px;" class="no-selectable">
+                        <div style="display:inline-block;">
+                            <div class="div-diente">
+                                <span class="span-diente">18</span>
+                                <canvas width="30" height="40"></canvas>
+                                {{ficha_form.d18}}
+                            </div>
+                            <div class="separador-h"></div>
+                            <div class="div-diente">
+                                <canvas width="30" height="40"></canvas>
+                                <span class="span-diente">48</span>
+                                {{ficha_form.d48}}
+                            </div>
+                        </div>
+                        <div style="display:inline-block;">
+                            <div class="div-diente">
+                                <span class="span-diente">17</span>
+                                <canvas width="30" height="40"></canvas>
+                                {{ficha_form.d17}}
+                            </div>
+                            <div class="separador-h"></div>
+                            <div class="div-diente">
+                                <canvas width="30" height="40"></canvas>
+                                <span class="span-diente">47</span>
+                                {{ficha_form.d47}}
+                            </div>
+                        </div>
+                        <div style="display:inline-block;">
+                            <div class="div-diente">
+                                <span class="span-diente">16</span>
+                                <canvas width="30" height="40"></canvas>
+                                {{ficha_form.d16}}
+                            </div>
+                            <div class="separador-h"></div>
+                            <div class="div-diente">
+                                <canvas width="30" height="40"></canvas>
+                                <span class="span-diente">46</span>
+                                {{ficha_form.d46}}
+                            </div>
+                        </div>
+                        <div style="display:inline-block;">
+                            <div class="div-diente">
+                                <span class="span-diente">15</span>
+                                <canvas width="30" height="40"></canvas>
+                                {{ficha_form.d15}}
+                            </div>
+                            <div class="separador-h"></div>
+                            <div class="div-diente">
+                                <canvas width="30" height="40"></canvas>
+                                <span class="span-diente">45</span>
+                                {{ficha_form.d45}}
+                            </div>
+                        </div>
+                        <div style="display:inline-block;">
+                            <div class="div-diente">
+                                <span class="span-diente">14</span>
+                                <canvas id="canvas" width="30" height="40"></canvas>
+                                {{ficha_form.d14}}
+                            </div>
+                            <div class="separador-h"></div>
+                            <div class="div-diente">
+                                <canvas id="canvas" width="30" height="40"></canvas>
+                                <span class="span-diente">44</span>
+                                {{ficha_form.d44}}
+                            </div>
+                        </div>
+                        <div style="display:inline-block;">
+                            <div class="div-diente">
+                                <span class="span-diente">13</span>
+                                <canvas width="30" height="40"></canvas>
+                                {{ficha_form.d13}}
+                            </div>
+                            <div class="separador-h"></div>
+                            <div class="div-diente">
+                                <canvas width="30" height="40"></canvas>
+                                <span class="span-diente">43</span>
+                                {{ficha_form.d43}}
+                            </div>
+                        </div>
+                        <div style="display:inline-block;">
+                            <div class="div-diente">
+                                <span class="span-diente">12</span>
+                                <canvas width="30" height="40"></canvas>
+                                {{ficha_form.d12}}
+                            </div>
+                            <div class="separador-h"></div>
+                            <div class="div-diente">
+                                <canvas width="30" height="40"></canvas>
+                                <span class="span-diente">42</span>
+                                {{ficha_form.d42}}
+                            </div>
+                        </div>
+                        <div style="display:inline-block;">
+                            <div class="div-diente">
+                                <span class="span-diente">11</span>
+                                <canvas width="30" height="40"></canvas>
+                                {{ficha_form.d11}}
+                            </div>
+                            <div class="separador-h"></div>
+                            <div class="div-diente">
+                                <canvas width="30" height="40"></canvas>
+                                <span class="span-diente">41</span>
+                                {{ficha_form.d41}}
+                            </div>
+                        </div>
+                        <div class="separador">
+                        </div>
+                        <div style="display:inline-block;">
+                            <div class="div-diente">
+                                <span class="span-diente">21</span>
+                                <canvas width="30" height="40"></canvas>
+                                {{ficha_form.d21}}
+                            </div>
+                            <div class="separador-h"></div>
+                            <div class="div-diente">
+                                <canvas width="30" height="40"></canvas>
+                                <span class="span-diente">31</span>
+                                {{ficha_form.d31}}
+                            </div>
+                        </div>
+                        <div style="display:inline-block;">
+                            <div class="div-diente">
+                                <span class="span-diente">22</span>
+                                <canvas width="30" height="40"></canvas>
+                                {{ficha_form.d22}}
+                            </div>
+                            <div class="separador-h"></div>
+                            <div class="div-diente">
+                                <canvas width="30" height="40"></canvas>
+                                <span class="span-diente">32</span>
+                                {{ficha_form.d32}}
+                            </div>
+                        </div>
+                        <div style="display:inline-block;">
+                            <div class="div-diente">
+                                <span class="span-diente">23</span>
+                                <canvas width="30" height="40"></canvas>
+                                {{ficha_form.d23}}
+                            </div>
+                            <div class="separador-h"></div>
+                            <div class="div-diente">
+                                <canvas width="30" height="40"></canvas>
+                                <span class="span-diente">33</span>
+                                {{ficha_form.d33}}
+                            </div>
+                        </div>
+                        <div style="display:inline-block;">
+                            <div class="div-diente">
+                                <span class="span-diente">24</span>
+                                <canvas width="30" height="40"></canvas>
+                                {{ficha_form.d24}}
+                            </div>
+                            <div class="separador-h"></div>
+                            <div class="div-diente">
+                                <canvas width="30" height="40"></canvas>
+                                <span class="span-diente">34</span>
+                                {{ficha_form.d34}}
+                            </div>
+                        </div>
+                        <div style="display:inline-block;">
+                            <div class="div-diente" id="div_diente_11">
+                                <span class="span-diente">25</span>
+                                <canvas width="30" height="40"></canvas>
+                                {{ficha_form.d25}}
+                            </div>
+                            <div class="separador-h"></div>
+                            <div class="div-diente" id="div_diente_41">
+                                <canvas width="30" height="40"></canvas>
+                                <span class="span-diente">35</span>
+                                {{ficha_form.d35}}
+                            </div>
+                        </div>
+                        <div style="display:inline-block;">
+                            <div class="div-diente" id="div_diente_11">
+                                <span class="span-diente">26</span>
+                                <canvas width="30" height="40"></canvas>
+                                {{ficha_form.d26}}
+                            </div>
+                            <div class="separador-h"></div>
+                            <div class="div-diente" id="div_diente_41">
+                                <canvas width="30" height="40"></canvas>
+                                <span class="span-diente">36</span>
+                                {{ficha_form.d36}}
+                            </div>
+                        </div>
+                        <div style="display:inline-block;">
+                            <div class="div-diente" id="div_diente_11">
+                                <span class="span-diente">27</span>
+                                <canvas width="30" height="40"></canvas>
+                                {{ficha_form.d27}}
+                            </div>
+                            <div class="separador-h"></div>
+                            <div class="div-diente" id="div_diente_41">
+                                <canvas width="30" height="40"></canvas>
+                                <span class="span-diente">37</span>
+                                {{ficha_form.d37}}
+                            </div>
+                        </div>
+                        <div style="display:inline-block;">
+                            <div class="div-diente" id="div_diente_11">
+                                <span class="span-diente">28</span>
+                                <canvas width="30" height="40"></canvas>
+                                {{ficha_form.d28}}
+                            </div>
+                            <div class="separador-h"></div>
+                            <div class="div-diente" id="div_diente_41">
+                                <canvas width="30" height="40"></canvas>
+                                <span class="span-diente">38</span>
+                                {{ficha_form.d38}}
+                            </div>
+                        </div>
+                        <div style="margin-top:15px;">
+                            <span class="span-derecha">DERECHA</span>
+                            <div style="display:inline-block;">
+                                <div class="div-diente" id="div_diente_15">
+                                    <span class="span-diente">55</span>
+                                    <canvas width="30" height="40"></canvas>
+                                    {{ficha_form.d55}}
+                                </div>
+                                <div class="separador-h"></div>
+                                <div class="div-diente" id="div_diente_45">
+                                    <canvas width="30" height="40"></canvas>
+                                    <span class="span-diente">85</span>
+                                    {{ficha_form.d85}}
+                                </div>
+                            </div>
+                            <div style="display:inline-block;">
+                                <div class="div-diente" id="div_diente_14">
+                                    <span class="span-diente">54</span>
+                                    <canvas id="canvas" width="30" height="40"></canvas>
+                                    {{ficha_form.d54}}
+                                </div>
+                                <div class="separador-h"></div>
+                                <div class="div-diente" id="div_diente_44">
+                                    <canvas id="canvas" width="30" height="40"></canvas>
+                                    <span class="span-diente">84</span>
+                                    {{ficha_form.d84}}
+                                </div>
+                            </div>
+                            <div style="display:inline-block;">
+                                <div class="div-diente" id="div_diente_13">
+                                    <span class="span-diente">53</span>
+                                    <canvas width="30" height="40"></canvas>
+                                    {{ficha_form.d53}}
+                                </div>
+                                <div class="separador-h"></div>
+                                <div class="div-diente" id="div_diente_43">
+                                    <canvas width="30" height="40"></canvas>
+                                    <span class="span-diente">83</span>
+                                    {{ficha_form.d83}}
+                                </div>
+                            </div>
+                            <div style="display:inline-block;">
+                                <div class="div-diente" id="div_diente_12">
+                                    <span class="span-diente">52</span>
+                                    <canvas width="30" height="40"></canvas>
+                                    {{ficha_form.d52}}
+                                </div>
+                                <div class="separador-h"></div>
+                                <div class="div-diente" id="div_diente_42">
+                                    <canvas width="30" height="40"></canvas>
+                                    <span class="span-diente">82</span>
+                                    {{ficha_form.d82}}
+                                </div>
+                            </div>
+                            <div style="display:inline-block;">
+                                <div class="div-diente" id="div_diente_11">
+                                    <span class="span-diente">51</span>
+                                    <canvas width="30" height="40"></canvas>
+                                    {{ficha_form.d51}}
+                                </div>
+                                <div class="separador-h"></div>
+                                <div class="div-diente" id="div_diente_41">
+                                    <canvas width="30" height="40"></canvas>
+                                    <span class="span-diente">81</span>
+                                    {{ficha_form.d81}}
+                                </div>
+                            </div>
+                            <div class="separador">
+                            </div>
+                            <div style="display:inline-block;">
+                                <div class="div-diente" id="div_diente_11">
+                                    <span class="span-diente">61</span>
+                                    <canvas width="30" height="40"></canvas>
+                                    {{ficha_form.d61}}
+                                </div>
+                                <div class="separador-h"></div>
+                                <div class="div-diente" id="div_diente_41">
+                                    <canvas width="30" height="40"></canvas>
+                                    <span class="span-diente">71</span>
+                                    {{ficha_form.d71}}
+                                </div>
+                            </div>
+                            <div style="display:inline-block;">
+                                <div class="div-diente" id="div_diente_11">
+                                    <span class="span-diente">62</span>
+                                    <canvas width="30" height="40"></canvas>
+                                    {{ficha_form.d62}}
+                                </div>
+                                <div class="separador-h"></div>
+                                <div class="div-diente" id="div_diente_41">
+                                    <canvas width="30" height="40"></canvas>
+                                    <span class="span-diente">72</span>
+                                    {{ficha_form.d72}}
+                                </div>
+                            </div>
+                            <div style="display:inline-block;">
+                                <div class="div-diente" id="div_diente_11">
+                                    <span class="span-diente">63</span>
+                                    <canvas width="30" height="40"></canvas>
+                                    {{ficha_form.d63}}
+                                </div>
+                                <div class="separador-h"></div>
+                                <div class="div-diente" id="div_diente_41">
+                                    <canvas width="30" height="40"></canvas>
+                                    <span class="span-diente">73</span>
+                                    {{ficha_form.d73}}
+                                </div>
+                            </div>
+                            <div style="display:inline-block;">
+                                <div class="div-diente" id="div_diente_11">
+                                    <span class="span-diente">64</span>
+                                    <canvas width="30" height="40"></canvas>
+                                    {{ficha_form.d64}}
+                                </div>
+                                <div class="separador-h"></div>
+                                <div class="div-diente" id="div_diente_41">
+                                    <canvas width="30" height="40"></canvas>
+                                    <span class="span-diente">74</span>
+                                    {{ficha_form.d74}}
+                                </div>
+                            </div>
+                            <div style="display:inline-block;">
+                                <div class="div-diente" id="div_diente_11">
+                                    <span class="span-diente">65</span>
+                                    <canvas width="30" height="40"></canvas>
+                                    {{ficha_form.d65}}
+                                </div>
+                                <div class="separador-h"></div>
+                                <div class="div-diente" id="div_diente_41">
+                                    <canvas width="30" height="40"></canvas>
+                                    <span class="span-diente">75</span>
+                                    {{ficha_form.d75}}
+                                </div>
+                            </div>
+                            <span class="span-izquierda">IZQUIERDA</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <p style="text-align:center;">
                 <input type="submit" name="ficha-submit" class="btn-lila" value="Aceptar" />
             </p>
@@ -362,9 +782,15 @@
             });
 
             $('.consultas-formset').formset({
-                addText: 'Agregar historia',
+                addText: '<button class="btn-lila btn-add">Agregar historia</button>',
                 deleteText: '',
                 prefix: "{{ consultas_formset.prefix }}"
+            });
+
+            $('.odontograma-formset').formset({
+                addText: '',
+                deleteText: '',
+                prefix: "{{ odontograma_formset.prefix }}"
             });
 
             $('.imagenes-formset').each(function(){
@@ -416,11 +842,13 @@
                 placeholder: 'Seleccionar plan',
                 allowClear: true
             });
+
+            draw();
         });
 
         var lastJQueryTS = 0 ;
 
-        $(".fecha-consulta").change(function(event) {              
+        $(".fecha-consulta").change(function(event) {
             console.log('Fecha seleccionada: ' + this.value);           
             let send = true;
             if (typeof(event) == 'object'){
@@ -629,5 +1057,125 @@
             input.val('');
             input.focus().val(valor);
         }
+
+        function cargarOdontograma(){
+            return;
+            let url = '/ficha/odontograma/';
+            $.get(encodeURI(url), function(data) {
+                console.log(data);
+                $('#odontograma').append(data);
+            });
+        }
+
+        $('canvas').click(cambiarEstado);
+
+        $('canvas').contextmenu(limpiarEstado);
+
+        function draw(){
+            $('canvas').each(function(){
+                let context = $(this)[0].getContext("2d");
+                let div = $(this).parent();
+                let input = div.find('input');
+
+                context.clearRect(0,0,context.canvas.width,context.canvas.height);
+                context.beginPath();
+
+                context.lineWidth = 1;
+
+                context.strokeStyle = '#1C2833';
+
+                context.rect(1,1,28,38);
+                context.rect(5,5,20,30);
+
+                context.moveTo(1, 1);
+                context.lineTo(5, 5);
+
+                context.moveTo(29, 1);
+                context.lineTo(25, 5);
+
+                context.moveTo(29, 39);
+                context.lineTo(25, 35);
+                
+                context.moveTo(1, 39);
+                context.lineTo(5, 35);
+
+                context.font = "bold 36px Arial";
+                context.textAlign = "center";
+
+                let x = 15;
+                let y = 33;
+                let line_w = 18;
+                let red = '#E74C3C';
+                let blue = '#2874A6';
+
+                if (input.val() == 'cruz_roja'){
+                    context.fillStyle = red;
+                    context.fillText("X", x, y, line_w);
+                }
+                if (input.val() == 's_roja'){
+                    context.fillStyle = red;
+                    context.fillText("S", x, y, line_w);
+                }
+                if (input.val() == 'cruz_azul'){
+                    context.fillStyle = blue;
+                    context.fillText("X", x, y, line_w);
+                }
+                if (input.val() == 's_azul'){
+                    context.fillStyle = blue;
+                    context.fillText("S", x, y, line_w);
+                }
+                if (input.val() == 'ne_azul'){
+                    context.fillStyle = blue;
+                    context.fillText("NE", x, y, line_w);
+                }
+                if (input.val() == 'ne_roja'){
+                    context.fillStyle = red;
+                    context.fillText("NE", x, y, line_w);
+                }
+
+                context.stroke();
+            });
+        }
+
+        function cambiarEstado(){
+            let canvas = $(this);
+            let div = canvas.parent();
+            let input = div.find('input');
+
+            console.log('value:'+input.val());
+
+            if (input.val() == 'cruz_roja')
+                input.val('s_roja');
+            else if(input.val() == 's_roja')
+                input.val('ne_roja');
+            else if(input.val() == 'ne_roja')
+                input.val('cruz_azul');
+            else if(input.val() == 'cruz_azul')
+                input.val('s_azul');
+            else if (input.val() == 's_azul')
+                input.val('ne_azul');
+            else if (input.val() == 'ne_azul')
+                input.val('');
+            else
+                input.val('cruz_roja');
+            
+            //limpiar();
+            //alert('ahora dibuja');
+            draw();
+        }
+
+        function limpiarEstado(){
+            let canvas = $(this);
+            let div = canvas.parent();
+            let input = div.find('input');
+
+            console.log('value:'+input.val());
+
+            input.val('');
+
+            draw();
+            return false;
+        }
+
     </script>
 {% endblock %}

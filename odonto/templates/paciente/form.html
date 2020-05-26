@@ -115,19 +115,19 @@
         <!--script src="{% static 'path_to/jquery.formset.js' %}"></script-->
         <script>
             $('.telefono-formset').formset({
-                addText: 'Agregar teléfono',
+                addText: '<button class="btn-lila btn-add">Agregar teléfono</button>',
                 deleteText: 'Eliminar',
                 prefix: "{{ telefono_formset.prefix }}"
             });
 
             $('.email-formset').formset({
-                addText: 'Agregar email',
+                addText: '<button class="btn-lila btn-add">Agregar email</button>',
                 deleteText: 'Eliminar',
                 prefix: "{{ email_formset.prefix }}"
             });
 
             $('.obras-sociales-formset').formset({
-                addText: 'Agregar obra social',
+                addText: '<button class="btn-lila btn-add">Agregar obra social</button>',
                 deleteText: 'Eliminar',
                 prefix: "{{ obras_sociales_formset.prefix }}",
                 added:NuevaObraSocial

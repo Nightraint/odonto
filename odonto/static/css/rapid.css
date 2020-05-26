@@ -12,6 +12,7 @@ textarea {
 
 .add-row{
   margin-bottom:1em;
+  color: #413e66;
 }
 
 .fieldWrapper{
@@ -306,6 +307,7 @@ h6 {
   border: 1px solid #413e66;
   background: #fff;
   color: #413e66 !important;
+  outline:none;
 }
 
 .btn-lila:hover{
@@ -1721,6 +1723,12 @@ h6 {
   color: #413e66;
 }
 
-.add-row{
-  color: #413e66;
+.add-button-containter{
+  width: 100%;
+  text-align:center;
+  margin-bottom: 10px;
+}
+
+.btn-add{
+  width: 250px;
 }

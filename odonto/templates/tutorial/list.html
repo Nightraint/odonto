@@ -42,7 +42,7 @@
             <div class="row justify-content-around">
                 <div class="col-md-6  vertical-menu">
                     {% for object in object_list %}
-                        <a href="/tutoriales/{{object.id}}" class="btn-lila" style="margin-bottom:5px;">{{ object.titulo }}</a>
+                        <a href="/tutoriales/{{object.id}}" class="btn-lila" style="margin-bottom:5px;">&#10148; {{ object.titulo }}</a>
                     {% empty %}
                         <p> No hay tutoriales disponibles.</p>
                     {% endfor %}

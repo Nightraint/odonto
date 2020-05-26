@@ -5,7 +5,8 @@ from odonto.forms import (FichaForm,
     ImagenFichaForm,
     BaseImagenFichaFormSet,
     ConsultaForm,
-    BaseConsultaFormSet)
+    BaseConsultaFormSet,
+    )
 from odonto.models import Ficha, Imagen, Consulta
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView 
@@ -147,7 +148,7 @@ class FichaEliminar(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
 def crear(request):
     ImagenFichaFormSet = formset_factory(ImagenFichaForm, formset=BaseImagenFichaFormSet)
     ConsultaFormSet = formset_factory(wraps(ConsultaForm)(partial(ConsultaForm, clinica_id = request.user.clinica.id)), formset=BaseConsultaFormSet)
-
+    
     if request.method == 'GET':
         ficha_form = FichaForm(clinica_id = request.user.clinica.id)
         imagenes_formset = ImagenFichaFormSet(prefix='imagenes')
@@ -186,6 +187,7 @@ def crear(request):
                     nuevas_imagenes.append(Imagen(ficha=instance,
                         imagen= imagen,
                         descripcion = descripcion))
+
             try:
                 with transaction.atomic():
                     Consulta.objects.bulk_create(nuevas_consultas)
@@ -208,7 +210,7 @@ def crear(request):
 def editar(request,pk):
     ImagenFichaFormSet = formset_factory(ImagenFichaForm, formset=BaseImagenFichaFormSet)
     ConsultaFormSet = formset_factory(wraps(ConsultaForm)(partial(ConsultaForm, clinica_id = request.user.clinica.id)), formset=BaseConsultaFormSet)
-
+    
     instance = get_object_or_404(Ficha, pk=pk)
 
     if request.method == 'GET':
@@ -300,5 +302,8 @@ def editar(request,pk):
 
 @login_required
 def odontograma(request):
-    context = {}
+    
+    context = {
+    }
+
     return render(request, 'ficha/odontograma.html', context)

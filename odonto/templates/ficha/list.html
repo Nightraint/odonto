@@ -5,7 +5,6 @@
     <th>Paciente</th>
     <th>Odontologo</th>
     <th>Obra social</th>
-    <th>Observaciones</th>
 {% endblock %}
 
 {% block datos %}                   
@@ -13,5 +12,4 @@
     <td>{{ object.paciente }}</td>
     <td>{{ object.odontologo }}</td>
     <td>{{ object.obra_social|default_if_none:"&nbsp;" }}</td>
-    <td>{{ object.observaciones }}</td>
 {% endblock %}

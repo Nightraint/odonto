@@ -10,7 +10,8 @@ from .models import (Obra_Social,
                     Clinica,
                     Telefono,
                     Plan,
-                    Turno)
+                    Turno,
+                    )
 from django.contrib.auth.forms import AuthenticationForm,UserCreationForm,UserChangeForm,PasswordChangeForm
 from django.forms import DateTimeField, EmailField
 from .widgets import BootstrapDateTimePickerInput, BootstrapDatePickerInput
@@ -301,6 +302,60 @@ class FichaForm(forms.ModelForm):
                     'style' : 'height:100px;',
                 }),
                 required=False)
+
+    d11 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d12 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d13 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d14 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d15 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d16 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d17 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d18 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d21 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d22 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d23 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d24 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d25 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d26 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d27 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d28 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d31 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d32 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d33 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d34 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d35 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d36 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d37 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d38 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d41 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d42 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d43 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d44 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d45 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d46 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d47 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d48 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d51 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d52 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d53 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d54 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d55 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d61 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d62 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d63 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d64 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d65 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d71 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d72 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d73 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d74 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d75 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d81 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d82 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d83 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d84 = forms.CharField(widget=forms.HiddenInput(),required=False)
+    d85 = forms.CharField(widget=forms.HiddenInput(),required=False)
+
 
     def __init__(self, *args, **kwargs):
         clinica_id = kwargs.pop('clinica_id')
@@ -688,3 +743,4 @@ class ConsultaForm(forms.Form):
 class BaseConsultaFormSet(BaseFormSet):
     def clean(self):
         pass
+
