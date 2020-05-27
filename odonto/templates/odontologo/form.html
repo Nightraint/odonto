@@ -7,15 +7,68 @@
 {% endblock %}
 
 {% block content %}
-    <form method= "POST">
-        {% csrf_token %}
-        <div class="col-md-8 offset-md-2">
-            {{form.as_p}}
-            <p style="text-align:center;">
-                <input type="submit" class="btn-lila" value="Aceptar" />
-            </p>
-        </div>
-    </form>
+    <div class="col-md-8 offset-md-2">
+        {% if messages %}
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+        <form method= "POST">
+            {% csrf_token %}
+                <div class="row form-group">
+                    <div class="col-md-4">
+                        {{ form.nombre_apellido.errors }}
+                        {{ form.nombre_apellido.label_tag }} {{ form.nombre_apellido }}
+                        {% if form.nombre_apellido.help_text %}
+                            <p class="help">{{ form.nombre_apellido.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.dni.errors }}
+                        {{ form.dni.label_tag }} {{ form.dni }}
+                        {% if form.dni.help_text %}
+                            <p class="help">{{ form.dni.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.telefono.errors }}
+                        {{ form.telefono.label_tag }} {{ form.telefono }}
+                        {% if form.telefono.help_text %}
+                            <p class="help">{{ form.telefono.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-4">
+                        {{ form.matricula.errors }}
+                        {{ form.matricula.label_tag }} {{ form.matricula }}
+                        {% if form.matricula.help_text %}
+                            <p class="help">{{ form.matricula.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-8">
+                        {{ form.domicilio.errors }}
+                        {{ form.domicilio.label_tag }} {{ form.domicilio }}
+                        {% if form.domicilio.help_text %}
+                            <p class="help">{{ form.domicilio.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-12">
+                        {{ form.obras_sociales.errors }}
+                        {{ form.obras_sociales.label_tag }} {{ form.obras_sociales }}
+                        {% if form.obras_sociales.help_text %}
+                            <p class="help">{{ form.obras_sociales.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <p style="text-align:center;">
+                    <input type="submit" class="btn-lila" value="Aceptar" />
+                </p>
+            
+        </form>
+    </div>
 {% endblock %}
 
 {% block script %}

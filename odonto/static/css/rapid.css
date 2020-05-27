@@ -725,11 +725,11 @@ h6 {
   font-size: 18px;
 }
 
-#services .title a {
+#services .title {
   color: #111;
 }
 
-#services .box:hover .title a {
+#services .box:hover .title {
   color: #1bb1dc;
 }
 
