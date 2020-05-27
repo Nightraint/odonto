@@ -1730,5 +1730,28 @@ h6 {
 }
 
 .btn-add{
-  width: 250px;
+  width: 190px;
+  -webkit-appearance: inherit !important;
+  background: #fff;
+  color: #0a98c0;
+  border: 1px solid #0a98c0;
+  border-radius: 15px;
+  padding: 4px 10px;
+  
+  transition: 0.3s;
+  font-family: "Montserrat", sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+
+.btn-add:hover{
+  background: #0a98c0;
+  color: white;
+}
+
+.btn-add:focus{
+  outline:none;
 }

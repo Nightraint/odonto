@@ -292,8 +292,8 @@
                             {{ imagen_form.descripcion }}
                         </div>
                         {% if not imagen_form.initial %}
-                            <label for="{{imagen_form.imagen.auto_id}}" class="label-seleccionar" style="display:block !important;cursor:pointer;text-align:center;">
-                                <span class="btn-lila">Agregar imagen</span>
+                            <label for="{{imagen_form.imagen.auto_id}}" class="label-seleccionar" style="display:block !important;cursor:pointer;">
+                                <div style="text-align:center;" class="btn-add"><i class="fa fa-plus"></i> Agregar</div>
                             </label>
                         {% endif %}
                         {% if imagen_form.imagen.errors %}
@@ -315,7 +315,7 @@
                 <div class="panel">
                 {{ consultas_formset.management_form }}
                 {% for form in consultas_formset %}
-                    <div class="consultas-formset" style="margin-bottom:0.5em;">
+                    <div class="consultas-formset" style="">
                     <div style="display:none;" id="id_consulta">
                         {{ form.id_consulta }}
                     </div>
@@ -380,7 +380,7 @@
                             <div class="col-md-12 mensaje">
                             </div>
                         </div>
-                        <div class="row" style="border-bottom: 1px solid #413e66;padding-bottom:10px;">
+                        <div class="row" style="padding-bottom:10px;">
                             <div class="col-md-12">
                                 {{ form.detalle }}
                                 {% if form.detalle.errors %}
@@ -782,15 +782,9 @@
             });
 
             $('.consultas-formset').formset({
-                addText: '<button class="btn-lila btn-add">Agregar historia</button>',
+                addText: '<button class="btn-add"><i class="fa fa-plus"></i> Agregar</button>',
                 deleteText: '',
                 prefix: "{{ consultas_formset.prefix }}"
-            });
-
-            $('.odontograma-formset').formset({
-                addText: '',
-                deleteText: '',
-                prefix: "{{ odontograma_formset.prefix }}"
             });
 
             $('.imagenes-formset').each(function(){
@@ -1056,15 +1050,6 @@
             let valor = input.val();
             input.val('');
             input.focus().val(valor);
-        }
-
-        function cargarOdontograma(){
-            return;
-            let url = '/ficha/odontograma/';
-            $.get(encodeURI(url), function(data) {
-                console.log(data);
-                $('#odontograma').append(data);
-            });
         }
 
         $('canvas').click(cambiarEstado);

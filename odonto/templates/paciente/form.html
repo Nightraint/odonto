@@ -16,8 +16,56 @@
         {% endif %}
         <form method="post">
             {% csrf_token %}
-            
-            {{ paciente_form.as_p }}
+            <div class="row form-group">
+                <div class="col-md-4">
+                    {{ paciente_form.nombre_apellido.errors }}
+                    {{ paciente_form.nombre_apellido.label_tag }} {{ paciente_form.nombre_apellido }}
+                    {% if paciente_form.nombre_apellido.help_text %}
+                        <p class="help">{{ paciente_form.nombre_apellido.help_text|safe }}</p>
+                    {% endif %}
+                </div>
+                <div class="col-md-4">
+                    {{ paciente_form.fecha_nacimiento.errors }}
+                    {{ paciente_form.fecha_nacimiento.label_tag }} {{ paciente_form.fecha_nacimiento }}
+                    {% if paciente_form.fecha_nacimiento.help_text %}
+                        <p class="help">{{ paciente_form.fecha_nacimiento.help_text|safe }}</p>
+                    {% endif %}
+                </div>
+                <div class="col-md-4">
+                    {{ paciente_form.dni.errors }}
+                    {{ paciente_form.dni.label_tag }} {{ paciente_form.dni }}
+                    {% if paciente_form.dni.help_text %}
+                        <p class="help">{{ paciente_form.dni.help_text|safe }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-12">
+                    {{ paciente_form.odontologos.errors }}
+                    {{ paciente_form.odontologos.label_tag }} {{ paciente_form.odontologos }}
+                    {% if paciente_form.odontologos.help_text %}
+                        <p class="help">{{ paciente_form.odontologos.help_text|safe }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-12">
+                    {{ paciente_form.domicilio.errors }}
+                    {{ paciente_form.domicilio.label_tag }} {{ paciente_form.domicilio }}
+                    {% if paciente_form.domicilio.help_text %}
+                        <p class="help">{{ paciente_form.domicilio.help_text|safe }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-12">
+                    {{ paciente_form.whatsapp.errors }}
+                    {{ paciente_form.whatsapp.label_tag }} {{ paciente_form.whatsapp }}
+                    {% if paciente_form.whatsapp.help_text %}
+                        <p class="help">{{ paciente_form.whatsapp.help_text|safe }}</p>
+                    {% endif %}
+                </div>
+            </div>
 
             <div style="margin-bottom:1em">
                 <label style="display:block;">Teléfonos:</label>
@@ -115,19 +163,19 @@
         <!--script src="{% static 'path_to/jquery.formset.js' %}"></script-->
         <script>
             $('.telefono-formset').formset({
-                addText: '<button class="btn-lila btn-add">Agregar teléfono</button>',
+                addText: '<button class="btn-add"><i class="fa fa-plus"></i> Agregar</button>',
                 deleteText: 'Eliminar',
                 prefix: "{{ telefono_formset.prefix }}"
             });
 
             $('.email-formset').formset({
-                addText: '<button class="btn-lila btn-add">Agregar email</button>',
+                addText: '<button class="btn-add"><i class="fa fa-plus"></i> Agregar</button>',
                 deleteText: 'Eliminar',
                 prefix: "{{ email_formset.prefix }}"
             });
-
+            
             $('.obras-sociales-formset').formset({
-                addText: '<button class="btn-lila btn-add">Agregar obra social</button>',
+                addText: '<button class="btn-add"><i class="fa fa-plus"></i> Agregarl</button>',
                 deleteText: 'Eliminar',
                 prefix: "{{ obras_sociales_formset.prefix }}",
                 added:NuevaObraSocial
