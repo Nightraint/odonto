@@ -6,22 +6,35 @@
 </div>
 <script>
   $(function () {
+    console.log("{{widget.datetimepicker_id}}");
+    
     $("#{{ widget.datetimepicker_id }}").datetimepicker({
+      format: 'DD/MM/YYYY HH:mm',
+      constrainInput: false,
+      autoclose:true,
+      forceParse: false,
+      locale: 'es'
+    })
+
+    /*
+    $(".input-group date").datetimepicker({
       format: 'DD/MM/YYYY HH:mm',
       constrainInput: false,
       autoclose:true,
       forceParse: false
     })
+    */
 
+    //$("#{{ widget.datetimepicker_id }}").
     $("#{{ widget.datetimepicker_id }}").on("change.datetimepicker", ({
-      date,
-      oldDate
-    }) => {   
-      if(date != null /*&& oldDate != undefined*/){
-        console.log(date);
-        console.log("Old date", oldDate);
-        $("#{{ widget.input_id }}").change();
-      }
-    })
+        date,
+        oldDate
+      }) => {
+        if(date != null /*&& oldDate != undefined*/){
+          console.log(date);
+          console.log("Old date", oldDate);
+          $("#{{ widget.input_id }}").change();
+        }
+    });
   });
 </script>

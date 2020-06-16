@@ -34,3 +34,10 @@ class BootstrapDatePickerInput(DateInput):
         context = super().get_context(name, value, attrs)
         context['widget']['datetimepicker_id'] = datetimepicker_id
         return context
+
+class XDSoftDateTimePickerInput(DateTimeInput):
+    template_name = 'widgets/xdsoft_datetimepicker.html'
+
+    def __init__(self, attrs=None, optional_class=None):
+        super(XDSoftDateTimePickerInput, self).__init__()
+        self.optional_class = optional_class

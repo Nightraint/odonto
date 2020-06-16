@@ -35,6 +35,7 @@
   <link href="{%static 'css/ionicons.min.css'%}" rel="stylesheet">
   <link href="{%static 'css/owl.carousel.min.css'%}" rel="stylesheet">
   <link href="{%static 'css/lightbox.min.css'%}" rel="stylesheet">
+  <link href="{%static 'css/jquery.datetimepicker.min.css'%}" rel="stylesheet">
 
   <link href="{%static 'css/rapid.css'%}" rel="stylesheet">
 
@@ -145,15 +146,17 @@
   <script src="{%static 'js/isotope.pkgd.min.js'%}"></script>
   <script src="{%static 'js/lightbox.min.js'%}"></script>
   <script src="{%static 'js/main.js'%}"></script>
-
+  <script src="{%static 'js/es.js'%}"></script>
+  <!--script src="{%static 'js/jquery.datetimepicker.full.js'%}"></script-->
 </body>
-<script>      
+<script>
   $('document').ready(function() {
     $('.main-nav a[href="'+this.location.pathname+'"]').parents('li').addClass('active');
 
     $('textarea').each(function(){
         auto_grow($(this));
     });
+
   });
 
   function limpiar(input_id){

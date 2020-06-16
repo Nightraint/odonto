@@ -14,7 +14,9 @@ from .models import (Obra_Social,
                     )
 from django.contrib.auth.forms import AuthenticationForm,UserCreationForm,UserChangeForm,PasswordChangeForm
 from django.forms import DateTimeField, EmailField
-from .widgets import BootstrapDateTimePickerInput, BootstrapDatePickerInput
+from .widgets import (BootstrapDateTimePickerInput
+    ,BootstrapDatePickerInput
+    ,XDSoftDateTimePickerInput)
 from django.forms import modelformset_factory
 from django.forms.formsets import BaseFormSet
 from odonto.vistas.util import CustomErrorList
@@ -692,6 +694,7 @@ class ConsultaForm(forms.Form):
                     'placeholder': 'Fecha',
                 },
                 optional_class = 'fecha-consulta',)
+        #widget=XDSoftDateTimePickerInput(optional_class = 'fecha-consulta',)
     )
     
     norma_trabajo = MyModelChoiceField(
