@@ -14,24 +14,24 @@
                 <p>{{ message }}</p>
             {% endfor %}
         {% endif %}
-        <form method="post">
+        <form method="post" autocomplete="off">
             {% csrf_token %}
-            <div class="row form-group">
-                <div class="col-md-4">
+            <div class="form-row">
+                <div class="col form-group">
                     {{ paciente_form.nombre_apellido.errors }}
                     {{ paciente_form.nombre_apellido.label_tag }} {{ paciente_form.nombre_apellido }}
                     {% if paciente_form.nombre_apellido.help_text %}
                         <p class="help">{{ paciente_form.nombre_apellido.help_text|safe }}</p>
                     {% endif %}
                 </div>
-                <div class="col-md-4">
+                <div class="col form-group">
                     {{ paciente_form.fecha_nacimiento.errors }}
                     {{ paciente_form.fecha_nacimiento.label_tag }} {{ paciente_form.fecha_nacimiento }}
                     {% if paciente_form.fecha_nacimiento.help_text %}
                         <p class="help">{{ paciente_form.fecha_nacimiento.help_text|safe }}</p>
                     {% endif %}
                 </div>
-                <div class="col-md-4">
+                <div class="col form-group">
                     {{ paciente_form.dni.errors }}
                     {{ paciente_form.dni.label_tag }} {{ paciente_form.dni }}
                     {% if paciente_form.dni.help_text %}
@@ -39,32 +39,32 @@
                     {% endif %}
                 </div>
             </div>
-            <div class="row form-group">
-                <div class="col-md-12">
-                    {{ paciente_form.odontologos.errors }}
-                    {{ paciente_form.odontologos.label_tag }} {{ paciente_form.odontologos }}
-                    {% if paciente_form.odontologos.help_text %}
-                        <p class="help">{{ paciente_form.odontologos.help_text|safe }}</p>
-                    {% endif %}
-                </div>
+            <div class="form-group">
+                {{ paciente_form.odontologos.errors }}
+                {{ paciente_form.odontologos.label_tag }} {{ paciente_form.odontologos }}
+                {% if paciente_form.odontologos.help_text %}
+                    <p class="help">{{ paciente_form.odontologos.help_text|safe }}</p>
+                {% endif %}
             </div>
-            <div class="row form-group">
-                <div class="col-md-12">
-                    {{ paciente_form.domicilio.errors }}
-                    {{ paciente_form.domicilio.label_tag }} {{ paciente_form.domicilio }}
-                    {% if paciente_form.domicilio.help_text %}
-                        <p class="help">{{ paciente_form.domicilio.help_text|safe }}</p>
-                    {% endif %}
-                </div>
+            <div class="form-group">
+                {{ paciente_form.domicilio.errors }}
+                {{ paciente_form.domicilio.label_tag }} {{ paciente_form.domicilio }}
+                {% if paciente_form.domicilio.help_text %}
+                    <p class="help">{{ paciente_form.domicilio.help_text|safe }}</p>
+                {% endif %}
             </div>
-            <div class="row form-group">
-                <div class="col-md-12">
-                    {{ paciente_form.whatsapp.errors }}
-                    {{ paciente_form.whatsapp.label_tag }} {{ paciente_form.whatsapp }}
-                    {% if paciente_form.whatsapp.help_text %}
-                        <p class="help">{{ paciente_form.whatsapp.help_text|safe }}</p>
-                    {% endif %}
+            <div class="form-group">
+                {{ paciente_form.whatsapp.errors }}
+                {{ paciente_form.whatsapp.label_tag }}
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">+54</div>
+                        </div>
+                        {{ paciente_form.whatsapp }}
                 </div>
+                {% if paciente_form.whatsapp.help_text %}
+                    <p class="help">{{ paciente_form.whatsapp.help_text|safe }}</p>
+                {% endif %}
             </div>
 
             <div style="margin-bottom:1em">
@@ -175,7 +175,7 @@
             });
             
             $('.obras-sociales-formset').formset({
-                addText: '<button class="btn-add"><i class="fa fa-plus"></i> Agregarl</button>',
+                addText: '<button class="btn-add"><i class="fa fa-plus"></i> Agregar</button>',
                 deleteText: 'Eliminar',
                 prefix: "{{ obras_sociales_formset.prefix }}",
                 added:NuevaObraSocial

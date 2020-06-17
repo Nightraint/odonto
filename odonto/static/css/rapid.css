@@ -10,6 +10,10 @@ textarea {
   height: 10px;
 }
 
+.input-group-text{
+  border-color: #413e66;
+}
+
 .add-row{
   margin-bottom:1em;
   color: #413e66;
@@ -1622,7 +1626,33 @@ h6 {
   }
 }
 
+.list-btn-add{
+  float:left;
+}
+
+.list-filter{
+  float:left;
+}
+
+.list-btn-clear{
+  float:left;
+  margin-left:10px;
+}
+
 @media (max-width: 767px) {
+  .list-btn-add{
+    width: 100%;
+    text-align: center;
+  }
+
+  .list-filter{
+    width:70%;
+  }
+
+  .list-btn-clear{
+    float: right;
+  }
+
   #intro {
     height: auto;
     padding: 80px 0 60px 0;
@@ -1707,8 +1737,14 @@ h6 {
   border-color: #413e66;
 }
 
-.select2-container .select2-selection--single{
-  min-height: 32px;
+.select2-selection__rendered {
+  line-height: 34px !important;
+}
+.select2-container .select2-selection--single {
+  height: 38px !important;
+}
+.select2-selection__arrow {
+  height: 34px !important;
 }
 
 .select2-container--default .select2-selection--single{

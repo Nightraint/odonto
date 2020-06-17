@@ -150,6 +150,8 @@
     $('document').ready(function(){
       calendarEl = document.getElementById('calendar');
 
+      $('#div-filter #id_odontologo').select2();
+
       $('#div-filter #id_odontologo').change(refreshCalendar);
 
       loadCalendar();

@@ -170,6 +170,10 @@ class OdontologoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         clinica_id = kwargs.pop('clinica_id')
         super(OdontologoForm, self).__init__(*args, **kwargs)
+
+        self.fields['obras_sociales'].queryset = Obra_Social.objects.filter(clinica_id=clinica_id)
+        self.fields['obras_sociales'].empty_label = 'Seleccionar obra social'
+
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
 
