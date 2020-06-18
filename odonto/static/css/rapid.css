@@ -1636,7 +1636,6 @@ h6 {
 
 .list-btn-clear{
   float:left;
-  margin-left:10px;
 }
 
 @media (max-width: 767px) {
@@ -1814,4 +1813,12 @@ h6 {
 
 .btn-delete:focus{
   outline:none;
+}
+
+.select2-container {
+  width: 100% !important;
+}
+
+.card{
+  margin-bottom:1em;
 }

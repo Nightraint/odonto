@@ -8,69 +8,74 @@
 
 {% block content %}
 {% load staticfiles %}
-    <div class="col-md-8 offset-md-2">
-        {% if messages %}
-            {% for message in messages %}
-                <p>{{ message }}</p>
-            {% endfor %}
-        {% endif %}
-        <form method="post" autocomplete="off">
-            {% csrf_token %}
-            <div class="form-row">
-                <div class="col-md form-group">
-                    {{ paciente_form.nombre_apellido.errors }}
-                    {{ paciente_form.nombre_apellido.label_tag }} {{ paciente_form.nombre_apellido }}
-                    {% if paciente_form.nombre_apellido.help_text %}
-                        <p class="help">{{ paciente_form.nombre_apellido.help_text|safe }}</p>
+<div class="col-md-8 offset-md-2">
+    {% if messages %}
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+    <form method="post" autocomplete="off">
+        {% csrf_token %}
+        <div class="card">
+            <div class="card-header">Datos personales</div>
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="col-md form-group">
+                        {{ paciente_form.nombre_apellido.errors }}
+                        {{ paciente_form.nombre_apellido.label_tag }} {{ paciente_form.nombre_apellido }}
+                        {% if paciente_form.nombre_apellido.help_text %}
+                            <p class="help">{{ paciente_form.nombre_apellido.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md form-group">
+                        {{ paciente_form.fecha_nacimiento.errors }}
+                        {{ paciente_form.fecha_nacimiento.label_tag }} {{ paciente_form.fecha_nacimiento }}
+                        {% if paciente_form.fecha_nacimiento.help_text %}
+                            <p class="help">{{ paciente_form.fecha_nacimiento.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md form-group">
+                        {{ paciente_form.dni.errors }}
+                        {{ paciente_form.dni.label_tag }} {{ paciente_form.dni }}
+                        {% if paciente_form.dni.help_text %}
+                            <p class="help">{{ paciente_form.dni.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-md form-group">
+                        {{ paciente_form.odontologos.errors }}
+                        {{ paciente_form.odontologos.label_tag }} {{ paciente_form.odontologos }}
+                        {% if paciente_form.odontologos.help_text %}
+                            <p class="help">{{ paciente_form.odontologos.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    {{ paciente_form.domicilio.errors }}
+                    {{ paciente_form.domicilio.label_tag }} {{ paciente_form.domicilio }}
+                    {% if paciente_form.domicilio.help_text %}
+                        <p class="help">{{ paciente_form.domicilio.help_text|safe }}</p>
                     {% endif %}
                 </div>
-                <div class="col-md form-group">
-                    {{ paciente_form.fecha_nacimiento.errors }}
-                    {{ paciente_form.fecha_nacimiento.label_tag }} {{ paciente_form.fecha_nacimiento }}
-                    {% if paciente_form.fecha_nacimiento.help_text %}
-                        <p class="help">{{ paciente_form.fecha_nacimiento.help_text|safe }}</p>
-                    {% endif %}
-                </div>
-                <div class="col-md form-group">
-                    {{ paciente_form.dni.errors }}
-                    {{ paciente_form.dni.label_tag }} {{ paciente_form.dni }}
-                    {% if paciente_form.dni.help_text %}
-                        <p class="help">{{ paciente_form.dni.help_text|safe }}</p>
+                <div class="form-group">
+                    {{ paciente_form.whatsapp.errors }}
+                    {{ paciente_form.whatsapp.label_tag }}
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">+54</div>
+                            </div>
+                            {{ paciente_form.whatsapp }}
+                    </div>
+                    {% if paciente_form.whatsapp.help_text %}
+                        <span class="form-text text-muted">{{ paciente_form.whatsapp.help_text|safe }}</span>
                     {% endif %}
                 </div>
             </div>
-            <div class="form-row">
-                <div class="col-md form-group">
-                    {{ paciente_form.odontologos.errors }}
-                    {{ paciente_form.odontologos.label_tag }} {{ paciente_form.odontologos }}
-                    {% if paciente_form.odontologos.help_text %}
-                        <p class="help">{{ paciente_form.odontologos.help_text|safe }}</p>
-                    {% endif %}
-                </div>
-            </div>
-            <div class="form-group">
-                {{ paciente_form.domicilio.errors }}
-                {{ paciente_form.domicilio.label_tag }} {{ paciente_form.domicilio }}
-                {% if paciente_form.domicilio.help_text %}
-                    <p class="help">{{ paciente_form.domicilio.help_text|safe }}</p>
-                {% endif %}
-            </div>
-            <div class="form-group">
-                {{ paciente_form.whatsapp.errors }}
-                {{ paciente_form.whatsapp.label_tag }}
-                <div class="input-group mb-2">
-                    <div class="input-group-prepend">
-                        <div class="input-group-text">+54</div>
-                        </div>
-                        {{ paciente_form.whatsapp }}
-                </div>
-                {% if paciente_form.whatsapp.help_text %}
-                    <p class="help">{{ paciente_form.whatsapp.help_text|safe }}</p>
-                {% endif %}
-            </div>
-
-            <div style="margin-bottom:1em">
-                <label style="display:block;">Teléfonos:</label>
+        </div>
+        <div class="card">
+            <div class="card-header">Teléfonos</div>
+            <div class="card-body">
                 {{ telefono_formset.management_form }}
                 {% for telefono_form in telefono_formset %}
                     <div class="telefono-formset form-row">
@@ -98,8 +103,10 @@
                     {% endfor %}
                 {% endif %}
             </div>
-            <div style="margin-bottom:1em">
-                <label style="display:block;">Emails:</label>
+        </div>
+        <div class="card">
+            <div class="card-header">Emails</div>
+            <div class="card-body">
                 {{ email_formset.management_form }}
                 {% for email_form in email_formset %}
                     <div class="email-formset form-row">
@@ -127,8 +134,10 @@
                     {% endfor %}
                 {% endif %}
             </div>
-            <div style="margin-bottom:1em">
-                <label style="display:block;">Obras sociales:</label>
+        </div>
+        <div class="card">
+            <div class="card-header">Obras sociales</div>
+            <div class="card-body">
                 {{ obras_sociales_formset.management_form }}
                 {% for os_form in obras_sociales_formset %}
                     <div class="obras-sociales-formset form-row">
@@ -141,17 +150,17 @@
                             {% endif %}
                         </div>
                         <div class="col form-group">
-                            {{ os_form.plan }}
-                            {% if os_form.plan.errors %}
-                                {% for error in os_form.plan.errors %}
+                            {{ os_form.nro_afiliado }}
+                            {% if os_form.nro_afiliado.errors %}
+                                {% for error in os_form.nro_afiliado.errors %}
                                     {{ error|escape }}
                                 {% endfor %}
                             {% endif %}
                         </div>
                         <div class="col form-group">
-                            {{ os_form.nro_afiliado }}
-                            {% if os_form.nro_afiliado.errors %}
-                                {% for error in os_form.nro_afiliado.errors %}
+                            {{ os_form.plan }}
+                            {% if os_form.plan.errors %}
+                                {% for error in os_form.plan.errors %}
                                     {{ error|escape }}
                                 {% endfor %}
                             {% endif %}
@@ -164,11 +173,12 @@
                     {% endfor %}
                 {% endif %}
             </div>
-            <p style="text-align:center;margin-top:10px;">
-                <input type="submit" name="paciente-submit" class="btn-lila" value="Aceptar" />
-            </p>
-        </form>
-    </div>
+        </div>
+        <p style="text-align:center;margin-top:10px;">
+            <input type="submit" name="paciente-submit" class="btn-lila" value="Aceptar" />
+        </p>
+    </form>
+</div>
 {% endblock %}
 
 {% block script %}
