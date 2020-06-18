@@ -570,7 +570,6 @@ class PlanForm(forms.Form):
         max_length=100,
         widget=forms.TextInput(attrs={
             'placeholder': 'Nombre del plan',
-            'style' : 'width:180px;display:inline-block;margin-right:7px;',
         }))
 
     VACIO = ''
@@ -588,7 +587,6 @@ class PlanForm(forms.Form):
         choices=IVA,
         required= False,
         widget=forms.Select(attrs={
-            'style' : 'width:160px;display:inline-block;margin-right:7px;',
         }))
         
     paga_coseguro = forms.BooleanField(required=False)

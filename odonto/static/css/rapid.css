@@ -283,10 +283,10 @@ h6 {
 }
 
 .form-control{
-  border: 1px solid #413e66;
+  border: 1px solid #8986B0;
 }
 .form-control:focus{
-  border: 1px solid #413e66;
+  border: 1px solid #8986B0;
   box-shadow: 0 0 0 0.1rem rgba(49, 2, 104, 0.25);
   /*box-shadow: inherit;*/
 }
@@ -1639,6 +1639,10 @@ h6 {
 }
 
 @media (max-width: 767px) {
+  .card-body{
+    padding: 0.5rem;
+  }
+
   .list-btn-add{
     width: 100%;
     text-align: center;
@@ -1734,7 +1738,11 @@ h6 {
 }
 
 .select2-container--default .select2-selection--multiple{
-  border-color: #413e66;
+  border: solid #8986B0 1px;
+}
+
+.select2-container--default.select2-container--focus .select2-selection--multiple {
+  border: solid #8986B0 1px;
 }
 
 .select2-selection__rendered {
@@ -1748,10 +1756,6 @@ h6 {
 }
 
 .select2-container--default .select2-selection--single{
-  border-color: #413e66;
-}
-
-.select2-container--default.select2-container--focus .select2-selection--multiple {
   border-color: #413e66;
 }
 
@@ -1821,4 +1825,14 @@ h6 {
 
 .card{
   margin-bottom:1em;
+}
+
+.card-header{
+  color:#413e66;
+  font-weight: bold;
+}
+
+label{
+  font-size: 14px;
+  font-weight: 600;
 }
