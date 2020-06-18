@@ -1650,7 +1650,8 @@ h6 {
   }
 
   .list-btn-clear{
-    float: right;
+    width: 100%;
+    text-align: center;
   }
 
   #intro {
@@ -1766,16 +1767,12 @@ h6 {
 }
 
 .btn-add{
-  width: 190px;
   -webkit-appearance: inherit !important;
   background: #fff;
   color: #0a98c0;
   border: 1px solid #0a98c0;
   border-radius: 15px;
-  padding: 4px 10px;
-  
-  margin:5px;
-  
+  padding: 4px 10px;  
   transition: 0.3s;
   font-family: "Montserrat", sans-serif;
   font-size: 10px;
@@ -1791,5 +1788,30 @@ h6 {
 }
 
 .btn-add:focus{
+  outline:none;
+}
+
+.btn-delete{
+  -webkit-appearance: inherit !important;
+  background: #fff;
+  color: #c00a0a;
+  border: 1px solid #c00a0a;
+  border-radius: 50%; 
+  transition: 0.3s;
+  padding: 5px 10px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-top: .3em;
+}
+
+.btn-delete:hover{
+  background: #c00a0a;
+  color: #fff;
+}
+
+.btn-delete:focus{
   outline:none;
 }

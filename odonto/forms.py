@@ -522,13 +522,11 @@ class TelefonoForm(forms.Form):
                     max_length=100,
                     widget=forms.TextInput(attrs={
                         'placeholder': 'Número',
-                        'style' : 'width:220px;display:inline-block;margin-right:7px;',
                     }),
                     required=False)
     descripcion = forms.CharField(
                     widget=forms.TextInput(attrs={
                         'placeholder': 'Contacto',
-                        'style' : 'width:220px;display:inline-block;margin-right:7px;',
                     }),
                     required=False)
 
@@ -548,13 +546,11 @@ class EmailForm(forms.Form):
                     max_length=100,
                     widget=forms.TextInput(attrs={
                         'placeholder': 'Email',
-                        'style' : 'width:220px;display:inline-block;margin-right:7px;',
                     }),
                     required=False)
     descripcion = forms.CharField(
                     widget=forms.TextInput(attrs={
                         'placeholder': 'Contacto',
-                        'style' : 'width:220px;display:inline-block;margin-right:7px;',
                     }),
                     required=False)
 
@@ -622,8 +618,7 @@ class PacienteObraSocialForm(forms.Form):
         empty_label= 'Seleccionar obra social',
         queryset=Obra_Social.objects.none(),
         widget=forms.Select(attrs={
-            'style' : 'width:220px;margin-right:7px;display:inline-block;',
-            'onChange' : 'seleccionarObraSocial(this);',
+            'onChange' : 'seleccionarObraSocial($(this));',
         }))
 
     plan = MyModelChoiceField(
@@ -631,13 +626,11 @@ class PacienteObraSocialForm(forms.Form):
         empty_label= 'Seleccionar plan',
         queryset=Plan.objects.none(),
         widget=forms.Select(attrs={
-            'style' : 'width:150px;margin-right:7px;',
         }))
 
     nro_afiliado = forms.CharField(
         widget=forms.TextInput(attrs={
             'placeholder': 'Nro. Afiliado',
-            'style' : 'width:150px;display:inline-block;margin-right:7px;',
         }),
         required=False)
 
@@ -656,13 +649,13 @@ class PacienteObraSocialForm(forms.Form):
             if obra_social:
                 if obra_social.usa_planes:
                     self.fields['plan'].queryset = Plan.objects.filter(obra_social = os)
-                    self.fields['plan'].widget.attrs['style'] += 'display:inline-block;'
+                    self.fields['plan'].widget.attrs['style'] = 'display:inline-block;'
                 else:
-                    self.fields['plan'].widget.attrs['style'] += 'display:none;'
+                    self.fields['plan'].widget.attrs['style'] = 'display:none;'
             else:
-                 self.fields['plan'].widget.attrs['style'] += 'display:none;'
+                 self.fields['plan'].widget.attrs['style'] = 'display:none;'
         else:
-             self.fields['plan'].widget.attrs['style'] += 'display:none;'
+             self.fields['plan'].widget.attrs['style'] = 'display:none;'
 
 class BasePacienteObraSocialFormSet(BaseFormSet):
     def clean(self):

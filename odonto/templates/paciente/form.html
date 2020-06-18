@@ -17,21 +17,21 @@
         <form method="post" autocomplete="off">
             {% csrf_token %}
             <div class="form-row">
-                <div class="col form-group">
+                <div class="col-md form-group">
                     {{ paciente_form.nombre_apellido.errors }}
                     {{ paciente_form.nombre_apellido.label_tag }} {{ paciente_form.nombre_apellido }}
                     {% if paciente_form.nombre_apellido.help_text %}
                         <p class="help">{{ paciente_form.nombre_apellido.help_text|safe }}</p>
                     {% endif %}
                 </div>
-                <div class="col form-group">
+                <div class="col-md form-group">
                     {{ paciente_form.fecha_nacimiento.errors }}
                     {{ paciente_form.fecha_nacimiento.label_tag }} {{ paciente_form.fecha_nacimiento }}
                     {% if paciente_form.fecha_nacimiento.help_text %}
                         <p class="help">{{ paciente_form.fecha_nacimiento.help_text|safe }}</p>
                     {% endif %}
                 </div>
-                <div class="col form-group">
+                <div class="col-md form-group">
                     {{ paciente_form.dni.errors }}
                     {{ paciente_form.dni.label_tag }} {{ paciente_form.dni }}
                     {% if paciente_form.dni.help_text %}
@@ -39,12 +39,14 @@
                     {% endif %}
                 </div>
             </div>
-            <div class="form-group">
-                {{ paciente_form.odontologos.errors }}
-                {{ paciente_form.odontologos.label_tag }} {{ paciente_form.odontologos }}
-                {% if paciente_form.odontologos.help_text %}
-                    <p class="help">{{ paciente_form.odontologos.help_text|safe }}</p>
-                {% endif %}
+            <div class="form-row">
+                <div class="col-md form-group">
+                    {{ paciente_form.odontologos.errors }}
+                    {{ paciente_form.odontologos.label_tag }} {{ paciente_form.odontologos }}
+                    {% if paciente_form.odontologos.help_text %}
+                        <p class="help">{{ paciente_form.odontologos.help_text|safe }}</p>
+                    {% endif %}
+                </div>
             </div>
             <div class="form-group">
                 {{ paciente_form.domicilio.errors }}
@@ -71,20 +73,23 @@
                 <label style="display:block;">Teléfonos:</label>
                 {{ telefono_formset.management_form }}
                 {% for telefono_form in telefono_formset %}
-                    <div class="telefono-formset" style="margin-bottom:0.4em;">
-                        {{ telefono_form.descripcion }}
-                        {% if telefono_form.descripcion.errors %}
-                            {% for error in telefono_form.descripcion.errors %}
-                                {{ error|escape }}
-                            {% endfor %}
-                        {% endif %}
-
-                        {{ telefono_form.telefono }}
-                        {% if telefono_form.telefono.errors %}
-                            {% for error in telefono_form.telefono.errors %}
-                                {{ error|escape }}
-                            {% endfor %}
-                        {% endif %}
+                    <div class="telefono-formset form-row">
+                        <div class="col form-group">
+                            {{ telefono_form.descripcion }}
+                            {% if telefono_form.descripcion.errors %}
+                                {% for error in telefono_form.descripcion.errors %}
+                                    {{ error|escape }}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div class="col form-group">
+                            {{ telefono_form.telefono }}
+                            {% if telefono_form.telefono.errors %}
+                                {% for error in telefono_form.telefono.errors %}
+                                    {{ error|escape }}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
                     </div>
                 {% endfor %}
                 {% if telefono_formset.non_form_errors %}
@@ -97,20 +102,23 @@
                 <label style="display:block;">Emails:</label>
                 {{ email_formset.management_form }}
                 {% for email_form in email_formset %}
-                    <div class="email-formset" style="margin-bottom:0.5em;">
-                        {{ email_form.descripcion }}
-                        {% if email_form.descripcion.errors %}
-                            {% for error in email_form.descripcion.errors %}
-                                {{ error|escape }}
-                            {% endfor %}
-                        {% endif %}
-
-                        {{ email_form.email }}
-                        {% if email_form.email.errors %}
-                            {% for error in email_form.email.errors %}
-                                {{ error|escape }}
-                            {% endfor %}
-                        {% endif %}
+                    <div class="email-formset form-row">
+                        <div class="col form-group">
+                            {{ email_form.descripcion }}
+                            {% if email_form.descripcion.errors %}
+                                {% for error in email_form.descripcion.errors %}
+                                    {{ error|escape }}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div class="col form-group">
+                            {{ email_form.email }}
+                            {% if email_form.email.errors %}
+                                {% for error in email_form.email.errors %}
+                                    {{ error|escape }}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
                     </div>
                 {% endfor %}
                 {% if email_formset.non_form_errors %}
@@ -123,27 +131,31 @@
                 <label style="display:block;">Obras sociales:</label>
                 {{ obras_sociales_formset.management_form }}
                 {% for os_form in obras_sociales_formset %}
-                    <div class="obras-sociales-formset" style="margin-bottom:0.5em;">
-                        {{ os_form.obra_social }}
-                        {% if os_form.obra_social.errors %}
-                            {% for error in os_form.obra_social.errors %}
-                                {{ error|escape }}
-                            {% endfor %}
-                        {% endif %}
-
-                        {{ os_form.plan }}
-                        {% if os_form.plan.errors %}
-                            {% for error in os_form.plan.errors %}
-                                {{ error|escape }}
-                            {% endfor %}
-                        {% endif %}
-
-                        {{ os_form.nro_afiliado }}
-                        {% if os_form.nro_afiliado.errors %}
-                            {% for error in os_form.nro_afiliado.errors %}
-                                {{ error|escape }}
-                            {% endfor %}
-                        {% endif %}
+                    <div class="obras-sociales-formset form-row">
+                        <div class="col form-group">
+                            {{ os_form.obra_social }}
+                            {% if os_form.obra_social.errors %}
+                                {% for error in os_form.obra_social.errors %}
+                                    {{ error|escape }}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div class="col form-group">
+                            {{ os_form.plan }}
+                            {% if os_form.plan.errors %}
+                                {% for error in os_form.plan.errors %}
+                                    {{ error|escape }}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div class="col form-group">
+                            {{ os_form.nro_afiliado }}
+                            {% if os_form.nro_afiliado.errors %}
+                                {% for error in os_form.nro_afiliado.errors %}
+                                    {{ error|escape }}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
                     </div>
                 {% endfor %}
                 {% if paciente_planes_formset.non_form_errors %}
@@ -156,144 +168,131 @@
                 <input type="submit" name="paciente-submit" class="btn-lila" value="Aceptar" />
             </p>
         </form>
+    </div>
+{% endblock %}
 
-        <!-- Include formset plugin - including jQuery dependency -->
-        <!--script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script-->
-        <script src="{% static 'js/jquery.formset.js' %}"></script>
-        <!--script src="{% static 'path_to/jquery.formset.js' %}"></script-->
-        <script>
+{% block script %}
+     <!-- Include formset plugin - including jQuery dependency -->
+    <!--script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script-->
+    <script src="{% static 'js/jquery.formset.js' %}"></script>
+    <!--script src="{% static 'path_to/jquery.formset.js' %}"></script-->
+    <script>
+        $(document).ready(() => {
+            $("#id_odontologos").select2();
+
             $('.telefono-formset').formset({
                 addText: '<button class="btn-add"><i class="fa fa-plus"></i> Agregar</button>',
-                deleteText: 'Eliminar',
+                deleteText: '<button class="btn-delete"><i class="fa fa-remove"></i></button>',
                 prefix: "{{ telefono_formset.prefix }}"
             });
 
             $('.email-formset').formset({
                 addText: '<button class="btn-add"><i class="fa fa-plus"></i> Agregar</button>',
-                deleteText: 'Eliminar',
+                deleteText: '<button class="btn-delete"><i class="fa fa-remove"></i></button>',
                 prefix: "{{ email_formset.prefix }}"
             });
             
             $('.obras-sociales-formset').formset({
                 addText: '<button class="btn-add"><i class="fa fa-plus"></i> Agregar</button>',
-                deleteText: 'Eliminar',
+                deleteText: '<button class="btn-delete"><i class="fa fa-remove"></i></button>',
                 prefix: "{{ obras_sociales_formset.prefix }}",
                 added:NuevaObraSocial
             });
+        });
 
-            function NuevaObraSocial(){
-                /*
-                $(".select_obra_social").select2({
-                    tags:true,
-                    placeholder: 'Obra social',
-                    allowClear: true
-                });
-                */
-            }
+        NuevaObraSocial = ()=>{
+            console.log('agregar obra social');
+        }
 
-            /*
-            $(".select_obra_social").select2({
-                tags:true,
-                placeholder: 'Obra social',
-                allowClear: true
-            });
-            */
+        /*
+        $(".select_obra_social").select2({
+            tags:true,
+            placeholder: 'Obra social',
+            allowClear: true
+        });
+        */
+        
+        var xhttp_plan = new XMLHttpRequest();
+        var xhttp_os = new XMLHttpRequest();
+
+        function seleccionarObraSocial(control){
+            let id = control.val();
             
-            var xhttp_plan = new XMLHttpRequest();
-            var xhttp_os = new XMLHttpRequest();
-
-            function seleccionarObraSocial(control){
-                let id = control[control.selectedIndex].value;
-
-                let controls = document.getElementsByClassName("select_obra_social");
-                console.log('Encontrados: ' + controls.length);
-                
-                let counter = 0;
-                for(var i = 0; i < controls.length ; i++){
-                    console.log(controls[i][controls[i].selectedIndex].value);
-                    if (id == controls[i][controls[i].selectedIndex].value)
-                        counter++;
-                }
-
-                if(counter > 1 && isNaN(id) == false && id != ''){
-                    alert('La obra social ya fue seleccionada');
-                    control.value = '';
-                }
-                else{
-                    if (isNaN(id) == false && id != ''){
-                        xhttp_os.onreadystatechange = callbackObraSocial(control);
-                        xhttp_os.open("GET", "/obra_social/" + id, true);
-                        xhttp_os.send();
-                    }
-                }
-                if (isNaN(id) == true || id == ''){
-                    let select_plan = control.parentNode.querySelector('.select_plan');
-                    removeOptions(select_plan);
-                    select_plan.style.display = 'none';
-                }
-            }
-
-            function callbackObraSocial(select_os){
-                return function() {
-                    let id = select_os[select_os.selectedIndex].value;
-                    if (this.readyState == 4 && this.status == 200) {
-                        console.log(this.responseText);
-                        var arr = JSON.parse(this.responseText);
-
-                        let usa_planes = arr[0].fields.usa_planes;
-                        console.log(usa_planes);
-
-                        let select_plan = select_os.parentNode.querySelector('.select_plan');
-                        if (usa_planes == true){
-                            xhttp_plan.onreadystatechange = createCallback(select_plan);
-                            xhttp_plan.open("GET", "/plan/get_for_select?obra_social=" + id, true);
-                            xhttp_plan.send();
-                        }
-                        else
-                        {
-                            removeOptions(select_plan);
-                            select_plan.style.display = 'none';
-                        }
-                    }
-                }
-            }
-
-            function createCallback(select){
-                console.log('callback creado para: ' + select.id);
-                return function() {
-                    if (this.readyState == 4 && this.status == 200) {
-                        console.log(this.responseText);
-                        removeOptions(select);
-                        var opt = document.createElement('option');
-                        opt.appendChild(document.createTextNode('Seleccionar plan'));
-                        opt.value = '';
-                        select.appendChild(opt);
-                        var arr = JSON.parse(this.responseText);
-                        if (arr.length > 0)
-                            select.style.display = 'inline-block';
-                        for (i in arr) {
-                            opt = document.createElement('option');
-                            opt.appendChild(document.createTextNode(arr[i].nombre));
-                            opt.value = arr[i].id; 
-                            select.appendChild(opt);
-                        }
-                    }
-                }
-            }
-
-            function removeOptions(selectbox){
-                var i;
-                for(i = selectbox.options.length - 1 ; i >= 0 ; i--)
-                {
-                    selectbox.remove(i);
-                }
-            }
-            $("#id_odontologos").select2({
-                maximumSelectionLength: 2
+            let counter = 0;
+            $('.select_obra_social').each(function(){
+                if (id == $(this).val())
+                    counter++;
             });
-        </script>
-    </div>
-{% endblock %}
 
-{% block script %}
+            if(counter > 1 && isNaN(id) == false && id != ''){
+                alert('La obra social ya fue seleccionada');
+                control.val('');
+            }
+            else{
+                if (isNaN(id) == false && id != ''){
+                    xhttp_os.onreadystatechange = callbackObraSocial(control);
+                    xhttp_os.open("GET", "/obra_social/" + id, true);
+                    xhttp_os.send();
+                }
+            }
+            if (isNaN(id) == true || id == ''){
+                let select_plan = control.parent().parent().find('.select_plan');
+                removeOptions(select_plan);
+                select_plan.style.display = 'none';
+            }
+        }
+
+        function callbackObraSocial(select_os){
+            return function() {
+                let id = select_os.val();
+                if (this.readyState == 4 && this.status == 200) {
+                    console.log(this.responseText);
+                    var arr = JSON.parse(this.responseText);
+
+                    let usa_planes = arr[0].fields.usa_planes;
+                    console.log(usa_planes);
+
+                    let select_plan = select_os.parent().parent().find('.select_plan');
+                    if (usa_planes == true){
+                        xhttp_plan.onreadystatechange = createCallback(select_plan);
+                        xhttp_plan.open("GET", "/plan/get_for_select?obra_social=" + id, true);
+                        xhttp_plan.send();
+                    }
+                    else
+                    {
+                        removeOptions(select_plan);
+                        select_plan.hide();
+                    }
+                }
+            }
+        }
+
+        function createCallback(select){
+            console.log('callback creado para: ' + select.attr('id'));
+            return function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    console.log(this.responseText);
+                    removeOptions(select);
+                    
+                    select.append('<option selected="selected" value="">Seleccionar Plan</option>');
+                    var arr = JSON.parse(this.responseText);
+                    if (arr.length > 0)
+                        select.css('display','inline-block');
+                    for (i in arr) { 
+                        select.append('<option value="'+arr[i].id+'">'+arr[i].descrip+'</option>');
+                    }
+                }
+            }
+        }
+
+        function removeOptions(selectbox){
+            selectbox.empty();
+            return;
+            var i;
+            for(i = selectbox.options.length - 1 ; i >= 0 ; i--)
+            {
+                selectbox.remove(i);
+            }
+        }
+    </script>
 {% endblock %}

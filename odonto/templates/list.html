@@ -8,14 +8,20 @@
 
 {% block content %}
     <div class="row">
-        <div class="col-md-4">
-            <a href="crear" title="Agregar" class="btn-lila list-btn-add"><i class="fa fa-plus"></i> Agregar</a>
+        <div class="col-md-4 form-row">
+            <div class="col form-group">
+                <a href="crear" title="Agregar" class="btn-lila list-btn-add"><i class="fa fa-plus"></i> Agregar</a>
+            </div>
         </div>
-        <div class="col-md-8 filter-col">
-            <form method="get" class="list-filter" autocomplete="off">
-                {{filter.form.filtro}}
-            </form>
-            <a href="." class="btn-lila list-btn-clear"><i class="fa fa-remove"></i> Limpiar</a>
+        <div class="col-md-8 filter-col form-row">
+            <div class="col form-group">
+                <form method="get" autocomplete="off">
+                    {{filter.form.filtro}}
+                </form>
+            </div>
+            <div class="col form-group">
+                <a href="." class="btn-lila list-btn-clear"><i class="fa fa-remove"></i> Limpiar</a>
+            </div>
         </div>
     </div>
     <table class="table table-hover table-responsive-md table-list" style="margin-top:10px;">
