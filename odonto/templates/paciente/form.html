@@ -188,7 +188,11 @@
     <!--script src="{% static 'path_to/jquery.formset.js' %}"></script-->
     <script>
         $(document).ready(() => {
-            $("#id_odontologos").select2();
+            $("#id_odontologos").select2({
+                placeholder: 'Haga click para seleccionar',
+                allowClear: true,
+                language: 'es',
+            });
 
             $('.telefono-formset').formset({
                 addText: '<button class="btn-add"><i class="fa fa-plus"></i> Agregar</button>',

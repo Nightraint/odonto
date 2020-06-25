@@ -195,580 +195,585 @@
 {% endblock %}
 
 {% block content %}
-    {% load staticfiles %}
-    <div class="col-md-8 offset-md-2">
-        {% if messages %}
-            {% for message in messages %}
-                <p>{{ message }}</p>
+{% load staticfiles %}
+<div class="col-md-8 offset-md-2">
+    {% if messages %}
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+    <form method= "POST" enctype="multipart/form-data" autocomplete="off">
+        {% csrf_token %}
+        <div class="card">
+            <div class="card-header">Datos principales</div>
+            <div class="card-body">
+                <div class="row form-group">
+                    <div class="col-md-4">
+                        {{ ficha_form.fecha.errors }}
+                        {{ ficha_form.fecha.label_tag }} {{ ficha_form.fecha }}
+                        {% if ficha_form.fecha.help_text %}
+                            <p class="help">{{ ficha_form.fecha.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        {{ ficha_form.paciente.errors }}
+                        {{ ficha_form.paciente.label_tag }} {{ ficha_form.paciente }}
+                        {% if ficha_form.paciente.help_text %}
+                            <p class="help">{{ ficha_form.paciente.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        {{ ficha_form.odontologo.errors }}
+                        {{ ficha_form.odontologo.label_tag }} {{ ficha_form.odontologo }}
+                        {% if ficha_form.odontologo.help_text %}
+                            <p class="help">{{ ficha_form.odontologo.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-4">
+                        {{ ficha_form.obra_social.errors }}
+                        {{ ficha_form.obra_social.label_tag }} {{ ficha_form.obra_social }}
+                        {% if ficha_form.obra_social.help_text %}
+                            <p class="help">{{ ficha_form.obra_social.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        {{ ficha_form.plan.errors }}
+                        {{ ficha_form.plan.label_tag }} {{ ficha_form.plan }}
+                        {% if ficha_form.plan.help_text %}
+                            <p class="help">{{ ficha_form.plan.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        {{ ficha_form.nro_afiliado.errors }}
+                        {{ ficha_form.nro_afiliado.label_tag }} {{ ficha_form.nro_afiliado }}
+                        {% if ficha_form.nro_afiliado.help_text %}
+                            <p class="help">{{ ficha_form.nro_afiliado.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-12">
+                        {{ ficha_form.observaciones.errors }}
+                        {{ ficha_form.observaciones.label_tag }} {{ ficha_form.observaciones }}
+                        {% if ficha_form.observaciones.help_text %}
+                            <p class="help">{{ ficha_form.observaciones.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="margin-bottom:1em;margin-top:1em;" id="div_imagenes">
+            <button type="button" class="accordion">Imágenes </button>
+            <div class="panel">
+            {{ imagenes_formset.management_form }}
+            {% for imagen_form in imagenes_formset %}
+                <div class="imagenes-formset" style="margin-bottom:0.4em;">
+                    <div style="display:none;">
+                        {{ imagen_form.imagen }}
+                        {{ imagen_form.id_img}}
+                        {% if imagen_form.initial%}
+                            <input class="url" value="{{ imagen_form.initial.imagen.url }}">
+                            <input class="filename" value="{{ imagen_form.initial.filename }}">
+                        {% else %}
+                            <input class="filename" value="">
+                        {% endif %}
+                    </div>
+                        <div style="display:none;" class="div_preview">
+                        <img class="close" src="/static/images/delete.png" onclick="eliminar(this);"/>
+                        <label style="display:none;" class="label_preview" onclick="ver_archivo(this);" title="Descargar archivo"><i class="fa fa-download" style="margin-right:5px;"></i></label>
+                        <img onError="errorImagen(this);" style="display:none;" class="img_preview" onclick="ver_imagen(this);" title="Ver imagen"/>
+                        {{ imagen_form.descripcion }}
+                    </div>
+                    {% if not imagen_form.initial %}
+                        <label for="{{imagen_form.imagen.auto_id}}" class="label-seleccionar" style="display:block !important;cursor:pointer;">
+                            <div style="text-align:center;" class="btn-add"><i class="fa fa-plus"></i> Agregar</div>
+                        </label>
+                    {% endif %}
+                    {% if imagen_form.imagen.errors %}
+                        {% for error in imagen_form.imagen.errors %}
+                            {{ error|escape }}
+                        {% endfor %}
+                    {% endif %}
+                </div>
             {% endfor %}
-        {% endif %}
-        <form method= "POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="row form-group">
-                <div class="col-md-4">
-                    {{ ficha_form.fecha.errors }}
-                    {{ ficha_form.fecha.label_tag }} {{ ficha_form.fecha }}
-                    {% if ficha_form.fecha.help_text %}
-                        <p class="help">{{ ficha_form.fecha.help_text|safe }}</p>
-                    {% endif %}
-                </div>
-                <div class="col-md-4">
-                    {{ ficha_form.paciente.errors }}
-                    {{ ficha_form.paciente.label_tag }} {{ ficha_form.paciente }}
-                    {% if ficha_form.paciente.help_text %}
-                        <p class="help">{{ ficha_form.paciente.help_text|safe }}</p>
-                    {% endif %}
-                </div>
-                <div class="col-md-4">
-                    {{ ficha_form.odontologo.errors }}
-                    {{ ficha_form.odontologo.label_tag }} {{ ficha_form.odontologo }}
-                    {% if ficha_form.odontologo.help_text %}
-                        <p class="help">{{ ficha_form.odontologo.help_text|safe }}</p>
-                    {% endif %}
-                </div>
+            {% if imagen_form.non_form_errors %}
+                {% for error in imagen_form.non_form_errors %}
+                    {{ error|escape }}
+                {% endfor %}
+            {% endif %}
             </div>
-            <div class="row form-group">
-                <div class="col-md-4">
-                    {{ ficha_form.obra_social.errors }}
-                    {{ ficha_form.obra_social.label_tag }} {{ ficha_form.obra_social }}
-                    {% if ficha_form.obra_social.help_text %}
-                        <p class="help">{{ ficha_form.obra_social.help_text|safe }}</p>
-                    {% endif %}
+        </div>
+        <div style="margin-bottom:1em">
+            <button type="button" class="accordion">Historia </button>
+            <div class="panel">
+            {{ consultas_formset.management_form }}
+            {% for form in consultas_formset %}
+                <div class="consultas-formset" style="border-bottom: 1px solid #413e66;padding:7px;">
+                <div style="display:none;" id="id_consulta">
+                    {{ form.id_consulta }}
                 </div>
-                <div class="col-md-4">
-                    {{ ficha_form.plan.errors }}
-                    {{ ficha_form.plan.label_tag }} {{ ficha_form.plan }}
-                    {% if ficha_form.plan.help_text %}
-                        <p class="help">{{ ficha_form.plan.help_text|safe }}</p>
-                    {% endif %}
-                </div>
-                <div class="col-md-4">
-                    {{ ficha_form.nro_afiliado.errors }}
-                    {{ ficha_form.nro_afiliado.label_tag }} {{ ficha_form.nro_afiliado }}
-                    {% if ficha_form.nro_afiliado.help_text %}
-                        <p class="help">{{ ficha_form.nro_afiliado.help_text|safe }}</p>
-                    {% endif %}
-                </div>
-            </div>
-            <div class="row form-group">
-                <div class="col-md-12">
-                    {{ ficha_form.observaciones.errors }}
-                    {{ ficha_form.observaciones.label_tag }} {{ ficha_form.observaciones }}
-                    {% if ficha_form.observaciones.help_text %}
-                        <p class="help">{{ ficha_form.observaciones.help_text|safe }}</p>
-                    {% endif %}
-                </div>
-            </div>
-            <div style="margin-bottom:1em;margin-top:1em;" id="div_imagenes">
-                <button type="button" class="accordion">Imágenes </button>
-                <div class="panel">
-                {{ imagenes_formset.management_form }}
-                {% for imagen_form in imagenes_formset %}
-                    <div class="imagenes-formset" style="margin-bottom:0.4em;">
-                        <div style="display:none;">
-                            {{ imagen_form.imagen }}
-                            {{ imagen_form.id_img}}
-                            {% if imagen_form.initial%}
-                                <input class="url" value="{{ imagen_form.initial.imagen.url }}">
-                                <input class="filename" value="{{ imagen_form.initial.filename }}">
-                            {% else %}
-                                <input class="filename" value="">
+                {% if form.initial %}
+                    <div class="row">
+                        <div class="col-md-4">
+                            <b>Fecha: </b>{{form.initial.fecha}}
+                        </div>
+                        <div class="col-md-2">
+                        {% if form.initial.nro_diente %}
+                            <b>Diente: </b>{{form.initial.nro_diente}}
+                        {% endif %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <b>Norma de trabajo: </b>{{form.initial.descripcion_norma_trabajo|default_if_none:'-'}}
+                        </div>
+                    </div>
+                    <div class="row" style="">
+                        <div class="col-md-12">
+                            <b>Detalle: </b><br/>
+                            <div id="text-{{form.detalle.auto_id}}">
+                                {{form.initial.detalle|default_if_none:'-'}}
+                                <a href="javascript:toggleDetalle('{{form.detalle.auto_id}}');" class="links"><i class="fa fa-pencil-square-o" aria-hidden="true" style="margin-left:10px;"></i> Editar detalle</a>
+                            </div>
+                            <div id="input-{{form.detalle.auto_id}}" style="display:none;">
+                                {{form.detalle}}
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="div_nueva_consulta">
+                    <label class="nueva_consulta">Nueva historia:</label>
+                    <div class="row">
+                        <div class="col-md-4">
+                            {{ form.fecha }}
+                            {% if form.fecha.errors %}
+                                {% for error in form.fecha.errors %}
+                                    {{ error|escape }}
+                                {% endfor %}
                             {% endif %}
                         </div>
-                         <div style="display:none;" class="div_preview">
-                            <img class="close" src="/static/images/delete.png" onclick="eliminar(this);"/>
-                            <label style="display:none;" class="label_preview" onclick="ver_archivo(this);" title="Descargar archivo"><i class="fa fa-download" style="margin-right:5px;"></i></label>
-                            <img onError="errorImagen(this);" style="display:none;" class="img_preview" onclick="ver_imagen(this);" title="Ver imagen"/>
-                            {{ imagen_form.descripcion }}
-                        </div>
-                        {% if not imagen_form.initial %}
-                            <label for="{{imagen_form.imagen.auto_id}}" class="label-seleccionar" style="display:block !important;cursor:pointer;">
-                                <div style="text-align:center;" class="btn-add"><i class="fa fa-plus"></i> Agregar</div>
-                            </label>
-                        {% endif %}
-                        {% if imagen_form.imagen.errors %}
-                            {% for error in imagen_form.imagen.errors %}
-                                {{ error|escape }}
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                {% endfor %}
-                {% if imagen_form.non_form_errors %}
-                    {% for error in imagen_form.non_form_errors %}
-                        {{ error|escape }}
-                    {% endfor %}
-                {% endif %}
-                </div>
-            </div>
-            <div style="margin-bottom:1em">
-                <button type="button" class="accordion">Historia </button>
-                <div class="panel">
-                {{ consultas_formset.management_form }}
-                {% for form in consultas_formset %}
-                    <div class="consultas-formset" style="border-bottom: 1px solid #413e66;padding:7px;">
-                    <div style="display:none;" id="id_consulta">
-                        {{ form.id_consulta }}
-                    </div>
-                    {% if form.initial %}
-                        <div class="row">
-                            <div class="col-md-4">
-                                <b>Fecha: </b>{{form.initial.fecha}}
-                            </div>
-                            <div class="col-md-2">
-                            {% if form.initial.nro_diente %}
-                                <b>Diente: </b>{{form.initial.nro_diente}}
+                        <div class="col-md-3">
+                            {{ form.nro_diente }}
+                            {% if form.nro_diente.errors %}
+                                {% for error in form.nro_diente.errors %}
+                                    {{ error|escape }}
+                                {% endfor %}
                             {% endif %}
-                            </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <b>Norma de trabajo: </b>{{form.initial.descripcion_norma_trabajo|default_if_none:'-'}}
-                            </div>
+                        <div class="col-md-5" >
+                            {{ form.norma_trabajo }}
+                            {% if form.norma_trabajo.errors %}
+                                {% for error in form.norma_trabajo.errors %}
+                                    {{ error|escape }}
+                                {% endfor %}
+                            {% endif %}
                         </div>
-                        <div class="row" style="">
-                            <div class="col-md-12">
-                                <b>Detalle: </b><br/>
-                                <div id="text-{{form.detalle.auto_id}}">
-                                    {{form.initial.detalle|default_if_none:'-'}}
-                                    <a href="javascript:toggleDetalle('{{form.detalle.auto_id}}');" class="links"><i class="fa fa-pencil-square-o" aria-hidden="true" style="margin-left:10px;"></i> Editar detalle</a>
-                                </div>
-                                <div id="input-{{form.detalle.auto_id}}" style="display:none;">
-                                    {{form.detalle}}
-                                </div>
-                            </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mensaje">
                         </div>
-                    {% else %}
-                        <div class="div_nueva_consulta">
-                        <label class="nueva_consulta">Nueva historia:</label>
-                        <div class="row">
-                            <div class="col-md-4">
-                                {{ form.fecha }}
-                                {% if form.fecha.errors %}
-                                    {% for error in form.fecha.errors %}
-                                        {{ error|escape }}
-                                    {% endfor %}
-                                {% endif %}
-                            </div>
-                            <div class="col-md-3">
-                                {{ form.nro_diente }}
-                                {% if form.nro_diente.errors %}
-                                    {% for error in form.nro_diente.errors %}
-                                        {{ error|escape }}
-                                    {% endfor %}
-                                {% endif %}
-                            </div>
-                            <div class="col-md-5" >
-                                {{ form.norma_trabajo }}
-                                {% if form.norma_trabajo.errors %}
-                                    {% for error in form.norma_trabajo.errors %}
-                                        {{ error|escape }}
-                                    {% endfor %}
-                                {% endif %}
-                            </div>
+                    </div>
+                    <div class="row" style="padding-bottom:10px;">
+                        <div class="col-md-12">
+                            {{ form.detalle }}
+                            {% if form.detalle.errors %}
+                                {% for error in form.detalle.errors %}
+                                    {{ error|escape }}
+                                {% endfor %}
+                            {% endif %}
                         </div>
-                        <div class="row">
-                            <div class="col-md-12 mensaje">
-                            </div>
-                        </div>
-                        <div class="row" style="padding-bottom:10px;">
-                            <div class="col-md-12">
-                                {{ form.detalle }}
-                                {% if form.detalle.errors %}
-                                    {% for error in form.detalle.errors %}
-                                        {{ error|escape }}
-                                    {% endfor %}
-                                {% endif %}
-                            </div>
-                        </div>
-                        </div>
-                    {% endif%}
-                </div>
-                {% endfor %}
-                {% if consultas_formset.non_form_errors %}
-                    {% for error in consultas_formset.non_form_errors %}
-                        {{ error|escape }}
-                    {% endfor %}
-                {% endif %}
-                </div>
+                    </div>
+                    </div>
+                {% endif%}
             </div>
-            <div style="margin-bottom:1em">
-                <button type="button" class="accordion">Odontograma </button>
-                <div class="panel" id="odontograma">
-                    <div align="center" style="min-width:700px;" class="no-selectable">
+            {% endfor %}
+            {% if consultas_formset.non_form_errors %}
+                {% for error in consultas_formset.non_form_errors %}
+                    {{ error|escape }}
+                {% endfor %}
+            {% endif %}
+            </div>
+        </div>
+        <div style="margin-bottom:1em">
+            <button type="button" class="accordion">Odontograma </button>
+            <div class="panel" id="odontograma">
+                <div align="center" style="min-width:700px;" class="no-selectable">
+                    <div style="display:inline-block;">
+                        <div class="div-diente">
+                            <span class="span-diente">18</span>
+                            <canvas width="30" height="40"></canvas>
+                            {{ficha_form.d18}}
+                        </div>
+                        <div class="separador-h"></div>
+                        <div class="div-diente">
+                            <canvas width="30" height="40"></canvas>
+                            <span class="span-diente">48</span>
+                            {{ficha_form.d48}}
+                        </div>
+                    </div>
+                    <div style="display:inline-block;">
+                        <div class="div-diente">
+                            <span class="span-diente">17</span>
+                            <canvas width="30" height="40"></canvas>
+                            {{ficha_form.d17}}
+                        </div>
+                        <div class="separador-h"></div>
+                        <div class="div-diente">
+                            <canvas width="30" height="40"></canvas>
+                            <span class="span-diente">47</span>
+                            {{ficha_form.d47}}
+                        </div>
+                    </div>
+                    <div style="display:inline-block;">
+                        <div class="div-diente">
+                            <span class="span-diente">16</span>
+                            <canvas width="30" height="40"></canvas>
+                            {{ficha_form.d16}}
+                        </div>
+                        <div class="separador-h"></div>
+                        <div class="div-diente">
+                            <canvas width="30" height="40"></canvas>
+                            <span class="span-diente">46</span>
+                            {{ficha_form.d46}}
+                        </div>
+                    </div>
+                    <div style="display:inline-block;">
+                        <div class="div-diente">
+                            <span class="span-diente">15</span>
+                            <canvas width="30" height="40"></canvas>
+                            {{ficha_form.d15}}
+                        </div>
+                        <div class="separador-h"></div>
+                        <div class="div-diente">
+                            <canvas width="30" height="40"></canvas>
+                            <span class="span-diente">45</span>
+                            {{ficha_form.d45}}
+                        </div>
+                    </div>
+                    <div style="display:inline-block;">
+                        <div class="div-diente">
+                            <span class="span-diente">14</span>
+                            <canvas id="canvas" width="30" height="40"></canvas>
+                            {{ficha_form.d14}}
+                        </div>
+                        <div class="separador-h"></div>
+                        <div class="div-diente">
+                            <canvas id="canvas" width="30" height="40"></canvas>
+                            <span class="span-diente">44</span>
+                            {{ficha_form.d44}}
+                        </div>
+                    </div>
+                    <div style="display:inline-block;">
+                        <div class="div-diente">
+                            <span class="span-diente">13</span>
+                            <canvas width="30" height="40"></canvas>
+                            {{ficha_form.d13}}
+                        </div>
+                        <div class="separador-h"></div>
+                        <div class="div-diente">
+                            <canvas width="30" height="40"></canvas>
+                            <span class="span-diente">43</span>
+                            {{ficha_form.d43}}
+                        </div>
+                    </div>
+                    <div style="display:inline-block;">
+                        <div class="div-diente">
+                            <span class="span-diente">12</span>
+                            <canvas width="30" height="40"></canvas>
+                            {{ficha_form.d12}}
+                        </div>
+                        <div class="separador-h"></div>
+                        <div class="div-diente">
+                            <canvas width="30" height="40"></canvas>
+                            <span class="span-diente">42</span>
+                            {{ficha_form.d42}}
+                        </div>
+                    </div>
+                    <div style="display:inline-block;">
+                        <div class="div-diente">
+                            <span class="span-diente">11</span>
+                            <canvas width="30" height="40"></canvas>
+                            {{ficha_form.d11}}
+                        </div>
+                        <div class="separador-h"></div>
+                        <div class="div-diente">
+                            <canvas width="30" height="40"></canvas>
+                            <span class="span-diente">41</span>
+                            {{ficha_form.d41}}
+                        </div>
+                    </div>
+                    <div class="separador">
+                    </div>
+                    <div style="display:inline-block;">
+                        <div class="div-diente">
+                            <span class="span-diente">21</span>
+                            <canvas width="30" height="40"></canvas>
+                            {{ficha_form.d21}}
+                        </div>
+                        <div class="separador-h"></div>
+                        <div class="div-diente">
+                            <canvas width="30" height="40"></canvas>
+                            <span class="span-diente">31</span>
+                            {{ficha_form.d31}}
+                        </div>
+                    </div>
+                    <div style="display:inline-block;">
+                        <div class="div-diente">
+                            <span class="span-diente">22</span>
+                            <canvas width="30" height="40"></canvas>
+                            {{ficha_form.d22}}
+                        </div>
+                        <div class="separador-h"></div>
+                        <div class="div-diente">
+                            <canvas width="30" height="40"></canvas>
+                            <span class="span-diente">32</span>
+                            {{ficha_form.d32}}
+                        </div>
+                    </div>
+                    <div style="display:inline-block;">
+                        <div class="div-diente">
+                            <span class="span-diente">23</span>
+                            <canvas width="30" height="40"></canvas>
+                            {{ficha_form.d23}}
+                        </div>
+                        <div class="separador-h"></div>
+                        <div class="div-diente">
+                            <canvas width="30" height="40"></canvas>
+                            <span class="span-diente">33</span>
+                            {{ficha_form.d33}}
+                        </div>
+                    </div>
+                    <div style="display:inline-block;">
+                        <div class="div-diente">
+                            <span class="span-diente">24</span>
+                            <canvas width="30" height="40"></canvas>
+                            {{ficha_form.d24}}
+                        </div>
+                        <div class="separador-h"></div>
+                        <div class="div-diente">
+                            <canvas width="30" height="40"></canvas>
+                            <span class="span-diente">34</span>
+                            {{ficha_form.d34}}
+                        </div>
+                    </div>
+                    <div style="display:inline-block;">
+                        <div class="div-diente" id="div_diente_11">
+                            <span class="span-diente">25</span>
+                            <canvas width="30" height="40"></canvas>
+                            {{ficha_form.d25}}
+                        </div>
+                        <div class="separador-h"></div>
+                        <div class="div-diente" id="div_diente_41">
+                            <canvas width="30" height="40"></canvas>
+                            <span class="span-diente">35</span>
+                            {{ficha_form.d35}}
+                        </div>
+                    </div>
+                    <div style="display:inline-block;">
+                        <div class="div-diente" id="div_diente_11">
+                            <span class="span-diente">26</span>
+                            <canvas width="30" height="40"></canvas>
+                            {{ficha_form.d26}}
+                        </div>
+                        <div class="separador-h"></div>
+                        <div class="div-diente" id="div_diente_41">
+                            <canvas width="30" height="40"></canvas>
+                            <span class="span-diente">36</span>
+                            {{ficha_form.d36}}
+                        </div>
+                    </div>
+                    <div style="display:inline-block;">
+                        <div class="div-diente" id="div_diente_11">
+                            <span class="span-diente">27</span>
+                            <canvas width="30" height="40"></canvas>
+                            {{ficha_form.d27}}
+                        </div>
+                        <div class="separador-h"></div>
+                        <div class="div-diente" id="div_diente_41">
+                            <canvas width="30" height="40"></canvas>
+                            <span class="span-diente">37</span>
+                            {{ficha_form.d37}}
+                        </div>
+                    </div>
+                    <div style="display:inline-block;">
+                        <div class="div-diente" id="div_diente_11">
+                            <span class="span-diente">28</span>
+                            <canvas width="30" height="40"></canvas>
+                            {{ficha_form.d28}}
+                        </div>
+                        <div class="separador-h"></div>
+                        <div class="div-diente" id="div_diente_41">
+                            <canvas width="30" height="40"></canvas>
+                            <span class="span-diente">38</span>
+                            {{ficha_form.d38}}
+                        </div>
+                    </div>
+                    <div style="margin-top:15px;">
+                        <span class="span-derecha">DERECHA</span>
                         <div style="display:inline-block;">
-                            <div class="div-diente">
-                                <span class="span-diente">18</span>
+                            <div class="div-diente" id="div_diente_15">
+                                <span class="span-diente">55</span>
                                 <canvas width="30" height="40"></canvas>
-                                {{ficha_form.d18}}
+                                {{ficha_form.d55}}
                             </div>
                             <div class="separador-h"></div>
-                            <div class="div-diente">
+                            <div class="div-diente" id="div_diente_45">
                                 <canvas width="30" height="40"></canvas>
-                                <span class="span-diente">48</span>
-                                {{ficha_form.d48}}
+                                <span class="span-diente">85</span>
+                                {{ficha_form.d85}}
                             </div>
                         </div>
                         <div style="display:inline-block;">
-                            <div class="div-diente">
-                                <span class="span-diente">17</span>
-                                <canvas width="30" height="40"></canvas>
-                                {{ficha_form.d17}}
-                            </div>
-                            <div class="separador-h"></div>
-                            <div class="div-diente">
-                                <canvas width="30" height="40"></canvas>
-                                <span class="span-diente">47</span>
-                                {{ficha_form.d47}}
-                            </div>
-                        </div>
-                        <div style="display:inline-block;">
-                            <div class="div-diente">
-                                <span class="span-diente">16</span>
-                                <canvas width="30" height="40"></canvas>
-                                {{ficha_form.d16}}
-                            </div>
-                            <div class="separador-h"></div>
-                            <div class="div-diente">
-                                <canvas width="30" height="40"></canvas>
-                                <span class="span-diente">46</span>
-                                {{ficha_form.d46}}
-                            </div>
-                        </div>
-                        <div style="display:inline-block;">
-                            <div class="div-diente">
-                                <span class="span-diente">15</span>
-                                <canvas width="30" height="40"></canvas>
-                                {{ficha_form.d15}}
-                            </div>
-                            <div class="separador-h"></div>
-                            <div class="div-diente">
-                                <canvas width="30" height="40"></canvas>
-                                <span class="span-diente">45</span>
-                                {{ficha_form.d45}}
-                            </div>
-                        </div>
-                        <div style="display:inline-block;">
-                            <div class="div-diente">
-                                <span class="span-diente">14</span>
+                            <div class="div-diente" id="div_diente_14">
+                                <span class="span-diente">54</span>
                                 <canvas id="canvas" width="30" height="40"></canvas>
-                                {{ficha_form.d14}}
+                                {{ficha_form.d54}}
                             </div>
                             <div class="separador-h"></div>
-                            <div class="div-diente">
+                            <div class="div-diente" id="div_diente_44">
                                 <canvas id="canvas" width="30" height="40"></canvas>
-                                <span class="span-diente">44</span>
-                                {{ficha_form.d44}}
+                                <span class="span-diente">84</span>
+                                {{ficha_form.d84}}
                             </div>
                         </div>
                         <div style="display:inline-block;">
-                            <div class="div-diente">
-                                <span class="span-diente">13</span>
+                            <div class="div-diente" id="div_diente_13">
+                                <span class="span-diente">53</span>
                                 <canvas width="30" height="40"></canvas>
-                                {{ficha_form.d13}}
+                                {{ficha_form.d53}}
                             </div>
                             <div class="separador-h"></div>
-                            <div class="div-diente">
+                            <div class="div-diente" id="div_diente_43">
                                 <canvas width="30" height="40"></canvas>
-                                <span class="span-diente">43</span>
-                                {{ficha_form.d43}}
+                                <span class="span-diente">83</span>
+                                {{ficha_form.d83}}
                             </div>
                         </div>
                         <div style="display:inline-block;">
-                            <div class="div-diente">
-                                <span class="span-diente">12</span>
+                            <div class="div-diente" id="div_diente_12">
+                                <span class="span-diente">52</span>
                                 <canvas width="30" height="40"></canvas>
-                                {{ficha_form.d12}}
+                                {{ficha_form.d52}}
                             </div>
                             <div class="separador-h"></div>
-                            <div class="div-diente">
+                            <div class="div-diente" id="div_diente_42">
                                 <canvas width="30" height="40"></canvas>
-                                <span class="span-diente">42</span>
-                                {{ficha_form.d42}}
+                                <span class="span-diente">82</span>
+                                {{ficha_form.d82}}
                             </div>
                         </div>
                         <div style="display:inline-block;">
-                            <div class="div-diente">
-                                <span class="span-diente">11</span>
+                            <div class="div-diente" id="div_diente_11">
+                                <span class="span-diente">51</span>
                                 <canvas width="30" height="40"></canvas>
-                                {{ficha_form.d11}}
+                                {{ficha_form.d51}}
                             </div>
                             <div class="separador-h"></div>
-                            <div class="div-diente">
+                            <div class="div-diente" id="div_diente_41">
                                 <canvas width="30" height="40"></canvas>
-                                <span class="span-diente">41</span>
-                                {{ficha_form.d41}}
+                                <span class="span-diente">81</span>
+                                {{ficha_form.d81}}
                             </div>
                         </div>
                         <div class="separador">
                         </div>
                         <div style="display:inline-block;">
-                            <div class="div-diente">
-                                <span class="span-diente">21</span>
-                                <canvas width="30" height="40"></canvas>
-                                {{ficha_form.d21}}
-                            </div>
-                            <div class="separador-h"></div>
-                            <div class="div-diente">
-                                <canvas width="30" height="40"></canvas>
-                                <span class="span-diente">31</span>
-                                {{ficha_form.d31}}
-                            </div>
-                        </div>
-                        <div style="display:inline-block;">
-                            <div class="div-diente">
-                                <span class="span-diente">22</span>
-                                <canvas width="30" height="40"></canvas>
-                                {{ficha_form.d22}}
-                            </div>
-                            <div class="separador-h"></div>
-                            <div class="div-diente">
-                                <canvas width="30" height="40"></canvas>
-                                <span class="span-diente">32</span>
-                                {{ficha_form.d32}}
-                            </div>
-                        </div>
-                        <div style="display:inline-block;">
-                            <div class="div-diente">
-                                <span class="span-diente">23</span>
-                                <canvas width="30" height="40"></canvas>
-                                {{ficha_form.d23}}
-                            </div>
-                            <div class="separador-h"></div>
-                            <div class="div-diente">
-                                <canvas width="30" height="40"></canvas>
-                                <span class="span-diente">33</span>
-                                {{ficha_form.d33}}
-                            </div>
-                        </div>
-                        <div style="display:inline-block;">
-                            <div class="div-diente">
-                                <span class="span-diente">24</span>
-                                <canvas width="30" height="40"></canvas>
-                                {{ficha_form.d24}}
-                            </div>
-                            <div class="separador-h"></div>
-                            <div class="div-diente">
-                                <canvas width="30" height="40"></canvas>
-                                <span class="span-diente">34</span>
-                                {{ficha_form.d34}}
-                            </div>
-                        </div>
-                        <div style="display:inline-block;">
                             <div class="div-diente" id="div_diente_11">
-                                <span class="span-diente">25</span>
+                                <span class="span-diente">61</span>
                                 <canvas width="30" height="40"></canvas>
-                                {{ficha_form.d25}}
+                                {{ficha_form.d61}}
                             </div>
                             <div class="separador-h"></div>
                             <div class="div-diente" id="div_diente_41">
                                 <canvas width="30" height="40"></canvas>
-                                <span class="span-diente">35</span>
-                                {{ficha_form.d35}}
+                                <span class="span-diente">71</span>
+                                {{ficha_form.d71}}
                             </div>
                         </div>
                         <div style="display:inline-block;">
                             <div class="div-diente" id="div_diente_11">
-                                <span class="span-diente">26</span>
+                                <span class="span-diente">62</span>
                                 <canvas width="30" height="40"></canvas>
-                                {{ficha_form.d26}}
+                                {{ficha_form.d62}}
                             </div>
                             <div class="separador-h"></div>
                             <div class="div-diente" id="div_diente_41">
                                 <canvas width="30" height="40"></canvas>
-                                <span class="span-diente">36</span>
-                                {{ficha_form.d36}}
+                                <span class="span-diente">72</span>
+                                {{ficha_form.d72}}
                             </div>
                         </div>
                         <div style="display:inline-block;">
                             <div class="div-diente" id="div_diente_11">
-                                <span class="span-diente">27</span>
+                                <span class="span-diente">63</span>
                                 <canvas width="30" height="40"></canvas>
-                                {{ficha_form.d27}}
+                                {{ficha_form.d63}}
                             </div>
                             <div class="separador-h"></div>
                             <div class="div-diente" id="div_diente_41">
                                 <canvas width="30" height="40"></canvas>
-                                <span class="span-diente">37</span>
-                                {{ficha_form.d37}}
+                                <span class="span-diente">73</span>
+                                {{ficha_form.d73}}
                             </div>
                         </div>
                         <div style="display:inline-block;">
                             <div class="div-diente" id="div_diente_11">
-                                <span class="span-diente">28</span>
+                                <span class="span-diente">64</span>
                                 <canvas width="30" height="40"></canvas>
-                                {{ficha_form.d28}}
+                                {{ficha_form.d64}}
                             </div>
                             <div class="separador-h"></div>
                             <div class="div-diente" id="div_diente_41">
                                 <canvas width="30" height="40"></canvas>
-                                <span class="span-diente">38</span>
-                                {{ficha_form.d38}}
+                                <span class="span-diente">74</span>
+                                {{ficha_form.d74}}
                             </div>
                         </div>
-                        <div style="margin-top:15px;">
-                            <span class="span-derecha">DERECHA</span>
-                            <div style="display:inline-block;">
-                                <div class="div-diente" id="div_diente_15">
-                                    <span class="span-diente">55</span>
-                                    <canvas width="30" height="40"></canvas>
-                                    {{ficha_form.d55}}
-                                </div>
-                                <div class="separador-h"></div>
-                                <div class="div-diente" id="div_diente_45">
-                                    <canvas width="30" height="40"></canvas>
-                                    <span class="span-diente">85</span>
-                                    {{ficha_form.d85}}
-                                </div>
+                        <div style="display:inline-block;">
+                            <div class="div-diente" id="div_diente_11">
+                                <span class="span-diente">65</span>
+                                <canvas width="30" height="40"></canvas>
+                                {{ficha_form.d65}}
                             </div>
-                            <div style="display:inline-block;">
-                                <div class="div-diente" id="div_diente_14">
-                                    <span class="span-diente">54</span>
-                                    <canvas id="canvas" width="30" height="40"></canvas>
-                                    {{ficha_form.d54}}
-                                </div>
-                                <div class="separador-h"></div>
-                                <div class="div-diente" id="div_diente_44">
-                                    <canvas id="canvas" width="30" height="40"></canvas>
-                                    <span class="span-diente">84</span>
-                                    {{ficha_form.d84}}
-                                </div>
+                            <div class="separador-h"></div>
+                            <div class="div-diente" id="div_diente_41">
+                                <canvas width="30" height="40"></canvas>
+                                <span class="span-diente">75</span>
+                                {{ficha_form.d75}}
                             </div>
-                            <div style="display:inline-block;">
-                                <div class="div-diente" id="div_diente_13">
-                                    <span class="span-diente">53</span>
-                                    <canvas width="30" height="40"></canvas>
-                                    {{ficha_form.d53}}
-                                </div>
-                                <div class="separador-h"></div>
-                                <div class="div-diente" id="div_diente_43">
-                                    <canvas width="30" height="40"></canvas>
-                                    <span class="span-diente">83</span>
-                                    {{ficha_form.d83}}
-                                </div>
-                            </div>
-                            <div style="display:inline-block;">
-                                <div class="div-diente" id="div_diente_12">
-                                    <span class="span-diente">52</span>
-                                    <canvas width="30" height="40"></canvas>
-                                    {{ficha_form.d52}}
-                                </div>
-                                <div class="separador-h"></div>
-                                <div class="div-diente" id="div_diente_42">
-                                    <canvas width="30" height="40"></canvas>
-                                    <span class="span-diente">82</span>
-                                    {{ficha_form.d82}}
-                                </div>
-                            </div>
-                            <div style="display:inline-block;">
-                                <div class="div-diente" id="div_diente_11">
-                                    <span class="span-diente">51</span>
-                                    <canvas width="30" height="40"></canvas>
-                                    {{ficha_form.d51}}
-                                </div>
-                                <div class="separador-h"></div>
-                                <div class="div-diente" id="div_diente_41">
-                                    <canvas width="30" height="40"></canvas>
-                                    <span class="span-diente">81</span>
-                                    {{ficha_form.d81}}
-                                </div>
-                            </div>
-                            <div class="separador">
-                            </div>
-                            <div style="display:inline-block;">
-                                <div class="div-diente" id="div_diente_11">
-                                    <span class="span-diente">61</span>
-                                    <canvas width="30" height="40"></canvas>
-                                    {{ficha_form.d61}}
-                                </div>
-                                <div class="separador-h"></div>
-                                <div class="div-diente" id="div_diente_41">
-                                    <canvas width="30" height="40"></canvas>
-                                    <span class="span-diente">71</span>
-                                    {{ficha_form.d71}}
-                                </div>
-                            </div>
-                            <div style="display:inline-block;">
-                                <div class="div-diente" id="div_diente_11">
-                                    <span class="span-diente">62</span>
-                                    <canvas width="30" height="40"></canvas>
-                                    {{ficha_form.d62}}
-                                </div>
-                                <div class="separador-h"></div>
-                                <div class="div-diente" id="div_diente_41">
-                                    <canvas width="30" height="40"></canvas>
-                                    <span class="span-diente">72</span>
-                                    {{ficha_form.d72}}
-                                </div>
-                            </div>
-                            <div style="display:inline-block;">
-                                <div class="div-diente" id="div_diente_11">
-                                    <span class="span-diente">63</span>
-                                    <canvas width="30" height="40"></canvas>
-                                    {{ficha_form.d63}}
-                                </div>
-                                <div class="separador-h"></div>
-                                <div class="div-diente" id="div_diente_41">
-                                    <canvas width="30" height="40"></canvas>
-                                    <span class="span-diente">73</span>
-                                    {{ficha_form.d73}}
-                                </div>
-                            </div>
-                            <div style="display:inline-block;">
-                                <div class="div-diente" id="div_diente_11">
-                                    <span class="span-diente">64</span>
-                                    <canvas width="30" height="40"></canvas>
-                                    {{ficha_form.d64}}
-                                </div>
-                                <div class="separador-h"></div>
-                                <div class="div-diente" id="div_diente_41">
-                                    <canvas width="30" height="40"></canvas>
-                                    <span class="span-diente">74</span>
-                                    {{ficha_form.d74}}
-                                </div>
-                            </div>
-                            <div style="display:inline-block;">
-                                <div class="div-diente" id="div_diente_11">
-                                    <span class="span-diente">65</span>
-                                    <canvas width="30" height="40"></canvas>
-                                    {{ficha_form.d65}}
-                                </div>
-                                <div class="separador-h"></div>
-                                <div class="div-diente" id="div_diente_41">
-                                    <canvas width="30" height="40"></canvas>
-                                    <span class="span-diente">75</span>
-                                    {{ficha_form.d75}}
-                                </div>
-                            </div>
-                            <span class="span-izquierda">IZQUIERDA</span>
                         </div>
+                        <span class="span-izquierda">IZQUIERDA</span>
                     </div>
                 </div>
             </div>
-            <p style="text-align:center;">
-                <input type="submit" name="ficha-submit" class="btn-lila" value="Aceptar" />
-            </p>
-        </form>
-        <!--ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link active" id="pills-form-tab" data-toggle="pill" href="#pills-form" role="tab" aria-controls="pills-form" aria-selected="true">Datos</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="pills-images-tab" data-toggle="pill" href="#pills-images" role="tab" aria-controls="pills-images" aria-selected="false">Imágenes</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="pills-history-tab" data-toggle="pill" href="#pills-history" role="tab" aria-controls="pills-history" aria-selected="false">Historia</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="pills-odontograma-tab" data-toggle="pill" href="#pills-odontograma" role="tab" aria-controls="pills-odontograma" aria-selected="false">Odontograma</a>
-            </li>
-        </ul>
-        <div class="tab-content" id="pills-tabContent">
-            <div class="tab-pane fade show active" id="pills-form" role="tabpanel" aria-labelledby="pills-form-tab"></div>
-            <div class="tab-pane fade" id="pills-images" role="tabpanel" aria-labelledby="pills-images-tab"></div>
-            <div class="tab-pane fade" id="pills-history" role="tabpanel" aria-labelledby="pills-history-tab"></div>
-            <div class="tab-pane fade" id="pills-odontograma" role="tabpanel" aria-labelledby="pills-odontograma-tab"></div>
-        </div-->
-    </div>
+        </div>
+        <p style="text-align:center;">
+            <input type="submit" name="ficha-submit" class="btn-lila" value="Aceptar" />
+        </p>
+    </form>
+    <!--ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="pills-form-tab" data-toggle="pill" href="#pills-form" role="tab" aria-controls="pills-form" aria-selected="true">Datos</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="pills-images-tab" data-toggle="pill" href="#pills-images" role="tab" aria-controls="pills-images" aria-selected="false">Imágenes</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="pills-history-tab" data-toggle="pill" href="#pills-history" role="tab" aria-controls="pills-history" aria-selected="false">Historia</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="pills-odontograma-tab" data-toggle="pill" href="#pills-odontograma" role="tab" aria-controls="pills-odontograma" aria-selected="false">Odontograma</a>
+        </li>
+    </ul>
+    <div class="tab-content" id="pills-tabContent">
+        <div class="tab-pane fade show active" id="pills-form" role="tabpanel" aria-labelledby="pills-form-tab"></div>
+        <div class="tab-pane fade" id="pills-images" role="tabpanel" aria-labelledby="pills-images-tab"></div>
+        <div class="tab-pane fade" id="pills-history" role="tabpanel" aria-labelledby="pills-history-tab"></div>
+        <div class="tab-pane fade" id="pills-odontograma" role="tabpanel" aria-labelledby="pills-odontograma-tab"></div>
+    </div-->
+</div>
 {% endblock %}
 
 {% block script %}
@@ -812,9 +817,7 @@
                 }
             });
 
-            $(select_obra_social).change(function() {
-                cargar_planes();
-            });
+            $(select_obra_social).on('change',cargar_planes);
 
             let acc = $(".accordion");
             for (i = 0; i < acc.length; i++) {
@@ -826,26 +829,30 @@
 
             select_paciente.select2({
                 tags:true,
-                placeholder: 'Seleccionar paciente',
-                allowClear: true
+                placeholder: 'Haga click para seleccionar',
+                allowClear: true,
+                language: 'es',
             });
 
             select_obra_social.select2({
                 tags:true,
-                placeholder: 'Seleccionar obra social',
-                allowClear: true
+                placeholder: 'Haga click para seleccionar',
+                allowClear: true,
+                language: 'es',
             });
 
             $("#id_odontologo").select2({
                 tags:true,
-                placeholder: 'Seleccionar odontólogo',
-                allowClear: true
+                placeholder: 'Haga click para seleccionar',
+                allowClear: true,
+                language: 'es',
             });
 
             select_plan.select2({
                 tags:true,
-                placeholder: 'Seleccionar plan',
-                allowClear: true
+                placeholder: 'Haga click para seleccionar',
+                allowClear: true,
+                language: 'es',
             });
 
             draw();
@@ -1157,9 +1164,6 @@
                 input.val('');
             else
                 input.val('cruz_roja');
-            
-            //limpiar();
-            //alert('ahora dibuja');
             draw();
         }
 
@@ -1167,14 +1171,10 @@
             let canvas = $(this);
             let div = canvas.parent();
             let input = div.find('input');
-
             console.log('value:'+input.val());
-
             input.val('');
-
             draw();
             return false;
         }
-
     </script>
 {% endblock %}

@@ -73,7 +73,7 @@ class Norma_TrabajoCrear(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(Norma_TrabajoCrear, self).get_context_data(**kwargs)
-        context['funcion']='Crear'
+        context['funcion']='Agregar'
         return context
     
     def form_valid(self, form):

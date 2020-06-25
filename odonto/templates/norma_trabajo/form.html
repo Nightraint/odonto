@@ -13,34 +13,100 @@
 {% endblock %}
 
 {% block content %}
-    <form method= "POST">
-        {% csrf_token %}
-        <div class="col-md-8 offset-md-2">
-            {% if form.non_field_errors %}
-                <ul class="list-group" style="margin-bottom:10px;">
-                {% for error in form.non_field_errors %}
-                    <li class="list-group-item list-group-item-danger">
-                        {{ error|escape }}
-                    </li>
-                {% endfor %}
-                </ul>
-            {% endif %}
-            {% for field in form %}
-                {% if field.name == 'dias' or field.name == 'meses' or field.name == 'años' %}
-                    {% if field.name == 'dias' %}
-                        <div style="display:inline-block;margin-bottom: 1em;">
-                        <p>Se puede aplicar cada:</p>
+    <div class="col-md-8 offset-md-2">
+        {% if messages %}
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+        <form method= "POST" autocomplete="off">
+            {% csrf_token %}
+            <div class="card">
+                <div class="card-header">Datos de la norma de trabajo</div>
+                <div class="card-body">
+                    {% if form.non_field_errors %}
+                        <ul class="list-group" style="margin-bottom:10px;">
+                        {% for error in form.non_field_errors %}
+                            <li class="list-group-item list-group-item-danger">
+                                {{ error|escape }}
+                            </li>
+                        {% endfor %}
+                        </ul>
                     {% endif %}
-                        {{ field.errors }}
-                        {{ field }}
-                        <label>{{ field.label }}</label>
-                        {% if field.help_text %}
-                            <p class="help">{{ field.help_text|safe }}</p>
-                        {% endif %}
-                    {% if field.name == 'años' %}
+                    <div class="form-row">
+                        <div class="col-md form-group">
+                            {{ form.obra_social.errors|safe }}
+                            {{ form.obra_social.label_tag }} {{ form.obra_social }}
+                            {% if form.obra_social.help_text %}
+                                <p class="help">{{ form.obra_social.help_text|safe }}</p>
+                            {% endif %}
                         </div>
-                    {% endif %}
-                {% else %}
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md form-group">
+                            {{ form.codigo.errors|safe }}
+                            {{ form.codigo.label_tag }} {{ form.codigo }}
+                            {% if form.codigo.help_text %}
+                                <p class="help">{{ form.codigo.help_text|safe }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md form-group">
+                            <label>Se puede aplicar cada:</label>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-3 form-group">
+                            {{ form.dias.errors|safe }}
+                            {{ form.dias }}
+                            <label>{{ form.dias.label }}</label>
+                            {% if form.dias.help_text %}
+                                <p class="help">{{ form.dias.help_text|safe }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3 form-group">
+                            {{ form.meses.errors|safe }}
+                            {{ form.meses }}
+                            <label>{{ form.meses.label }}</label>
+                            {% if form.meses.help_text %}
+                                <p class="help">{{ form.meses.help_text|safe }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3 form-group">
+                            {{ form.años.errors|safe }}
+                            {{ form.años }}
+                            <label>{{ form.años.label }}</label>
+                            {% if form.años.help_text %}
+                                <p class="help">{{ form.años.help_text|safe }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md form-group">
+                            {{ form.descripcion.errors|safe }}
+                            {{ form.descripcion.label_tag }} {{ form.descripcion }}
+                            {% if form.descripcion.help_text %}
+                                <p class="help">{{ form.descripcion.help_text|safe }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-3 form-group" id={{form.bonos.name|add:"_container"}} style="display:none;">
+                            {{ form.bonos.errors|safe }}
+                            {{ form.bonos.label_tag }} {{ form.bonos }}
+                            {% if form.bonos.help_text %}
+                                <p class="help">{{ form.bonos.help_text|safe }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3 form-group" id={{form.coseguro.name|add:"_container"}} style="display:none;">
+                            {{ form.coseguro.errors|safe }}
+                            {{ form.coseguro.label_tag }} {{ form.coseguro }}
+                            {% if form.coseguro.help_text %}
+                                <p class="help">{{ form.coseguro.help_text|safe }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
                     {% if field.name == 'bonos' or field.name == 'coseguro' %}
                         {% if field.name == 'coseguro' %} <p> {% endif %}
                         {% if form.initial and form.initial.obra_social %}
@@ -60,78 +126,54 @@
                             {% endif %}
                         </div>
                         {% if field.name == 'bonos' %} </p> {% endif %}
-                    {% else %}
-                        <p>
-                            {{ field.errors|safe }}
-                            {{ field.label_tag }}
-                            {{ field }}
-                            {% if field.help_text %}
-                                <p class="help">{{ field.help_text|safe }}</p>
-                            {% endif %}
-                        </p>
                     {% endif %}
-                {% endif %}
-            {% endfor %}
+                </div>
+            </div>
             <p style="text-align:center;">
                 <input type="submit" name="norma_trabajo-submit" class="btn-lila" value="Aceptar" />
             </p>
-        </div>
-    </form>
+        </form>
+    </div>
 {% endblock %}
 
 {% block script %}
     <script>
-        var select_obra_social;
-        var obra_social_object;
-        var bonos_container;
-        var coseguro_container;
 
         $(document).ready(function(){
-            select_obra_social = $('#id_obra_social');
-            bonos_container = $('#bonos_container');
-            coseguro_container = $('#coseguro_container');
-
             $("#id_obra_social").select2({
                 tags:true,
-                placeholder: 'Obra social',
-                allowClear: true
+                placeholder: 'Haga click para seleccionar',
+                allowClear: true,
+                language: 'es'
             });
 
-            let obra_social = parseInt(select_obra_social.val());
+            let obra_social = parseInt($('#id_obra_social').val());
             if (isNaN(obra_social) == false)
                 cargar_obra_social();
-            select_obra_social.change(cargar_obra_social);
 
+            $('#id_obra_social').on('change',cargar_obra_social);
         });
 
-        var xhttp_os = new XMLHttpRequest();
-        xhttp_os.onreadystatechange = function() {
-                console.log('state: ' + this.status + ' readyState: ' + this.readyState + ' ' + this.responseText);
-                if (this.readyState == 4 && this.status == 200) {
-                    obra_social_object = JSON.parse(this.responseText)[0].fields;
-                    console.log(obra_social_object);
+        function cargar_obra_social(){
+            let obra_social = parseInt($('#id_obra_social').val());
+            if (isNaN(obra_social) == false){
+                $.getJSON('/obra_social/'+ obra_social,function(result){
+                    console.log(result[0].fields);
+                    let obra_social_object = result[0].fields;
                     if (obra_social_object.usa_bonos)
-                        bonos_container.css('display', 'inline-block');
+                        $('#bonos_container').css('display', 'inline-block');
                     else
-                        bonos_container.hide();
+                        $('#bonos_container').hide();
                     
                     if (obra_social_object.usa_coseguro)
-                        coseguro_container.css('display', 'inline-block');
+                        $('#coseguro_container').css('display', 'inline-block');
                     else
-                        coseguro_container.hide();
-                }
-            };
-
-        function cargar_obra_social(){
-            let obra_social = parseInt(select_obra_social.val());
-            console.log('cargar obra social ' + obra_social);
-            if (isNaN(obra_social) == false){
-                xhttp_os.open("GET", "/obra_social/"+ obra_social, true);
-                xhttp_os.send();
+                        $('#coseguro_container').hide();
+                });
             }
             else{
-                bonos_container.hide();
-                coseguro_container.hide();
+                $('#bonos_container').hide();
+                $('#coseguro_container').hide();
             }
         }
     </script>

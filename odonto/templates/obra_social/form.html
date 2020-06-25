@@ -14,79 +14,123 @@
                 <p>{{ message }}</p>
             {% endfor %}
         {% endif %}
-        <form method= "POST">
+        <form method= "POST" autocomplete="off">
             {% csrf_token %}
             <div class="card">
                 <div class="card-header">Datos de la obra social</div>
                 <div class="card-body">
-                    {% for field in obra_social_form %}
-                        <div class="fieldWrapper" id={{field.name|add:"_container"}} >
-                            {{ field.errors }}
-                            {% if field.field.widget.input_type is None %}
-                                {{ field.label_tag }} {{ field }}
-                            {% else %}
-                                {% if field.field.widget.input_type == 'checkbox' %}
-                                    <div class="custom-control custom-checkbox">
-                                        {{ field }}
-                                        <label class="custom-control-label" for="{{ field.auto_id }}">{{ field.label }}</label>
-                                    </div>
-                                {% else %}
-                                    {{ field.label_tag }} {{ field }}
-                                {% endif %}
-                            {% endif %}
-                            {% if field.help_text %}
-                                <p class="help">{{ field.help_text|safe }}</p>
+                    {% if form.non_field_errors %}
+                        <ul class="list-group" style="margin-bottom:10px;">
+                        {% for error in form.non_field_errors %}
+                            <li class="list-group-item list-group-item-danger">
+                                {{ error|escape }}
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
+                    <div class="form-row">
+                        <div class="col-md-2 form-group">
+                            {{ obra_social_form.codigo.errors }}
+                            {{ obra_social_form.codigo.label_tag }} {{ obra_social_form.codigo }}
+                            {% if obra_social_form.codigo.help_text %}
+                                <p class="help">{{ obra_social_form.codigo.help_text|safe }}</p>
                             {% endif %}
                         </div>
-                    {% endfor %}
-                    <div id="planes_old" style="display:none;">
-                        {% if obra_social_form.initial and obra_social_form.initial.usa_planes%}
-                        <div style="margin-bottom:1em;padding-left:20px;padding-top:20px;" id="planes">
-                        {% else %}
-                        <div style="margin-bottom:1em;padding-left:20px;padding-top:20px;display:none;" id="planes">
-                        {% endif %}
-                            {{ planes_formset.management_form }}
-                            {% for plan_form in planes_formset %}
-                                <div class="plan-formset form-row">
-                                    {% for field in plan_form %}
-                                        {% if field.field.widget.input_type is None %}
-                                            <div class="col form-group">
-                                                {{ field }}
-                                            </div>
-                                        {% else %}
-                                            {% if field.field.widget.input_type == 'checkbox' %}
-                                                <div class="col form-group" style="margin:auto;">
-                                                    <div class="custom-control custom-checkbox" id="{{ field.name }}">
-                                                        {{ field }}
-                                                        <label class="custom-control-label" for="{{ field.auto_id }}">{{ field.label }}</label>
-                                                    </div>
-                                                </div>
-                                            {% else %}
+                        <div class="col-md-10 form-group">
+                            {{ obra_social_form.nombre.errors }}
+                            {{ obra_social_form.nombre.label_tag }} {{ obra_social_form.nombre }}
+                            {% if obra_social_form.nombre.help_text %}
+                                <p class="help">{{ obra_social_form.nombre.help_text|safe }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md form-group">
+                            {{ obra_social_form.observaciones.errors }}
+                            {{ obra_social_form.observaciones.label_tag }} {{ obra_social_form.observaciones }}
+                            {% if obra_social_form.observaciones.help_text %}
+                                <p class="help">{{ obra_social_form.observaciones.help_text|safe }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md form-group">
+                            <div class="custom-control custom-checkbox">
+                                {{ obra_social_form.usa_bonos }}
+                                <label class="custom-control-label" for="{{ obra_social_form.usa_bonos.auto_id }}">{{ obra_social_form.usa_bonos.label }}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md form-group">
+                            <div class="custom-control custom-checkbox">
+                                {{ obra_social_form.usa_coseguro }}
+                                <label class="custom-control-label" for="{{ obra_social_form.usa_coseguro.auto_id }}">{{ obra_social_form.usa_coseguro.label }}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md form-group">
+                            <div class="custom-control custom-checkbox">
+                                {{ obra_social_form.usa_autorizacion }}
+                                <label class="custom-control-label" for="{{ obra_social_form.usa_autorizacion.auto_id }}">{{ obra_social_form.usa_autorizacion.label }}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md form-group" id={{obra_social_form.usa_planes.name|add:"_container"}} >
+                            <div class="custom-control custom-checkbox">
+                                {{ obra_social_form.usa_planes }}
+                                <label class="custom-control-label" for="{{ obra_social_form.usa_planes.auto_id }}">{{ obra_social_form.usa_planes.label }}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md form-group">
+                            <div id="planes">
+                                {{ planes_formset.management_form }}
+                                {% for plan_form in planes_formset %}
+                                    <div class="plan-formset form-row">
+                                        {% for field in plan_form %}
+                                            {% if field.field.widget.input_type is None %}
                                                 <div class="col form-group">
                                                     {{ field }}
                                                 </div>
+                                            {% else %}
+                                                {% if field.field.widget.input_type == 'checkbox' %}
+                                                    <div class="col form-group" style="margin:auto;">
+                                                        <div class="custom-control custom-checkbox {{field.name}}" id="{{ field.name }}">
+                                                            {{ field }}
+                                                            <label class="custom-control-label" for="{{ field.auto_id }}">{{ field.label }}</label>
+                                                        </div>
+                                                    </div>
+                                                {% else %}
+                                                    <div class="col form-group">
+                                                        {{ field }}
+                                                    </div>
+                                                {% endif %}
                                             {% endif %}
-                                        {% endif %}
-                                        {% if field.errors %}
-                                            {% for error in field.errors %}
-                                                {{ error|escape }}
-                                            {% endfor %}
-                                        {% endif %}
-                                    {% endfor %}
-                                </div>
-                            {% endfor %}
-                            {% if planes_formset.non_form_errors %}
-                                {% for error in planes_formset.non_form_errors %}
-                                    {{ error|escape }}
+                                            {% if field.errors %}
+                                                {% for error in field.errors %}
+                                                    {{ error|escape }}
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
                                 {% endfor %}
-                            {% endif %}
+                                {% if planes_formset.non_form_errors %}
+                                    {% for error in planes_formset.non_form_errors %}
+                                        {{ error|escape }}
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <p style="text-align:center;">
-                <input type="submit" name="obra_social-submit" class="btn-lila" value="Aceptar" />
-            </p>
+        <p style="text-align:center;">
+            <input type="submit" name="obra_social-submit" class="btn-lila" value="Aceptar" />
+        </p>
         </form>
     </div>
 {% endblock %}
@@ -94,51 +138,35 @@
 {% block script %}
     <script src="{% static 'js/jquery.formset.js' %}"></script>
     <script>
-        $('.plan-formset').formset({
-            addText: '<button class="btn-add"><i class="fa fa-plus"></i> Agregar</button>',
-            deleteText: '<button class="btn-delete"><i class="fa fa-remove"></i></button>',
-            prefix: "{{ planes_formset.prefix }}"
+        $(document).ready(function(){
+            $('.plan-formset').formset({
+                addText: '<button class="btn-add"><i class="fa fa-plus"></i> Agregar</button>',
+                deleteText: '<button class="btn-delete"><i class="fa fa-remove"></i></button>',
+                prefix: "{{ planes_formset.prefix }}",
+                added:mostrar_coseguro
+            });
+
+            $('#id_usa_planes').on('change',mostrar_planes);
+            $('#id_usa_coseguro').on('change',mostrar_coseguro);
+
+            mostrar_coseguro();
+            mostrar_planes();
         });
 
-        const cb_usa_planes = document.getElementById('id_usa_planes');
-        const cb_usa_coseguro = document.getElementById('id_usa_coseguro');
-        const planes = document.getElementById('planes');
-        const planes_container = document.getElementById('usa_planes_container');
-        const planes_old = document.getElementById('planes_old');
-
-        function load_complete_obra_social() {
-            while(planes_old.childNodes.length)
-            {
-                planes_container.appendChild(planes_old.firstChild);
-            }
-        }
-        window.addEventListener("load", load_complete_obra_social, false);
-
         function mostrar_planes(){
-            if (cb_usa_planes.checked)
-                planes.style.display = 'block';
+            if ($('#id_usa_planes').is(":checked"))
+                $('#planes').show();
             else
-                planes.style.display = 'none';
+                $('#planes').hide();
         }
 
         function mostrar_coseguro(){
-            let e = document.querySelectorAll('[id="paga_coseguro"]');
-            let dis = '';
-            if (cb_usa_coseguro.checked)
-                dis = 'inline-block';
-            else
-                dis = 'none';
-
-            for(i=0;i<e.length;i++){
-                e[i].style.display=dis;
-            }
+            $('.paga_coseguro').each(function(){
+                if($('#id_usa_coseguro').is(":checked"))
+                    $(this).css('display','inline-block');
+                else
+                    $(this).css('display','none');
+            });
         }
-
-        cb_usa_planes.addEventListener('change', (event) => {
-            mostrar_planes();
-        });
-        cb_usa_coseguro.addEventListener('change', (event) => {
-            mostrar_coseguro();
-        });
     </script>
 {% endblock %}

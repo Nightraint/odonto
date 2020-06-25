@@ -152,8 +152,8 @@ class Norma_TrabajoForm(forms.ModelForm):
 
         self.fields['obra_social'].queryset = Obra_Social.objects.filter(clinica_id=clinica_id)
         self.fields['obra_social'].empty_label = 'Seleccionar obra social'
-        self.fields['coseguro'].widget.attrs['style'] = 'width:150px;display:inline-block;'
-        self.fields['bonos'].widget.attrs['style'] = 'width:150px;display:inline-block;'
+        #self.fields['coseguro'].widget.attrs['style'] = 'width:150px;display:inline-block;'
+        #self.fields['bonos'].widget.attrs['style'] = 'width:150px;display:inline-block;'
         self.fields['dias'].widget.attrs['style'] = 'width:70px;display:inline-block;'
         self.fields['meses'].widget.attrs['style'] = 'width:70px;display:inline-block;'
         self.fields['años'].widget.attrs['style'] = 'width:70px;display:inline-block;'
