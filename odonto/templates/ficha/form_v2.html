@@ -296,7 +296,7 @@
                                 <i class="fa fa-download" style="margin-right:5px;"></i>
                             </label>
                             <img onError="errorImagen(this);" style="display:none;" class="img_preview" onclick="ver_imagen(this);" title="Ver imagen"/>
-                            <div id="text-{{imagen_form.descripcion.auto_id}}">
+                            <div id="text-{{imagen_form.descripcion.auto_id}}" style="margin-top:5px;">
                                 <span id="span-{{imagen_form.descripcion.auto_id}}"
                                         class="descripcion-imagen"
                                         onclick="editarDescripcionArchivo('{{imagen_form.descripcion.auto_id}}');"
@@ -372,8 +372,8 @@
                     {% else %}
                         <div class="div_nueva_consulta">
                         <label class="nueva_consulta">Nueva historia:</label>
-                        <div class="row">
-                            <div class="col-md-4">
+                        <div class="form-row">
+                            <div class="col-md form-group">
                                 {{ form.fecha }}
                                 {% if form.fecha.errors %}
                                     {% for error in form.fecha.errors %}
@@ -381,7 +381,7 @@
                                     {% endfor %}
                                 {% endif %}
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md form-group">
                                 {{ form.nro_diente }}
                                 {% if form.nro_diente.errors %}
                                     {% for error in form.nro_diente.errors %}
@@ -389,7 +389,7 @@
                                     {% endfor %}
                                 {% endif %}
                             </div>
-                            <div class="col-md-5" >
+                            <div class="col-md form-group" >
                                 {{ form.norma_trabajo }}
                                 {% if form.norma_trabajo.errors %}
                                     {% for error in form.norma_trabajo.errors %}
@@ -398,12 +398,12 @@
                                 {% endif %}
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-12 mensaje">
+                        <div class="form-row">
+                            <div class="col-md mensaje">
                             </div>
                         </div>
-                        <div class="row" style="padding-bottom:10px;">
-                            <div class="col-md-12">
+                        <div class="form-row" style="padding-bottom:10px;">
+                            <div class="col-md">
                                 {{ form.detalle }}
                                 {% if form.detalle.errors %}
                                     {% for error in form.detalle.errors %}
