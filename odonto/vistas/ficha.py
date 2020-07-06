@@ -204,7 +204,7 @@ def crear(request):
         'consultas_formset': consultas_formset,
         'funcion' : 'Agregar',
     }
-    return render(request, 'ficha/form.html', context)
+    return render(request, 'ficha/form_v2.html', context)
 
 @login_required
 def editar(request,pk):
@@ -298,7 +298,7 @@ def editar(request,pk):
         'consultas_formset': consultas_formset,
         'funcion' : 'Editar',
     }
-    return render(request, 'ficha/form.html', context)
+    return render(request, 'ficha/form_v2.html', context)
 
 @login_required
 def odontograma(request):

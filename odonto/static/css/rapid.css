@@ -1836,3 +1836,22 @@ label{
   font-size: 14px;
   font-weight: 600;
 }
+
+.separador-historias{
+  padding-bottom:7px;
+}
+
+.nueva_consulta{
+  margin-top:7px;
+}
+
+.contenedor-historia{
+  background-color: #f0eff5;
+  border-radius:.25rem;
+  padding:10px 5px;
+  position:relative;
+}
+
+.detalle-historia{
+  cursor:text;
+}

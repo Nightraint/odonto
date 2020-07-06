@@ -1,0 +1,1226 @@
+{% extends "base.html" %}
+{% block head %}
+	<title>{{ funcion }} {{ficha_form.instance.model_name_lower}}</title>
+{% endblock %}
+
+{% block style %}
+    <style>
+        label.nueva_consulta{
+            padding-bottom:5px;
+            font-size:15px;
+            font-weight:bold;
+            /*margin-left:13px;*/
+            color:#413e66;
+        }
+
+        .div_preview{
+            background-color:#f0eff5;
+            padding:10px 5px;
+            position:relative;
+            /*border:1px solid #413e66;*/
+            border-radius:.25rem;
+        }
+        .label_preview{
+            padding-top:20px;
+        }
+        .label_preview.descargable:hover{
+            color:#1bb1dc;
+        }
+        .img_preview{
+            padding-top:21px;
+            width:150px;
+        }
+        .descargable {
+            cursor:pointer;
+        }
+        .descargable:hover {
+            cursor:pointer;
+            opacity: 0.5;
+            filter: alpha(opacity=50); /* For IE8 and earlier */
+        }
+        .close {
+            position: absolute;
+            top: .25rem;
+            right: .25rem;
+        }
+        .add-photo {
+            opacity: 0.5;
+            filter: alpha(opacity=50); /* For IE8 and earlier */
+        }
+        .add-photo:hover {
+            opacity: 0.3;
+            filter: alpha(opacity=100); /* For IE8 and earlier */
+        }
+        button.accordion {
+            background-color:transparent;
+            border-radius: .25rem;
+            color: #413e66;
+            cursor: pointer;
+            padding: 10px 18px 5px 18px;
+            width: 100%;
+            border: 1px solid;
+            text-align: left;
+            outline: none;
+            font-size: 15px;
+            transition: 0.2s;
+            font-weight:bold;
+            border-color:#413e66;
+        }
+
+        button.accordion:hover {
+            background-color: #f5f8fd;
+            color:#1bb1dc;
+        }
+
+        button.accordion:hover:after{
+            color:#1bb1dc;
+        }
+
+        button.accordion.active{
+            border-bottom-left-radius:0;
+            border-bottom-right-radius:0;
+            border-bottom:0;
+        }
+
+        button.accordion:after {
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            content: "\f103";
+            font-size: 20px;
+            color: #413e66;
+            float: right;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: auto;
+        }
+
+        button.accordion.active:after {
+            content: "\f068";
+        }
+
+        div.panel {
+            /*background-color: #f5f8fd;*/
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            border-bottom: 1px solid;
+            border-left: 1px solid;
+            border-right: 1px solid;
+            border-bottom-left-radius:.25rem;
+            border-bottom-right-radius:.25rem;
+            border-color:#413e66;
+        }
+
+        div.panel.show {
+            opacity: 1;
+            max-height:fit-content;
+            transition: 0.2s;
+            overflow: initial;
+        }
+
+        .div_nueva_consulta{
+            padding-bottom:10px;
+            /*border-bottom: 1px solid #413e66;*/
+            /*border-radius:.25rem;*/
+        }
+
+        .existente{
+            background-color:red;
+        }
+
+        .realizar{
+            background-color:blue;
+        }
+
+        .span-diente{
+            display:block;
+            width:100%;
+            font-weight:bold;
+            text-align:center;
+            margin-top:-5px;
+        }
+
+        .div-diente{
+            /*display:inline-block;*/
+            margin-left:5px;
+            moz-user-select: none;
+            -khtml-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .no-selectable{
+            moz-user-select: none;
+            -khtml-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        canvas{
+            /*border:2px solid black;*/
+            cursor:pointer;
+        }
+
+        .separador{
+            margin-left:5px;
+            width:2px;
+            background-color:#566573;
+            display:inline-block;
+            height:140px;
+        }
+
+        .separador-h{
+            height:2px;
+            background-color:#566573;
+            margin-bottom:5px;
+            margin-right:-10px;
+            margin-left:-5px;
+        }
+
+        .span-derecha{
+            font-weight: bold;
+            position: absolute;
+            margin-left: -100px;
+            margin-top: 60px;
+        }
+
+        .span-izquierda{
+            font-weight: bold;
+            position: absolute;
+            margin-left: 30px;
+            margin-top: 60px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+{% load staticfiles %}
+<div class="col-md-8 offset-md-2">
+    {% if messages %}
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+    <form method= "POST" enctype="multipart/form-data" autocomplete="off">
+        {% csrf_token %}
+        <ul class="nav nav-tabs" id="myTab" role="tablist" style="margin-bottom:1em;">
+            <li class="nav-item">
+                <a class="nav-link active" id="nav-datos-tab" data-toggle="tab" href="#nav-datos" role="tab" aria-controls="datos" aria-selected="true">Datos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="nav-archivos-tab" data-toggle="tab" href="#nav-archivos" role="tab" aria-controls="archivos" aria-selected="false">Archivos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="nav-historia-tab" data-toggle="tab" href="#nav-historia" role="tab" aria-controls="historia" aria-selected="false">Historia</a>
+            </li>
+             <li class="nav-item">
+                <a class="nav-link" id="nav-odontograma-tab" data-toggle="tab" href="#nav-odontograma" role="tab" aria-controls="odontograma" aria-selected="false">Odontograma</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="nav-datos" role="tabpanel" aria-labelledby="nav-datos-tab">
+                <div class="row form-group-md">
+                    <div class="col-md-4">
+                        {{ ficha_form.fecha.errors }}
+                        {{ ficha_form.fecha.label_tag }} {{ ficha_form.fecha }}
+                        {% if ficha_form.fecha.help_text %}
+                            <p class="help">{{ ficha_form.fecha.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        {{ ficha_form.paciente.errors }}
+                        {{ ficha_form.paciente.label_tag }} {{ ficha_form.paciente }}
+                        {% if ficha_form.paciente.help_text %}
+                            <p class="help">{{ ficha_form.paciente.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        {{ ficha_form.odontologo.errors }}
+                        {{ ficha_form.odontologo.label_tag }} {{ ficha_form.odontologo }}
+                        {% if ficha_form.odontologo.help_text %}
+                            <p class="help">{{ ficha_form.odontologo.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row form-group-md">
+                    <div class="col-md-4">
+                        {{ ficha_form.obra_social.errors }}
+                        {{ ficha_form.obra_social.label_tag }} {{ ficha_form.obra_social }}
+                        {% if ficha_form.obra_social.help_text %}
+                            <p class="help">{{ ficha_form.obra_social.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        {{ ficha_form.plan.errors }}
+                        {{ ficha_form.plan.label_tag }} {{ ficha_form.plan }}
+                        {% if ficha_form.plan.help_text %}
+                            <p class="help">{{ ficha_form.plan.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        {{ ficha_form.nro_afiliado.errors }}
+                        {{ ficha_form.nro_afiliado.label_tag }} {{ ficha_form.nro_afiliado }}
+                        {% if ficha_form.nro_afiliado.help_text %}
+                            <p class="help">{{ ficha_form.nro_afiliado.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row form-group-md">
+                    <div class="col-md-12">
+                        {{ ficha_form.observaciones.errors }}
+                        {{ ficha_form.observaciones.label_tag }} {{ ficha_form.observaciones }}
+                        {% if ficha_form.observaciones.help_text %}
+                            <p class="help">{{ ficha_form.observaciones.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="nav-archivos" role="tabpanel" aria-labelledby="nav-archivos-tab">
+                {{ imagenes_formset.management_form }}
+                {% for imagen_form in imagenes_formset %}
+                    <div class="imagenes-formset" style="margin-bottom:0.4em;">
+                        <div style="display:none;">
+                            {{ imagen_form.imagen }}
+                            {{ imagen_form.id_img}}
+                            {% if imagen_form.initial%}
+                                <input class="url" value="{{ imagen_form.initial.imagen.url }}">
+                                <input class="filename" value="{{ imagen_form.initial.filename }}">
+                            {% else %}
+                                <input class="filename" value="">
+                            {% endif %}
+                        </div>
+                        <div style="display:none;" class="div_preview">
+                            <a class="close" onclick="eliminar(this);"><i class="fa fa-close"></i></a>
+                            <label style="display:none;" class="label_preview" onclick="ver_archivo(this);" title="Descargar archivo">
+                                <i class="fa fa-download" style="margin-right:5px;"></i>
+                            </label>
+                            <img onError="errorImagen(this);" style="display:none;" class="img_preview" onclick="ver_imagen(this);" title="Ver imagen"/>
+                            <div id="text-{{imagen_form.descripcion.auto_id}}">
+                                <span id="span-{{imagen_form.descripcion.auto_id}}"
+                                        class="descripcion-imagen"
+                                        onclick="editarDescripcionArchivo('{{imagen_form.descripcion.auto_id}}');"
+                                        title="Editar detalle">{{imagen_form.initial.descripcion|default_if_none:'-'}}</span>
+                                <a href="javascript:editarDescripcionArchivo('{{imagen_form.descripcion.auto_id}}');" class="links">
+                                    <i class="fa fa-pencil-square-o" aria-hidden="true" style="margin-left:10px;"></i> Editar descripción
+                                </a>
+                            </div>
+                            <div id="input-{{imagen_form.descripcion.auto_id}}" style="display:none;">
+                                {{imagen_form.descripcion}}
+                            </div>
+                        </div>
+                        {% if not imagen_form.initial %}
+                            <label for="{{imagen_form.imagen.auto_id}}" class="label-seleccionar" style="display:block !important;cursor:pointer;">
+                                <div style="text-align:center;width:200px;" class="btn-add"><i class="fa fa-plus"></i> Agregar archivo</div>
+                            </label>
+                        {% endif %}
+                        {% if imagen_form.imagen.errors %}
+                            {% for error in imagen_form.imagen.errors %}
+                                {{ error|escape }}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                {% if imagen_form.non_form_errors %}
+                    {% for error in imagen_form.non_form_errors %}
+                        {{ error|escape }}
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="tab-pane fade" id="nav-historia" role="tabpanel" aria-labelledby="nav-historia-tab">
+                {{ consultas_formset.management_form }}
+                {% for form in consultas_formset %}
+                    <div class="consultas-formset {% if form.initial %} separador-historias {% endif %}">
+                    <div style="display:none;" id="id_consulta">
+                        {{ form.id_consulta }}
+                    </div>
+                    {% if form.initial %}
+                        <div class="contenedor-historia">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <b>Fecha: </b>{{form.initial.fecha}}
+                                </div>
+                                <div class="col-md-2">
+                                {% if form.initial.nro_diente %}
+                                    <b>Diente: </b>{{form.initial.nro_diente}}
+                                {% endif %}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <b>Norma de trabajo: </b>{{form.initial.descripcion_norma_trabajo|default_if_none:'-'}}
+                                </div>
+                            </div>
+                            <div class="row" style="">
+                                <div class="col-md-12">
+                                    <b>Detalle: </b><br/>
+                                    <div id="text-{{form.detalle.auto_id}}">
+                                        <span id="span-{{form.detalle.auto_id}}"
+                                                class="detalle-historia"
+                                                onclick="editarDetalleHistoria('{{form.detalle.auto_id}}');"
+                                                title="Editar detalle">{{form.initial.detalle|default_if_none:'-'}}</span>
+                                        <a href="javascript:editarDetalleHistoria('{{form.detalle.auto_id}}');" class="links">
+                                            <i class="fa fa-pencil-square-o" aria-hidden="true" style="margin-left:10px;"></i> Editar detalle
+                                        </a>
+                                    </div>
+                                    <div id="input-{{form.detalle.auto_id}}" style="display:none;">
+                                        {{form.detalle}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="div_nueva_consulta">
+                        <label class="nueva_consulta">Nueva historia:</label>
+                        <div class="row">
+                            <div class="col-md-4">
+                                {{ form.fecha }}
+                                {% if form.fecha.errors %}
+                                    {% for error in form.fecha.errors %}
+                                        {{ error|escape }}
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                            <div class="col-md-3">
+                                {{ form.nro_diente }}
+                                {% if form.nro_diente.errors %}
+                                    {% for error in form.nro_diente.errors %}
+                                        {{ error|escape }}
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                            <div class="col-md-5" >
+                                {{ form.norma_trabajo }}
+                                {% if form.norma_trabajo.errors %}
+                                    {% for error in form.norma_trabajo.errors %}
+                                        {{ error|escape }}
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 mensaje">
+                            </div>
+                        </div>
+                        <div class="row" style="padding-bottom:10px;">
+                            <div class="col-md-12">
+                                {{ form.detalle }}
+                                {% if form.detalle.errors %}
+                                    {% for error in form.detalle.errors %}
+                                        {{ error|escape }}
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                        </div>
+                    {% endif%}
+                </div>
+                {% endfor %}
+                {% if consultas_formset.non_form_errors %}
+                    {% for error in consultas_formset.non_form_errors %}
+                        {{ error|escape }}
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="tab-pane fade" id="nav-odontograma" role="tabpanel" aria-labelledby="nav-odontograma-tab">
+                <div id="odontograma">
+                    <div align="center" style="min-width:700px;" class="no-selectable">
+                        <div style="display:inline-block;">
+                            <div class="div-diente">
+                                <span class="span-diente">18</span>
+                                <canvas width="30" height="40"></canvas>
+                                {{ficha_form.d18}}
+                            </div>
+                            <div class="separador-h"></div>
+                            <div class="div-diente">
+                                <canvas width="30" height="40"></canvas>
+                                <span class="span-diente">48</span>
+                                {{ficha_form.d48}}
+                            </div>
+                        </div>
+                        <div style="display:inline-block;">
+                            <div class="div-diente">
+                                <span class="span-diente">17</span>
+                                <canvas width="30" height="40"></canvas>
+                                {{ficha_form.d17}}
+                            </div>
+                            <div class="separador-h"></div>
+                            <div class="div-diente">
+                                <canvas width="30" height="40"></canvas>
+                                <span class="span-diente">47</span>
+                                {{ficha_form.d47}}
+                            </div>
+                        </div>
+                        <div style="display:inline-block;">
+                            <div class="div-diente">
+                                <span class="span-diente">16</span>
+                                <canvas width="30" height="40"></canvas>
+                                {{ficha_form.d16}}
+                            </div>
+                            <div class="separador-h"></div>
+                            <div class="div-diente">
+                                <canvas width="30" height="40"></canvas>
+                                <span class="span-diente">46</span>
+                                {{ficha_form.d46}}
+                            </div>
+                        </div>
+                        <div style="display:inline-block;">
+                            <div class="div-diente">
+                                <span class="span-diente">15</span>
+                                <canvas width="30" height="40"></canvas>
+                                {{ficha_form.d15}}
+                            </div>
+                            <div class="separador-h"></div>
+                            <div class="div-diente">
+                                <canvas width="30" height="40"></canvas>
+                                <span class="span-diente">45</span>
+                                {{ficha_form.d45}}
+                            </div>
+                        </div>
+                        <div style="display:inline-block;">
+                            <div class="div-diente">
+                                <span class="span-diente">14</span>
+                                <canvas id="canvas" width="30" height="40"></canvas>
+                                {{ficha_form.d14}}
+                            </div>
+                            <div class="separador-h"></div>
+                            <div class="div-diente">
+                                <canvas id="canvas" width="30" height="40"></canvas>
+                                <span class="span-diente">44</span>
+                                {{ficha_form.d44}}
+                            </div>
+                        </div>
+                        <div style="display:inline-block;">
+                            <div class="div-diente">
+                                <span class="span-diente">13</span>
+                                <canvas width="30" height="40"></canvas>
+                                {{ficha_form.d13}}
+                            </div>
+                            <div class="separador-h"></div>
+                            <div class="div-diente">
+                                <canvas width="30" height="40"></canvas>
+                                <span class="span-diente">43</span>
+                                {{ficha_form.d43}}
+                            </div>
+                        </div>
+                        <div style="display:inline-block;">
+                            <div class="div-diente">
+                                <span class="span-diente">12</span>
+                                <canvas width="30" height="40"></canvas>
+                                {{ficha_form.d12}}
+                            </div>
+                            <div class="separador-h"></div>
+                            <div class="div-diente">
+                                <canvas width="30" height="40"></canvas>
+                                <span class="span-diente">42</span>
+                                {{ficha_form.d42}}
+                            </div>
+                        </div>
+                        <div style="display:inline-block;">
+                            <div class="div-diente">
+                                <span class="span-diente">11</span>
+                                <canvas width="30" height="40"></canvas>
+                                {{ficha_form.d11}}
+                            </div>
+                            <div class="separador-h"></div>
+                            <div class="div-diente">
+                                <canvas width="30" height="40"></canvas>
+                                <span class="span-diente">41</span>
+                                {{ficha_form.d41}}
+                            </div>
+                        </div>
+                        <div class="separador">
+                        </div>
+                        <div style="display:inline-block;">
+                            <div class="div-diente">
+                                <span class="span-diente">21</span>
+                                <canvas width="30" height="40"></canvas>
+                                {{ficha_form.d21}}
+                            </div>
+                            <div class="separador-h"></div>
+                            <div class="div-diente">
+                                <canvas width="30" height="40"></canvas>
+                                <span class="span-diente">31</span>
+                                {{ficha_form.d31}}
+                            </div>
+                        </div>
+                        <div style="display:inline-block;">
+                            <div class="div-diente">
+                                <span class="span-diente">22</span>
+                                <canvas width="30" height="40"></canvas>
+                                {{ficha_form.d22}}
+                            </div>
+                            <div class="separador-h"></div>
+                            <div class="div-diente">
+                                <canvas width="30" height="40"></canvas>
+                                <span class="span-diente">32</span>
+                                {{ficha_form.d32}}
+                            </div>
+                        </div>
+                        <div style="display:inline-block;">
+                            <div class="div-diente">
+                                <span class="span-diente">23</span>
+                                <canvas width="30" height="40"></canvas>
+                                {{ficha_form.d23}}
+                            </div>
+                            <div class="separador-h"></div>
+                            <div class="div-diente">
+                                <canvas width="30" height="40"></canvas>
+                                <span class="span-diente">33</span>
+                                {{ficha_form.d33}}
+                            </div>
+                        </div>
+                        <div style="display:inline-block;">
+                            <div class="div-diente">
+                                <span class="span-diente">24</span>
+                                <canvas width="30" height="40"></canvas>
+                                {{ficha_form.d24}}
+                            </div>
+                            <div class="separador-h"></div>
+                            <div class="div-diente">
+                                <canvas width="30" height="40"></canvas>
+                                <span class="span-diente">34</span>
+                                {{ficha_form.d34}}
+                            </div>
+                        </div>
+                        <div style="display:inline-block;">
+                            <div class="div-diente" id="div_diente_11">
+                                <span class="span-diente">25</span>
+                                <canvas width="30" height="40"></canvas>
+                                {{ficha_form.d25}}
+                            </div>
+                            <div class="separador-h"></div>
+                            <div class="div-diente" id="div_diente_41">
+                                <canvas width="30" height="40"></canvas>
+                                <span class="span-diente">35</span>
+                                {{ficha_form.d35}}
+                            </div>
+                        </div>
+                        <div style="display:inline-block;">
+                            <div class="div-diente" id="div_diente_11">
+                                <span class="span-diente">26</span>
+                                <canvas width="30" height="40"></canvas>
+                                {{ficha_form.d26}}
+                            </div>
+                            <div class="separador-h"></div>
+                            <div class="div-diente" id="div_diente_41">
+                                <canvas width="30" height="40"></canvas>
+                                <span class="span-diente">36</span>
+                                {{ficha_form.d36}}
+                            </div>
+                        </div>
+                        <div style="display:inline-block;">
+                            <div class="div-diente" id="div_diente_11">
+                                <span class="span-diente">27</span>
+                                <canvas width="30" height="40"></canvas>
+                                {{ficha_form.d27}}
+                            </div>
+                            <div class="separador-h"></div>
+                            <div class="div-diente" id="div_diente_41">
+                                <canvas width="30" height="40"></canvas>
+                                <span class="span-diente">37</span>
+                                {{ficha_form.d37}}
+                            </div>
+                        </div>
+                        <div style="display:inline-block;">
+                            <div class="div-diente" id="div_diente_11">
+                                <span class="span-diente">28</span>
+                                <canvas width="30" height="40"></canvas>
+                                {{ficha_form.d28}}
+                            </div>
+                            <div class="separador-h"></div>
+                            <div class="div-diente" id="div_diente_41">
+                                <canvas width="30" height="40"></canvas>
+                                <span class="span-diente">38</span>
+                                {{ficha_form.d38}}
+                            </div>
+                        </div>
+                        <div style="margin-top:15px;">
+                            <span class="span-derecha">DERECHA</span>
+                            <div style="display:inline-block;">
+                                <div class="div-diente" id="div_diente_15">
+                                    <span class="span-diente">55</span>
+                                    <canvas width="30" height="40"></canvas>
+                                    {{ficha_form.d55}}
+                                </div>
+                                <div class="separador-h"></div>
+                                <div class="div-diente" id="div_diente_45">
+                                    <canvas width="30" height="40"></canvas>
+                                    <span class="span-diente">85</span>
+                                    {{ficha_form.d85}}
+                                </div>
+                            </div>
+                            <div style="display:inline-block;">
+                                <div class="div-diente" id="div_diente_14">
+                                    <span class="span-diente">54</span>
+                                    <canvas id="canvas" width="30" height="40"></canvas>
+                                    {{ficha_form.d54}}
+                                </div>
+                                <div class="separador-h"></div>
+                                <div class="div-diente" id="div_diente_44">
+                                    <canvas id="canvas" width="30" height="40"></canvas>
+                                    <span class="span-diente">84</span>
+                                    {{ficha_form.d84}}
+                                </div>
+                            </div>
+                            <div style="display:inline-block;">
+                                <div class="div-diente" id="div_diente_13">
+                                    <span class="span-diente">53</span>
+                                    <canvas width="30" height="40"></canvas>
+                                    {{ficha_form.d53}}
+                                </div>
+                                <div class="separador-h"></div>
+                                <div class="div-diente" id="div_diente_43">
+                                    <canvas width="30" height="40"></canvas>
+                                    <span class="span-diente">83</span>
+                                    {{ficha_form.d83}}
+                                </div>
+                            </div>
+                            <div style="display:inline-block;">
+                                <div class="div-diente" id="div_diente_12">
+                                    <span class="span-diente">52</span>
+                                    <canvas width="30" height="40"></canvas>
+                                    {{ficha_form.d52}}
+                                </div>
+                                <div class="separador-h"></div>
+                                <div class="div-diente" id="div_diente_42">
+                                    <canvas width="30" height="40"></canvas>
+                                    <span class="span-diente">82</span>
+                                    {{ficha_form.d82}}
+                                </div>
+                            </div>
+                            <div style="display:inline-block;">
+                                <div class="div-diente" id="div_diente_11">
+                                    <span class="span-diente">51</span>
+                                    <canvas width="30" height="40"></canvas>
+                                    {{ficha_form.d51}}
+                                </div>
+                                <div class="separador-h"></div>
+                                <div class="div-diente" id="div_diente_41">
+                                    <canvas width="30" height="40"></canvas>
+                                    <span class="span-diente">81</span>
+                                    {{ficha_form.d81}}
+                                </div>
+                            </div>
+                            <div class="separador">
+                            </div>
+                            <div style="display:inline-block;">
+                                <div class="div-diente" id="div_diente_11">
+                                    <span class="span-diente">61</span>
+                                    <canvas width="30" height="40"></canvas>
+                                    {{ficha_form.d61}}
+                                </div>
+                                <div class="separador-h"></div>
+                                <div class="div-diente" id="div_diente_41">
+                                    <canvas width="30" height="40"></canvas>
+                                    <span class="span-diente">71</span>
+                                    {{ficha_form.d71}}
+                                </div>
+                            </div>
+                            <div style="display:inline-block;">
+                                <div class="div-diente" id="div_diente_11">
+                                    <span class="span-diente">62</span>
+                                    <canvas width="30" height="40"></canvas>
+                                    {{ficha_form.d62}}
+                                </div>
+                                <div class="separador-h"></div>
+                                <div class="div-diente" id="div_diente_41">
+                                    <canvas width="30" height="40"></canvas>
+                                    <span class="span-diente">72</span>
+                                    {{ficha_form.d72}}
+                                </div>
+                            </div>
+                            <div style="display:inline-block;">
+                                <div class="div-diente" id="div_diente_11">
+                                    <span class="span-diente">63</span>
+                                    <canvas width="30" height="40"></canvas>
+                                    {{ficha_form.d63}}
+                                </div>
+                                <div class="separador-h"></div>
+                                <div class="div-diente" id="div_diente_41">
+                                    <canvas width="30" height="40"></canvas>
+                                    <span class="span-diente">73</span>
+                                    {{ficha_form.d73}}
+                                </div>
+                            </div>
+                            <div style="display:inline-block;">
+                                <div class="div-diente" id="div_diente_11">
+                                    <span class="span-diente">64</span>
+                                    <canvas width="30" height="40"></canvas>
+                                    {{ficha_form.d64}}
+                                </div>
+                                <div class="separador-h"></div>
+                                <div class="div-diente" id="div_diente_41">
+                                    <canvas width="30" height="40"></canvas>
+                                    <span class="span-diente">74</span>
+                                    {{ficha_form.d74}}
+                                </div>
+                            </div>
+                            <div style="display:inline-block;">
+                                <div class="div-diente" id="div_diente_11">
+                                    <span class="span-diente">65</span>
+                                    <canvas width="30" height="40"></canvas>
+                                    {{ficha_form.d65}}
+                                </div>
+                                <div class="separador-h"></div>
+                                <div class="div-diente" id="div_diente_41">
+                                    <canvas width="30" height="40"></canvas>
+                                    <span class="span-diente">75</span>
+                                    {{ficha_form.d75}}
+                                </div>
+                            </div>
+                            <span class="span-izquierda">IZQUIERDA</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p style="text-align:center;margin-top:10px;">
+            <input type="submit" name="ficha-submit" class="btn-lila" value="Aceptar" />
+        </p>
+    </form>
+</div>
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'js/jquery.formset.js' %}"></script>
+    
+    <script>
+        var select_obra_social;
+        var select_plan;
+        var select_paciente;
+
+        $('document').ready(function(){
+            
+            select_obra_social = $('#id_obra_social');
+            select_plan = $('#id_plan');
+            select_paciente = $('#id_paciente');
+
+            $('.imagenes-formset').formset({
+                addText: '',
+                deleteText: '',
+                prefix: "{{ imagenes_formset.prefix }}"
+            });
+
+            $('.consultas-formset').formset({
+                addText: '<button class="btn-add" type="button"><i class="fa fa-plus"></i> Agregar</button>',
+                deleteText: '',
+                prefix: "{{ consultas_formset.prefix }}"
+            });
+
+            $('.imagenes-formset').each(function(){
+                let filename = $(this).find('.filename').val();
+                let url = $(this).find('.url').val();
+                let div_preview = $(this).find('.div_preview');
+                let img_preview = $(this).find('.img_preview');
+                let label_preview = $(this).find('.label_preview');
+                $(img_preview).show();
+                $(img_preview).attr('src',url);
+                if(url){
+                    $(div_preview).show();
+                    $(img_preview).toggleClass('descargable');
+                }
+            });
+
+            $(select_obra_social).on('change',cargar_planes);
+
+            let acc = $(".accordion");
+            for (i = 0; i < acc.length; i++) {
+                acc[i].onclick = function(){
+                    this.classList.toggle("active");
+                    this.nextElementSibling.classList.toggle("show");
+                }
+            }
+
+            select_paciente.select2({
+                tags:true,
+                placeholder: 'Haga click para seleccionar',
+                allowClear: true,
+                language: 'es',
+            });
+
+            select_obra_social.select2({
+                tags:true,
+                placeholder: 'Haga click para seleccionar',
+                allowClear: true,
+                language: 'es',
+            });
+
+            $("#id_odontologo").select2({
+                tags:true,
+                placeholder: 'Haga click para seleccionar',
+                allowClear: true,
+                language: 'es',
+            });
+
+            select_plan.select2({
+                tags:true,
+                placeholder: 'Haga click para seleccionar',
+                allowClear: true,
+                language: 'es',
+            });
+
+            draw();
+        });
+
+        $('.fecha-consulta').on('change', cambiarFecha);
+
+        var lastJQueryTS = 0 ;
+
+        function cambiarFecha(event) {
+            console.log('Fecha seleccionada: ' + this.value);  
+            console.log($(this));         
+            let send = true;
+            if (typeof(event) == 'object'){
+                if (event.timeStamp - lastJQueryTS < 300)
+                    send = false;
+                lastJQueryTS = event.timeStamp;
+            }
+            if (send){
+                let contenedor = $(this).closest('.div_nueva_consulta');
+                let select_norma_trabajo = $(contenedor).find('.select-norma-trabajo');
+                let norma_trabajo = parseInt($(select_norma_trabajo).val());
+                if (isNaN(norma_trabajo) == false)
+                    chequear(select_norma_trabajo);
+                console.log('Norma trabajo: ' + norma_trabajo);
+                if(select_norma_trabajo.children('option').length == 1)
+                    cargar_normas_trabajo(select_norma_trabajo);
+            }
+        }
+
+        function chequear_norma(input){
+            let fecha = $(input).val();
+            let paciente = $(select_paciente).val();
+            let contenedor = $(input).closest('.div_nueva_consulta');
+            let select_norma_trabajo = $(contenedor).find('.select-norma-trabajo');
+            let norma_trabajo = $(select_norma_trabajo).val();
+            if (fecha && paciente && norma_trabajo)
+                chequear(select_norma_trabajo);
+        }
+
+        function cargar_normas_trabajo(select){
+            let obra_social = parseInt($(select_obra_social).val());
+            console.log('cargar normas de trabajo de la obra social ' + obra_social);
+            $(select).empty();
+            $(select).append(new Option('Seleccionar norma', ''))
+            if (isNaN(obra_social) == false){
+                $.getJSON("/norma_trabajo/get_for_select?obra_social=" + obra_social, function( json ) {
+                    let arr = JSON.parse(JSON.stringify(json));
+                    for (i in arr) {
+                        $(select).append(new Option(arr[i].descrip, arr[i].id))
+                    }
+                    if(arr.length > 0)
+                        $(select).show();
+                    else
+                        $(select).hide();
+                });
+            }
+            else
+                $(select).hide();
+        }
+        
+        $(".cargar_imagen").change(function() {
+            readURL(this);
+        });
+
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var is_img = input.files[0]['type'].split('/')[0] === 'image';
+
+                    let contenedor = $(input).parent().parent();
+                    let div_preview = $(contenedor).find(".div_preview");
+                    let img_preview = $(contenedor).find(".img_preview");
+                    let label_preview = $(contenedor).find(".label_preview");
+                    let img_wrp = $(contenedor).find(".img_wrp");
+                    $(img_wrp).show();
+
+                    let filename = $(contenedor).find('.filename');
+                    $(filename).val(input.files[0]['name']);
+
+                    console.log(input.files[0]['name']);
+
+                    let label = $(contenedor).find(".label-seleccionar");
+                    label.remove();
+
+                    $(div_preview).show();
+                    $(img_preview).show();
+                    $(img_preview).attr("src", e.target.result);
+                    agregar_imagen();
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function eliminar(icon){
+            $(icon).parent().parent().remove();
+        }
+
+        function agregar_imagen(){
+            $("#nav-archivos .add-row").click();
+        }
+
+        var IsValidImage = function (url, filename, img_preview, label_preview,callback) {
+            $('<img>', {
+                src: url,
+                error: function () {
+                    callback(url, filename, img_preview, label_preview, false);
+                },
+                load: function () {
+                    callback(url, filename, img_preview, label_preview, true);
+                }
+            });
+        }
+
+        var CallbackFunction = function (url, filename, img_preview, label_preview, isValid) {
+            if (isValid) {
+                $(label_preview).hide();
+                $(img_preview).attr("src", url);
+                $(img_preview).show();
+            } else {
+                $(img_preview).hide();
+                $(label_preview).append(filename);
+                $(label_preview).show();
+            }
+        }
+
+        function errorImagen(image){
+            console.log('error');
+            $(image).hide();
+            let label = $(image).parent().find('.label_preview');
+            let div_preview = $(image).parent(); 
+            let contenedor = $(div_preview).parent(); 
+            let filename = $(contenedor).find('.filename').val();
+            let url = $(contenedor).find('.url').val();
+
+            $(label).append(filename);
+            if (url)
+                $(label).toggleClass('descargable');
+            $(label).show();
+            $(div_preview).show();
+        }
+
+        function ver_archivo(label){
+            let contenedor = $(label).parent().parent();
+            let url = $(contenedor).find('.url').val();
+            window.open(url,'_blank');
+        }
+
+        function ver_imagen(imagen){
+            let contenedor = $(imagen).parent().parent();
+            let url = $(contenedor).find('.url').val();
+            console.log(url);
+            window.open($(imagen).attr("src"),'_blank');
+        }
+
+        function cargar_planes(){
+            let obra_social = parseInt($(select_obra_social).val());
+            console.log('cargar planes de la obra social ' + obra_social);
+            $(select_plan).empty();
+            $(select_plan).append(new Option('Seleccionar plan', ''))
+            if (isNaN(obra_social) == false){
+                $.getJSON("/plan/get_for_select?obra_social=" + obra_social, function( json ) {
+                    let arr = JSON.parse(JSON.stringify(json));
+                    for (i in arr) {
+                        $(select_plan).append(new Option(arr[i].descrip, arr[i].id))
+                    }
+                    if (arr.length > 0)
+                        $(select_plan).parent().show();
+                    else
+                        $(select_plan).parent().hide();
+                });
+            }
+        }
+
+        function chequear(select){
+            let paciente = parseInt(select_paciente.val());
+            let norma_trabajo = parseInt($(select).val());
+            let contenedor = $(select).closest('.div_nueva_consulta');
+            let fecha = $(contenedor).find('.fecha-consulta').val();
+            console.log('chequear norma: paciente: ' + paciente + ". norma: " + norma_trabajo);
+            let container_mensaje = $(contenedor).find('.mensaje');
+            container_mensaje.html('');
+            if (isNaN(paciente) == false && isNaN(norma_trabajo) == false && fecha){
+                $.getJSON("/paciente/chequear_norma?paciente=" + paciente + "&norma_trabajo=" + norma_trabajo + "&fecha=" + fecha, function( json ) {
+                    div_mensaje = document.createElement('div');
+                    div_mensaje.id = 'mensaje_chequear_norma';
+                    div_mensaje.classList.add('alert');
+                    div_mensaje.style = 'margin-top:5px;margin-bottom:0px !important;'
+                    div_mensaje.innerHTML = '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>';
+                    div_mensaje.innerHTML += '<strong id="resultado_chequear_norma"></strong>';
+                    div_mensaje.innerHTML += '<label id="label_mensaje_chequear_norma"></label>';
+
+                    container_mensaje.append(div_mensaje);
+                    
+                    let clase = '';
+                    if (json.result == true){
+                        clase = 'alert-success';
+                        container_mensaje.find('#resultado_chequear_norma').append('Se puede aplicar.');
+                    }
+                    else{
+                        clase = 'alert-danger';
+                        container_mensaje.find('#resultado_chequear_norma').append('No se puede aplicar.');
+                        container_mensaje.find('#label_mensaje_chequear_norma').append(json.message);
+                    }
+                    div_mensaje.classList.add(clase);
+                });
+            }
+        }
+
+        function editarDescripcionArchivo(id){
+            $(`#text-${id}`).hide();
+            $(`#input-${id}`).show();
+            let input = $(`#${id}`);
+            let val = input.val();
+            input.val('');
+            input.focus().val(val);
+        }
+
+        $('.input-descripcion').focusout(function(){
+                let id = $(this).attr('id');
+                let val = $(this).val();
+                $(`#span-${id}`).html(val);
+                $(`#text-${id}`).show();
+                $(`#input-${id}`).hide();
+        });
+
+        $('.input-descripcion').keypress(function(event){
+            if (event.which == 13){
+                event.preventDefault();
+                let id = $(this).attr('id');
+                $(`#text-${id}`).toggle();
+                $(`#input-${id}`).toggle();
+           }
+        });
+
+        function editarDetalleHistoria(id){
+            $(`#text-${id}`).hide();
+            $(`#input-${id}`).show();
+            let input = $(`#${id}`);
+            let val = input.val();
+            input.val('');
+            input.focus().val(val);
+        }
+
+        $('.input-detalle').focusout(function(){
+                let id = $(this).attr('id');
+                let val = $(this).val();
+                $(`#span-${id}`).html(val);
+                $(`#text-${id}`).show();
+                $(`#input-${id}`).hide();
+        });
+
+        $('.input-detalle').keypress(function(event){
+            if (event.which == 13){
+                event.preventDefault();
+                let id = $(this).attr('id');
+                $(`#text-${id}`).toggle();
+                $(`#input-${id}`).toggle();
+           }
+        });
+
+        $('canvas').click(cambiarEstado);
+
+        $('canvas').contextmenu(limpiarEstado);
+
+        function draw(){
+            $('canvas').each(function(){
+                let context = $(this)[0].getContext("2d");
+                let div = $(this).parent();
+                let val = div.find('input').val();
+
+                context.clearRect(0,0,context.canvas.width,context.canvas.height);
+                context.beginPath();
+
+                context.lineWidth = 1;
+
+                context.strokeStyle = '#1C2833';
+
+                context.rect(1,1,28,38);
+                context.rect(5,5,20,30);
+
+                context.moveTo(1, 1);
+                context.lineTo(5, 5);
+
+                context.moveTo(29, 1);
+                context.lineTo(25, 5);
+
+                context.moveTo(29, 39);
+                context.lineTo(25, 35);
+                
+                context.moveTo(1, 39);
+                context.lineTo(5, 35);
+
+                context.font = "bold 36px Arial";
+                context.textAlign = "center";
+
+                let x = 15;
+                let y = 33;
+                let line_w = 18;
+                let red = '#E74C3C';
+                let blue = '#2874A6';
+
+                if (val == 'cruz_roja'){
+                    context.fillStyle = red;
+                    context.fillText("X", x, y, line_w);
+                }
+                if (val == 's_roja'){
+                    context.fillStyle = red;
+                    context.fillText("S", x, y, line_w);
+                }
+                if (val == 'cruz_azul'){
+                    context.fillStyle = blue;
+                    context.fillText("X", x, y, line_w);
+                }
+                if (val == 's_azul'){
+                    context.fillStyle = blue;
+                    context.fillText("S", x, y, line_w);
+                }
+                if (val == 'ne_azul'){
+                    context.fillStyle = blue;
+                    context.fillText("NE", x, y, line_w);
+                }
+                if (val == 'ne_roja'){
+                    context.fillStyle = red;
+                    context.fillText("NE", x, y, line_w);
+                }
+                context.stroke();
+            });
+        }
+
+        function cambiarEstado(){
+            let canvas = $(this);
+            let div = canvas.parent();
+            let input = div.find('input');
+
+            console.log('value:'+input.val());
+
+            if (input.val() == 'cruz_roja')
+                input.val('s_roja');
+            else if(input.val() == 's_roja')
+                input.val('ne_roja');
+            else if(input.val() == 'ne_roja')
+                input.val('cruz_azul');
+            else if(input.val() == 'cruz_azul')
+                input.val('s_azul');
+            else if (input.val() == 's_azul')
+                input.val('ne_azul');
+            else if (input.val() == 'ne_azul')
+                input.val('');
+            else
+                input.val('cruz_roja');
+            draw();
+        }
+
+        function limpiarEstado(){
+            let canvas = $(this);
+            let div = canvas.parent();
+            let input = div.find('input');
+            console.log('value:'+input.val());
+            input.val('');
+            draw();
+            return false;
+        }
+    </script>
+{% endblock %}

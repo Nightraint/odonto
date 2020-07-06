@@ -500,6 +500,7 @@ class ContactForm(forms.Form):
         super(ContactForm, self).__init__(*args, **kwargs)
         for visible in self.visible_fields():
             visible.field.widget.attrs['class'] = 'form-control'
+        
 
 #################### CUSTOM USER ######################
 
@@ -671,7 +672,7 @@ class ImagenFichaForm(forms.Form):
         #clinica_id = kwargs.pop('clinica_id')
         super(ImagenFichaForm, self).__init__(*args, **kwargs)
         self.fields['imagen'].widget.attrs['class'] = 'cargar_imagen'
-        self.fields['descripcion'].widget.attrs['class'] = 'form-control'
+        self.fields['descripcion'].widget.attrs['class'] = 'form-control input-descripcion'
         self.fields['descripcion'].widget.attrs['placeholder'] = 'Descripción'
         self.fields['descripcion'].widget.attrs['style'] = 'margin-top:5px;'
 
@@ -725,6 +726,8 @@ class ConsultaForm(forms.Form):
             visible.field.widget.attrs['class'] = 'form-control '
             if visible.name == 'norma_trabajo':
                 visible.field.widget.attrs['class'] += 'select-norma-trabajo'
+            if visible.name == 'detalle':
+                visible.field.widget.attrs['class'] += 'input-detalle'
 
         if self.initial:
             nt = self.initial['norma_trabajo']
