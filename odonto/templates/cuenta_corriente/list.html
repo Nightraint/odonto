@@ -1,0 +1,13 @@
+{% extends "list.html" %}
+
+{% block encabezados %}
+    <th style="width:200px;">Fecha</th>
+    <th>Paciente</th>
+    <th style="width:150px">Importe</th>
+{% endblock %}
+
+{% block datos %}                   
+    <td>{{object.fecha}}</td>
+    <td style="vertical-align: middle;">{{ object.paciente|default_if_none:'' }}</td>
+    <td style="vertical-align: middle;" class="{%if object.ingreso_egreso == '1' %}importe-ingreso{%else%}importe-egreso{%endif%}">{{ object.importe }}</td>
+{% endblock %}

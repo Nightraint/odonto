@@ -11,7 +11,7 @@ from .models import (Obra_Social,
                     Telefono,
                     Plan,
                     Turno,
-                    )
+                    Cuenta_Corriente)
 from django.contrib.auth.forms import AuthenticationForm,UserCreationForm,UserChangeForm,PasswordChangeForm
 from django.forms import DateTimeField, EmailField
 from .widgets import (BootstrapDateTimePickerInput
@@ -151,9 +151,7 @@ class Norma_TrabajoForm(forms.ModelForm):
                 pass
 
         self.fields['obra_social'].queryset = Obra_Social.objects.filter(clinica_id=clinica_id)
-        self.fields['obra_social'].empty_label = 'Seleccionar obra social'
-        #self.fields['coseguro'].widget.attrs['style'] = 'width:150px;display:inline-block;'
-        #self.fields['bonos'].widget.attrs['style'] = 'width:150px;display:inline-block;'
+        self.fields['obra_social'].empty_label = 'Haga click para seleccionar'
         self.fields['dias'].widget.attrs['style'] = 'width:70px;display:inline-block;'
         self.fields['meses'].widget.attrs['style'] = 'width:70px;display:inline-block;'
         self.fields['años'].widget.attrs['style'] = 'width:70px;display:inline-block;'
@@ -426,38 +424,13 @@ class FichaForm(forms.ModelForm):
         
         self.fields['odontologo'].queryset = Odontologo.objects.filter(clinica_id = clinica_id)
         self.fields['obra_social'].queryset = Obra_Social.objects.filter(clinica_id = clinica_id)
-        #self.fields['norma_trabajo'].queryset = Norma_Trabajo.objects.none()
         self.fields['plan'].queryset = Plan.objects.none()
         self.fields['paciente'].queryset = Paciente.objects.filter(clinica_id=clinica_id)
 
         self.fields['odontologo'].empty_label = 'Seleccionar odontólogo'
         self.fields['obra_social'].empty_label = 'Seleccionar obra social'
-        #self.fields['norma_trabajo'].empty_label = 'Seleccionar norma de trabajo'
         self.fields['plan'].empty_label = 'Seleccionar plan'
         self.fields['paciente'].empty_label = 'Seleccionar paciente'
-
-        # if 'paciente' in self.data:
-        #     try:
-        #         paciente_id = int(self.data.get('paciente'))
-        #         self.fields['odontologo'].queryset = Odontologo.objects.filter(paciente__id=paciente_id
-        #             ).order_by('nombre_apellido')
-        #     except (ValueError, TypeError):
-        #         pass
-        # elif self.instance.pk:
-        #     self.fields['odontologo'].queryset = self.instance.paciente.odontologos.order_by('nombre_apellido')
-
-        # if 'odontologo' in self.data:
-        #     try:
-        #         odontologo_id = int(self.data.get('odontologo'))
-        #         self.fields['obra_social'].queryset = Obra_Social.objects.filter(pacienteobrasocial__paciente__id=paciente_id
-        #             ).filter(odontologo__id = odontologo_id
-        #             ).order_by('nombre')
-        #     except (ValueError, TypeError):
-        #         pass
-        # elif self.instance.pk:
-        #     self.fields['obra_social'].queryset = Obra_Social.objects.filter(pacienteobrasocial__paciente__id=self.instance.paciente.id
-        #         ).filter(odontologo__id = self.instance.odontologo.id
-        #         ).order_by('nombre')
 
         if 'obra_social' in self.data:
             try:
@@ -690,7 +663,6 @@ class ConsultaForm(forms.Form):
                     'placeholder': 'Fecha',
                 },
                 optional_class = 'fecha-consulta',)
-        #widget=XDSoftDateTimePickerInput(optional_class = 'fecha-consulta',)
     )
     
     norma_trabajo = MyModelChoiceField(
@@ -722,7 +694,6 @@ class ConsultaForm(forms.Form):
         clinica_id = kwargs.pop('clinica_id')
         super(ConsultaForm, self).__init__(*args, **kwargs)
         for visible in self.visible_fields():
-            #if not (visible.name == 'detalle' and visible.initial):
             visible.field.widget.attrs['class'] = 'form-control '
             if visible.name == 'norma_trabajo':
                 visible.field.widget.attrs['class'] += 'select-norma-trabajo'
@@ -745,3 +716,49 @@ class BaseConsultaFormSet(BaseFormSet):
     def clean(self):
         pass
 
+##################### CUENTA CORRIENTE #########################
+
+class Cuenta_CorrienteForm(forms.ModelForm):
+    class Meta:
+        model = Cuenta_Corriente
+        exclude = ()
+
+    fecha = forms.DateTimeField(
+        input_formats=['%d/%m/%Y %H:%M'], 
+        required=False,
+        widget=BootstrapDateTimePickerInput(attrs={
+                    'placeholder': 'Fecha',
+                },
+                optional_class = 'fecha-consulta',)
+    )
+
+    concepto = forms.CharField(
+            widget=forms.Textarea(attrs={
+                'style' : 'height:100px;',
+            }),
+            required=False)
+
+  
+    def __init__(self, *args, **kwargs):
+        clinica_id = kwargs.pop('clinica_id')
+        super(Cuenta_CorrienteForm, self).__init__(*args, **kwargs)
+
+        if 'paciente' in self.data and self.data.get('paciente') != '':
+            try:
+                paciente_seleccionado = self.data.get('paciente')
+                is_number = paciente_seleccionado.isdigit()
+                if not is_number: # Si el paciente no es numerico, es porque no es un id (entonces no existe, hay que agregarlo)
+                    p = Paciente()
+                    p.nombre_apellido = paciente_seleccionado
+                    p.clinica_id = clinica_id
+                    p.save()
+                    self.data = self.data.copy() # Copiamos la data porque no se puede modificar
+                    self.data['paciente'] = p.id # Seleccionamos el id del nuevo paciente
+            except (ValueError, TypeError):
+                pass
+
+        self.fields['paciente'].queryset = Paciente.objects.filter(clinica_id=clinica_id)
+        self.fields['paciente'].required = True
+
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
