@@ -18,7 +18,7 @@ from django.urls import path, include
 from django.views.generic.base import TemplateView
 from django import views
 from . import views, settings
-from .vistas import paciente, odontologo, norma_trabajo, ficha, obra_social, plan, turno, tutorial
+from .vistas import paciente, odontologo, norma_trabajo, ficha, obra_social, plan, turno, tutorial, cuenta_corriente
 from django.contrib.auth import views as auth_views
 from odonto.forms import UserLoginForm, PasswordForm
 from django.contrib.staticfiles.urls import static
@@ -47,11 +47,15 @@ urlpatterns = [
     path(r'obra_social/get_for_select/', obra_social.get_for_select, name='get_for_select'),
     path('obra_social/<int:pk>', obra_social.get, name='get'),
 
+    path('cuenta_corriente/crear', cuenta_corriente.Cuenta_CorrienteCrear.as_view(template_name = "cuenta_corriente/form.html") , name='cuenta_corriente_crear'),
+    path('cuenta_corriente/editar/<int:pk>', cuenta_corriente.Cuenta_CorrienteEditar.as_view(template_name = "cuenta_corriente/form.html") , name='cuenta_corriente_editar'),
+    path('cuenta_corriente/', cuenta_corriente.Cuenta_CorrienteList.as_view(template_name='cuenta_corriente/list.html'), name='cuenta_corriente_index'),
+
     path(r'plan/get_for_select/', plan.get_for_select, name='get_for_select'),
 
     path('paciente/crear', paciente.crear , name='crear'),
     path('paciente/eliminar/<int:pk>', paciente.PacienteEliminar.as_view(), name='eliminar'),
-    path('paciente/editar/<int:pk>/', paciente.editar, name='editar'),
+    path('paciente/editar/<int:pk>', paciente.editar, name='editar'),
     path('paciente/detalle/<int:pk>', paciente.PacienteDetalle.as_view(template_name = "paciente/detail.html"), name='detalle'),
     path('paciente/', paciente.PacienteList.as_view(template_name='paciente/list.html'), name='paciente_index'),
     path(r'paciente/chequear_norma/', paciente.chequear_norma, name='chequear_norma'),

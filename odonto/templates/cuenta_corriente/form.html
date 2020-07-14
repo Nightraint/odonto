@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block head %}
+	<title>{{ funcion }} movimiento</title>
+{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+{% load staticfiles %}
+     <div class="col-md-8 offset-md-2">
+        {% if messages %}
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+        <form method= "POST" autocomplete="off">
+            {% csrf_token %}
+            <div class="card">
+                <div class="card-header">Datos del movimiento</div>
+                <div class="card-body">
+                    {% if form.non_field_errors %}
+                        <ul class="list-group" style="margin-bottom:10px;">
+                        {% for error in form.non_field_errors %}
+                            <li class="list-group-item list-group-item-danger">
+                                {{ error|escape }}
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {{form.as_p}}
+                </div>
+            </div>
+        <p style="text-align:center;">
+            <input type="submit" class="btn-lila" value="Aceptar" />
+        </p>
+        </form>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'js/jquery.formset.js' %}"></script>
+    <script>
+        $('document').ready(function(){
+            $('#id_paciente').select2({
+                tags:true,
+                placeholder: 'Haga click para seleccionar',
+                allowClear: true,
+                language: 'es',
+            });
+
+            $('#id_ingreso_egreso').select2({
+                minimumResultsForSearch: Infinity,
+                placeholder: 'Haga click para seleccionar',
+                allowClear: true,
+                language: 'es',
+            });
+        });
+
+    </script>
+{% endblock %}

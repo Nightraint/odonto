@@ -284,4 +284,27 @@ class Tutorial(models.Model):
     def model_name_lower(self):
         return "tutorial"
 
+class Cuenta_Corriente(models.Model):
+    fecha = models.DateTimeField()
+    paciente = models.ForeignKey('Paciente',on_delete=models.CASCADE,blank=True,null=True)
+    
+    IE = [
+        ('1', 'Ingreso'),
+        ('2', 'Egreso'),
+    ]
+    ingreso_egreso = models.CharField(
+        max_length=20,
+        choices=IE,
+        null=True,
+        blank=True
+    )
+    concepto = models.CharField(max_length=4000, blank=True, null=True)
+    importe = models.DecimalField(decimal_places=2, max_digits=12)
+    creada = models.DateTimeField(auto_now_add=True)
+    actualizada = models.DateTimeField(auto_now=True)    
 
+    def model_name(self):
+        return "Cuenta corriente"
+    
+    def model_name_lower(self):
+        return "cuenta corriente"
