@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "C:\\Users\\PC\\AppData\\Local\\Programs\\Python\\Python37-32\\python.exe",
+    "python.pythonPath": "/home/emi/djangoemi/entornopy3/bin/python3",
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true,
     "python.linting.banditEnabled": false,
