@@ -1124,6 +1124,11 @@
 
         $('canvas').contextmenu(limpiarEstado);
 
+        const H = 40;
+        const W = 30;
+        const lado = 8;
+        const lineWidth = 1;
+
         function draw(){
             $('canvas').each(function(){
                 let context = $(this)[0].getContext("2d");
@@ -1133,31 +1138,31 @@
                 context.clearRect(0,0,context.canvas.width,context.canvas.height);
                 context.beginPath();
 
-                context.lineWidth = 1;
+                context.lineWidth = lineWidth;
 
                 context.strokeStyle = '#1C2833';
 
-                context.rect(1, 1, 28, 38);
-                context.rect(8, 8, 14, 24);
+                context.rect(lineWidth, lineWidth, W - (lineWidth * 2), H - (lineWidth * 2));
+                context.rect(lado, lado, W - (2 * lado), H - (2 * lado));
 
-                context.moveTo(1, 1);
-                context.lineTo(8, 8);
+                context.moveTo(lineWidth, lineWidth);
+                context.lineTo(lado, lado);
 
-                context.moveTo(29, 1);
-                context.lineTo(22, 8);
+                context.moveTo(W - lineWidth, lineWidth);
+                context.lineTo(W - lado, lado);
 
-                context.moveTo(29, 39);
-                context.lineTo(22, 32);
+                context.moveTo(W - lineWidth, H - lineWidth);
+                context.lineTo(W - lado, H - lado);
                 
-                context.moveTo(1, 39);
-                context.lineTo(8, 32);
+                context.moveTo(lineWidth, H - lineWidth);
+                context.lineTo(lado, H - lado);
 
-                context.font = "bold 36px Arial";
+                context.font = "bold 18px Arial";
                 context.textAlign = "center";
 
                 let x = 15;
-                let y = 33;
-                let line_w = 18;
+                let y = 26;
+                let line_w = 12;
                 let red = '#E74C3C';
                 let blue = '#2874A6';
 
@@ -1189,7 +1194,27 @@
             });
         }
 
-        function cambiarEstado(){
+        function cambiarEstado(event){
+            let x = event.offsetX;
+            let y = event.offsetY;
+
+            let coord = 'X:'+x + ' - Y:'+y;
+
+            if ((x > lado) && (x < W - lado) && (y > lado) && (y < H - lado))
+                alert('Center');
+
+            if ((x < lado) && (y > lado) && (y < H - lado))
+                alert('Left');
+
+            if ((x > W - lado) && (y > lado) && (y < H - lado))
+                alert('Right');
+
+            if ((y < lado) && (x > lado) && (x < W - lado))
+                alert('Top');
+            
+            if ((y > H - lado) && (x > lado) && (x < W - lado))
+                alert('Bot');
+
             let canvas = $(this);
             let div = canvas.parent();
             let input = div.find('input');
