@@ -9,7 +9,6 @@
             padding-bottom:5px;
             font-size:15px;
             font-weight:bold;
-            /*margin-left:13px;*/
             color:#413e66;
         }
 
@@ -17,40 +16,48 @@
             background-color:#f0eff5;
             padding:10px 5px;
             position:relative;
-            /*border:1px solid #413e66;*/
             border-radius:.25rem;
         }
+
         .label_preview{
             padding-top:20px;
         }
+
         .label_preview.descargable:hover{
             color:#1bb1dc;
         }
+
         .img_preview{
             padding-top:21px;
             width:150px;
         }
+
         .descargable {
             cursor:pointer;
         }
+
         .descargable:hover {
             cursor:pointer;
             opacity: 0.5;
             filter: alpha(opacity=50); /* For IE8 and earlier */
         }
+
         .close {
             position: absolute;
             top: .25rem;
             right: .25rem;
         }
+
         .add-photo {
             opacity: 0.5;
             filter: alpha(opacity=50); /* For IE8 and earlier */
         }
+
         .add-photo:hover {
             opacity: 0.3;
             filter: alpha(opacity=100); /* For IE8 and earlier */
         }
+
         button.accordion {
             background-color:transparent;
             border-radius: .25rem;
@@ -98,7 +105,6 @@
         }
 
         div.panel {
-            /*background-color: #f5f8fd;*/
             max-height: 0;
             overflow: hidden;
             opacity: 0;
@@ -119,8 +125,6 @@
 
         .div_nueva_consulta{
             padding-bottom:10px;
-            /*border-bottom: 1px solid #413e66;*/
-            /*border-radius:.25rem;*/
         }
 
         .existente{
@@ -140,7 +144,6 @@
         }
 
         .div-diente{
-            /*display:inline-block;*/
             margin-left:5px;
             moz-user-select: none;
             -khtml-user-select: none;
@@ -158,7 +161,6 @@
         }
 
         canvas{
-            /*border:2px solid black;*/
             cursor:pointer;
         }
 
@@ -196,7 +198,7 @@
 
 {% block content %}
 {% load staticfiles %}
-<div class="col-md-8 offset-md-2">
+<div class="col-md">
     {% if messages %}
         {% for message in messages %}
             <p>{{ message }}</p>
@@ -428,105 +430,169 @@
                         <div style="display:inline-block;">
                             <div class="div-diente">
                                 <span class="span-diente">18</span>
-                                <canvas width="30" height="40"></canvas>
+                                <canvas class="canvas-odontograma"></canvas>
                                 {{ficha_form.d18}}
+                                {{ficha_form.top18}}
+                                {{ficha_form.bot18}}
+                                {{ficha_form.left18}}
+                                {{ficha_form.right18}}
                             </div>
                             <div class="separador-h"></div>
                             <div class="div-diente">
-                                <canvas width="30" height="40"></canvas>
+                                <canvas></canvas>
                                 <span class="span-diente">48</span>
                                 {{ficha_form.d48}}
+                                {{ficha_form.top48}}
+                                {{ficha_form.bot48}}
+                                {{ficha_form.left48}}
+                                {{ficha_form.right48}}
                             </div>
                         </div>
                         <div style="display:inline-block;">
                             <div class="div-diente">
                                 <span class="span-diente">17</span>
-                                <canvas width="30" height="40"></canvas>
+                                <canvas></canvas>
                                 {{ficha_form.d17}}
+                                {{ficha_form.top17}}
+                                {{ficha_form.bot17}}
+                                {{ficha_form.left17}}
+                                {{ficha_form.right17}}
                             </div>
                             <div class="separador-h"></div>
                             <div class="div-diente">
-                                <canvas width="30" height="40"></canvas>
+                                <canvas></canvas>
                                 <span class="span-diente">47</span>
                                 {{ficha_form.d47}}
+                                {{ficha_form.top47}}
+                                {{ficha_form.bot47}}
+                                {{ficha_form.left47}}
+                                {{ficha_form.right47}}
                             </div>
                         </div>
                         <div style="display:inline-block;">
                             <div class="div-diente">
                                 <span class="span-diente">16</span>
-                                <canvas width="30" height="40"></canvas>
+                                <canvas></canvas>
                                 {{ficha_form.d16}}
+                                {{ficha_form.top16}}
+                                {{ficha_form.bot16}}
+                                {{ficha_form.left16}}
+                                {{ficha_form.right16}}
                             </div>
                             <div class="separador-h"></div>
                             <div class="div-diente">
-                                <canvas width="30" height="40"></canvas>
+                                <canvas></canvas>
                                 <span class="span-diente">46</span>
                                 {{ficha_form.d46}}
+                                {{ficha_form.top46}}
+                                {{ficha_form.bot46}}
+                                {{ficha_form.left46}}
+                                {{ficha_form.right46}}
                             </div>
                         </div>
                         <div style="display:inline-block;">
                             <div class="div-diente">
                                 <span class="span-diente">15</span>
-                                <canvas width="30" height="40"></canvas>
+                                <canvas></canvas>
                                 {{ficha_form.d15}}
+                                {{ficha_form.top15}}
+                                {{ficha_form.bot15}}
+                                {{ficha_form.left15}}
+                                {{ficha_form.right15}}
                             </div>
                             <div class="separador-h"></div>
                             <div class="div-diente">
-                                <canvas width="30" height="40"></canvas>
+                                <canvas></canvas>
                                 <span class="span-diente">45</span>
                                 {{ficha_form.d45}}
+                                {{ficha_form.top45}}
+                                {{ficha_form.bot45}}
+                                {{ficha_form.left45}}
+                                {{ficha_form.right45}}
                             </div>
                         </div>
                         <div style="display:inline-block;">
                             <div class="div-diente">
                                 <span class="span-diente">14</span>
-                                <canvas id="canvas" width="30" height="40"></canvas>
+                                <canvas></canvas>
                                 {{ficha_form.d14}}
+                                {{ficha_form.top14}}
+                                {{ficha_form.bot14}}
+                                {{ficha_form.left14}}
+                                {{ficha_form.right14}}
                             </div>
                             <div class="separador-h"></div>
                             <div class="div-diente">
-                                <canvas id="canvas" width="30" height="40"></canvas>
+                                <canvas></canvas>
                                 <span class="span-diente">44</span>
                                 {{ficha_form.d44}}
+                                {{ficha_form.top44}}
+                                {{ficha_form.bot44}}
+                                {{ficha_form.left44}}
+                                {{ficha_form.right44}}
                             </div>
                         </div>
                         <div style="display:inline-block;">
                             <div class="div-diente">
                                 <span class="span-diente">13</span>
-                                <canvas width="30" height="40"></canvas>
+                                <canvas></canvas>
                                 {{ficha_form.d13}}
+                                {{ficha_form.top13}}
+                                {{ficha_form.bot13}}
+                                {{ficha_form.left13}}
+                                {{ficha_form.right13}}
                             </div>
                             <div class="separador-h"></div>
                             <div class="div-diente">
-                                <canvas width="30" height="40"></canvas>
+                                <canvas></canvas>
                                 <span class="span-diente">43</span>
                                 {{ficha_form.d43}}
+                                {{ficha_form.top43}}
+                                {{ficha_form.bot43}}
+                                {{ficha_form.left43}}
+                                {{ficha_form.right43}}
                             </div>
                         </div>
                         <div style="display:inline-block;">
                             <div class="div-diente">
                                 <span class="span-diente">12</span>
-                                <canvas width="30" height="40"></canvas>
+                                <canvas></canvas>
                                 {{ficha_form.d12}}
+                                {{ficha_form.top12}}
+                                {{ficha_form.bot12}}
+                                {{ficha_form.left12}}
+                                {{ficha_form.right12}}
                             </div>
                             <div class="separador-h"></div>
                             <div class="div-diente">
-                                <canvas width="30" height="40"></canvas>
+                                <canvas></canvas>
                                 <span class="span-diente">42</span>
                                 {{ficha_form.d42}}
+                                {{ficha_form.top42}}
+                                {{ficha_form.bot42}}
+                                {{ficha_form.left42}}
+                                {{ficha_form.right42}}
                             </div>
                         </div>
                         <div style="display:inline-block;">
                             <div class="div-diente">
                                 <span class="span-diente">11</span>
-                                <canvas width="30" height="40"></canvas>
+                                <canvas></canvas>
                                 {{ficha_form.d11}}
+                                {{ficha_form.top11}}
+                                {{ficha_form.bot11}}
+                                {{ficha_form.left11}}
+                                {{ficha_form.right11}}
                             </div>
                             <div class="separador-h"></div>
                             <div class="div-diente">
-                                <canvas width="30" height="40"></canvas>
+                                <canvas></canvas>
                                 <span class="span-diente">41</span>
                                 {{ficha_form.d41}}
+                                {{ficha_form.top41}}
+                                {{ficha_form.bot41}}
+                                {{ficha_form.left41}}
+                                {{ficha_form.right41}}
                             </div>
                         </div>
                         <div class="separador">
@@ -534,105 +600,169 @@
                         <div style="display:inline-block;">
                             <div class="div-diente">
                                 <span class="span-diente">21</span>
-                                <canvas width="30" height="40"></canvas>
+                                <canvas></canvas>
                                 {{ficha_form.d21}}
+                                {{ficha_form.top21}}
+                                {{ficha_form.bot21}}
+                                {{ficha_form.left21}}
+                                {{ficha_form.right21}}
                             </div>
                             <div class="separador-h"></div>
                             <div class="div-diente">
-                                <canvas width="30" height="40"></canvas>
+                                <canvas></canvas>
                                 <span class="span-diente">31</span>
                                 {{ficha_form.d31}}
+                                {{ficha_form.top31}}
+                                {{ficha_form.bot31}}
+                                {{ficha_form.left31}}
+                                {{ficha_form.right31}}
                             </div>
                         </div>
                         <div style="display:inline-block;">
                             <div class="div-diente">
                                 <span class="span-diente">22</span>
-                                <canvas width="30" height="40"></canvas>
+                                <canvas></canvas>
                                 {{ficha_form.d22}}
+                                {{ficha_form.top22}}
+                                {{ficha_form.bot22}}
+                                {{ficha_form.left22}}
+                                {{ficha_form.right22}}
                             </div>
                             <div class="separador-h"></div>
                             <div class="div-diente">
-                                <canvas width="30" height="40"></canvas>
+                                <canvas></canvas>
                                 <span class="span-diente">32</span>
                                 {{ficha_form.d32}}
+                                {{ficha_form.top32}}
+                                {{ficha_form.bot32}}
+                                {{ficha_form.left32}}
+                                {{ficha_form.right32}}
                             </div>
                         </div>
                         <div style="display:inline-block;">
                             <div class="div-diente">
                                 <span class="span-diente">23</span>
-                                <canvas width="30" height="40"></canvas>
+                                <canvas></canvas>
                                 {{ficha_form.d23}}
+                                {{ficha_form.top23}}
+                                {{ficha_form.bot23}}
+                                {{ficha_form.left23}}
+                                {{ficha_form.right23}}
                             </div>
                             <div class="separador-h"></div>
                             <div class="div-diente">
-                                <canvas width="30" height="40"></canvas>
+                                <canvas></canvas>
                                 <span class="span-diente">33</span>
                                 {{ficha_form.d33}}
+                                {{ficha_form.top33}}
+                                {{ficha_form.bot33}}
+                                {{ficha_form.left33}}
+                                {{ficha_form.right33}}
                             </div>
                         </div>
                         <div style="display:inline-block;">
                             <div class="div-diente">
                                 <span class="span-diente">24</span>
-                                <canvas width="30" height="40"></canvas>
+                                <canvas></canvas>
                                 {{ficha_form.d24}}
+                                {{ficha_form.top24}}
+                                {{ficha_form.bot24}}
+                                {{ficha_form.left24}}
+                                {{ficha_form.right24}}
                             </div>
                             <div class="separador-h"></div>
                             <div class="div-diente">
-                                <canvas width="30" height="40"></canvas>
+                                <canvas></canvas>
                                 <span class="span-diente">34</span>
                                 {{ficha_form.d34}}
+                                {{ficha_form.top34}}
+                                {{ficha_form.bot34}}
+                                {{ficha_form.left34}}
+                                {{ficha_form.right34}}
                             </div>
                         </div>
                         <div style="display:inline-block;">
                             <div class="div-diente" id="div_diente_11">
                                 <span class="span-diente">25</span>
-                                <canvas width="30" height="40"></canvas>
+                                <canvas></canvas>
                                 {{ficha_form.d25}}
+                                {{ficha_form.top25}}
+                                {{ficha_form.bot25}}
+                                {{ficha_form.left25}}
+                                {{ficha_form.right25}}
                             </div>
                             <div class="separador-h"></div>
                             <div class="div-diente" id="div_diente_41">
-                                <canvas width="30" height="40"></canvas>
+                                <canvas></canvas>
                                 <span class="span-diente">35</span>
                                 {{ficha_form.d35}}
+                                {{ficha_form.top35}}
+                                {{ficha_form.bot35}}
+                                {{ficha_form.left35}}
+                                {{ficha_form.right35}}
                             </div>
                         </div>
                         <div style="display:inline-block;">
                             <div class="div-diente" id="div_diente_11">
                                 <span class="span-diente">26</span>
-                                <canvas width="30" height="40"></canvas>
+                                <canvas></canvas>
                                 {{ficha_form.d26}}
+                                {{ficha_form.top26}}
+                                {{ficha_form.bot26}}
+                                {{ficha_form.left26}}
+                                {{ficha_form.right26}}
                             </div>
                             <div class="separador-h"></div>
                             <div class="div-diente" id="div_diente_41">
-                                <canvas width="30" height="40"></canvas>
+                                <canvas></canvas>
                                 <span class="span-diente">36</span>
                                 {{ficha_form.d36}}
+                                {{ficha_form.top36}}
+                                {{ficha_form.bot36}}
+                                {{ficha_form.left36}}
+                                {{ficha_form.right36}}
                             </div>
                         </div>
                         <div style="display:inline-block;">
                             <div class="div-diente" id="div_diente_11">
                                 <span class="span-diente">27</span>
-                                <canvas width="30" height="40"></canvas>
+                                <canvas></canvas>
                                 {{ficha_form.d27}}
+                                {{ficha_form.top27}}
+                                {{ficha_form.bot27}}
+                                {{ficha_form.left27}}
+                                {{ficha_form.right27}}
                             </div>
                             <div class="separador-h"></div>
                             <div class="div-diente" id="div_diente_41">
-                                <canvas width="30" height="40"></canvas>
+                                <canvas></canvas>
                                 <span class="span-diente">37</span>
                                 {{ficha_form.d37}}
+                                {{ficha_form.top37}}
+                                {{ficha_form.bot37}}
+                                {{ficha_form.left37}}
+                                {{ficha_form.right37}}
                             </div>
                         </div>
                         <div style="display:inline-block;">
                             <div class="div-diente" id="div_diente_11">
                                 <span class="span-diente">28</span>
-                                <canvas width="30" height="40"></canvas>
+                                <canvas></canvas>
                                 {{ficha_form.d28}}
+                                {{ficha_form.top28}}
+                                {{ficha_form.bot28}}
+                                {{ficha_form.left28}}
+                                {{ficha_form.right28}}
                             </div>
                             <div class="separador-h"></div>
                             <div class="div-diente" id="div_diente_41">
-                                <canvas width="30" height="40"></canvas>
+                                <canvas></canvas>
                                 <span class="span-diente">38</span>
                                 {{ficha_form.d38}}
+                                {{ficha_form.top38}}
+                                {{ficha_form.bot38}}
+                                {{ficha_form.left38}}
+                                {{ficha_form.right38}}
                             </div>
                         </div>
                         <div style="margin-top:15px;">
@@ -640,66 +770,106 @@
                             <div style="display:inline-block;">
                                 <div class="div-diente" id="div_diente_15">
                                     <span class="span-diente">55</span>
-                                    <canvas width="30" height="40"></canvas>
+                                    <canvas></canvas>
                                     {{ficha_form.d55}}
+                                    {{ficha_form.top55}}
+                                    {{ficha_form.bot55}}
+                                    {{ficha_form.left55}}
+                                    {{ficha_form.right55}}
                                 </div>
                                 <div class="separador-h"></div>
                                 <div class="div-diente" id="div_diente_45">
-                                    <canvas width="30" height="40"></canvas>
+                                    <canvas></canvas>
                                     <span class="span-diente">85</span>
                                     {{ficha_form.d85}}
+                                    {{ficha_form.top85}}
+                                    {{ficha_form.bot85}}
+                                    {{ficha_form.left85}}
+                                    {{ficha_form.right85}}
                                 </div>
                             </div>
                             <div style="display:inline-block;">
                                 <div class="div-diente" id="div_diente_14">
                                     <span class="span-diente">54</span>
-                                    <canvas id="canvas" width="30" height="40"></canvas>
+                                    <canvas></canvas>
                                     {{ficha_form.d54}}
+                                    {{ficha_form.top54}}
+                                    {{ficha_form.bot54}}
+                                    {{ficha_form.left54}}
+                                    {{ficha_form.right54}}
                                 </div>
                                 <div class="separador-h"></div>
                                 <div class="div-diente" id="div_diente_44">
-                                    <canvas id="canvas" width="30" height="40"></canvas>
+                                    <canvas></canvas>
                                     <span class="span-diente">84</span>
                                     {{ficha_form.d84}}
+                                    {{ficha_form.top84}}
+                                    {{ficha_form.bot84}}
+                                    {{ficha_form.left84}}
+                                    {{ficha_form.right84}}
                                 </div>
                             </div>
                             <div style="display:inline-block;">
                                 <div class="div-diente" id="div_diente_13">
                                     <span class="span-diente">53</span>
-                                    <canvas width="30" height="40"></canvas>
+                                    <canvas></canvas>
                                     {{ficha_form.d53}}
+                                    {{ficha_form.top53}}
+                                    {{ficha_form.bot53}}
+                                    {{ficha_form.left53}}
+                                    {{ficha_form.right53}}
                                 </div>
                                 <div class="separador-h"></div>
                                 <div class="div-diente" id="div_diente_43">
-                                    <canvas width="30" height="40"></canvas>
+                                    <canvas></canvas>
                                     <span class="span-diente">83</span>
                                     {{ficha_form.d83}}
+                                    {{ficha_form.top83}}
+                                    {{ficha_form.bot83}}
+                                    {{ficha_form.left83}}
+                                    {{ficha_form.right83}}
                                 </div>
                             </div>
                             <div style="display:inline-block;">
                                 <div class="div-diente" id="div_diente_12">
                                     <span class="span-diente">52</span>
-                                    <canvas width="30" height="40"></canvas>
+                                    <canvas></canvas>
                                     {{ficha_form.d52}}
+                                    {{ficha_form.top52}}
+                                    {{ficha_form.bot52}}
+                                    {{ficha_form.left52}}
+                                    {{ficha_form.right52}}
                                 </div>
                                 <div class="separador-h"></div>
                                 <div class="div-diente" id="div_diente_42">
-                                    <canvas width="30" height="40"></canvas>
+                                    <canvas></canvas>
                                     <span class="span-diente">82</span>
                                     {{ficha_form.d82}}
+                                    {{ficha_form.top82}}
+                                    {{ficha_form.bot82}}
+                                    {{ficha_form.left82}}
+                                    {{ficha_form.right82}}
                                 </div>
                             </div>
                             <div style="display:inline-block;">
                                 <div class="div-diente" id="div_diente_11">
                                     <span class="span-diente">51</span>
-                                    <canvas width="30" height="40"></canvas>
+                                    <canvas></canvas>
                                     {{ficha_form.d51}}
+                                    {{ficha_form.top51}}
+                                    {{ficha_form.bot51}}
+                                    {{ficha_form.left51}}
+                                    {{ficha_form.right51}}
                                 </div>
                                 <div class="separador-h"></div>
                                 <div class="div-diente" id="div_diente_41">
-                                    <canvas width="30" height="40"></canvas>
+                                    <canvas></canvas>
                                     <span class="span-diente">81</span>
                                     {{ficha_form.d81}}
+                                    {{ficha_form.top81}}
+                                    {{ficha_form.bot81}}
+                                    {{ficha_form.left81}}
+                                    {{ficha_form.right81}}
                                 </div>
                             </div>
                             <div class="separador">
@@ -707,66 +877,106 @@
                             <div style="display:inline-block;">
                                 <div class="div-diente" id="div_diente_11">
                                     <span class="span-diente">61</span>
-                                    <canvas width="30" height="40"></canvas>
+                                    <canvas></canvas>
                                     {{ficha_form.d61}}
+                                    {{ficha_form.top61}}
+                                    {{ficha_form.bot61}}
+                                    {{ficha_form.left61}}
+                                    {{ficha_form.right61}}
                                 </div>
                                 <div class="separador-h"></div>
                                 <div class="div-diente" id="div_diente_41">
-                                    <canvas width="30" height="40"></canvas>
+                                    <canvas></canvas>
                                     <span class="span-diente">71</span>
                                     {{ficha_form.d71}}
+                                    {{ficha_form.top71}}
+                                    {{ficha_form.bot71}}
+                                    {{ficha_form.left71}}
+                                    {{ficha_form.right71}}
                                 </div>
                             </div>
                             <div style="display:inline-block;">
                                 <div class="div-diente" id="div_diente_11">
                                     <span class="span-diente">62</span>
-                                    <canvas width="30" height="40"></canvas>
+                                    <canvas></canvas>
                                     {{ficha_form.d62}}
+                                    {{ficha_form.top62}}
+                                    {{ficha_form.bot62}}
+                                    {{ficha_form.left62}}
+                                    {{ficha_form.right62}}
                                 </div>
                                 <div class="separador-h"></div>
                                 <div class="div-diente" id="div_diente_41">
-                                    <canvas width="30" height="40"></canvas>
+                                    <canvas></canvas>
                                     <span class="span-diente">72</span>
                                     {{ficha_form.d72}}
+                                    {{ficha_form.top72}}
+                                    {{ficha_form.bot72}}
+                                    {{ficha_form.left72}}
+                                    {{ficha_form.right72}}
                                 </div>
                             </div>
                             <div style="display:inline-block;">
                                 <div class="div-diente" id="div_diente_11">
                                     <span class="span-diente">63</span>
-                                    <canvas width="30" height="40"></canvas>
+                                    <canvas></canvas>
                                     {{ficha_form.d63}}
+                                    {{ficha_form.top63}}
+                                    {{ficha_form.bot63}}
+                                    {{ficha_form.left63}}
+                                    {{ficha_form.right63}}
                                 </div>
                                 <div class="separador-h"></div>
                                 <div class="div-diente" id="div_diente_41">
-                                    <canvas width="30" height="40"></canvas>
+                                    <canvas></canvas>
                                     <span class="span-diente">73</span>
                                     {{ficha_form.d73}}
+                                    {{ficha_form.top73}}
+                                    {{ficha_form.bot73}}
+                                    {{ficha_form.left73}}
+                                    {{ficha_form.right73}}
                                 </div>
                             </div>
                             <div style="display:inline-block;">
                                 <div class="div-diente" id="div_diente_11">
                                     <span class="span-diente">64</span>
-                                    <canvas width="30" height="40"></canvas>
+                                    <canvas></canvas>
                                     {{ficha_form.d64}}
+                                    {{ficha_form.top64}}
+                                    {{ficha_form.bot64}}
+                                    {{ficha_form.left64}}
+                                    {{ficha_form.right64}}
                                 </div>
                                 <div class="separador-h"></div>
                                 <div class="div-diente" id="div_diente_41">
-                                    <canvas width="30" height="40"></canvas>
+                                    <canvas></canvas>
                                     <span class="span-diente">74</span>
                                     {{ficha_form.d74}}
+                                    {{ficha_form.top74}}
+                                    {{ficha_form.bot74}}
+                                    {{ficha_form.left74}}
+                                    {{ficha_form.right74}}
                                 </div>
                             </div>
                             <div style="display:inline-block;">
                                 <div class="div-diente" id="div_diente_11">
                                     <span class="span-diente">65</span>
-                                    <canvas width="30" height="40"></canvas>
+                                    <canvas></canvas>
                                     {{ficha_form.d65}}
+                                    {{ficha_form.top65}}
+                                    {{ficha_form.bot65}}
+                                    {{ficha_form.left65}}
+                                    {{ficha_form.right65}}
                                 </div>
                                 <div class="separador-h"></div>
                                 <div class="div-diente" id="div_diente_41">
-                                    <canvas width="30" height="40"></canvas>
+                                    <canvas></canvas>
                                     <span class="span-diente">75</span>
                                     {{ficha_form.d75}}
+                                    {{ficha_form.top75}}
+                                    {{ficha_form.bot75}}
+                                    {{ficha_form.left75}}
+                                    {{ficha_form.right75}}
                                 </div>
                             </div>
                             <span class="span-izquierda">IZQUIERDA</span>
@@ -789,6 +999,11 @@
         var select_obra_social;
         var select_plan;
         var select_paciente;
+
+        const H = 48;
+        const W = 36;
+        const lado = 10;
+        const lineWidth = 1;
 
         $('document').ready(function(){
             
@@ -858,6 +1073,11 @@
                 placeholder: 'Haga click para seleccionar',
                 allowClear: true,
                 language: 'es',
+            });
+
+            $('canvas').each(function(){
+                $(this).attr('height', H);
+                $(this).attr('width', W);
             });
 
             draw();
@@ -1124,16 +1344,16 @@
 
         $('canvas').contextmenu(limpiarEstado);
 
-        const H = 40;
-        const W = 30;
-        const lado = 8;
-        const lineWidth = 1;
-
         function draw(){
             $('canvas').each(function(){
                 let context = $(this)[0].getContext("2d");
                 let div = $(this).parent();
-                let val = div.find('input').val();
+
+                let center = div.find("input[name*='d']").val();
+                let top = div.find("input[name*='top']" ).val();
+                let bot = div.find("input[name*='bot']" ).val();
+                let left = div.find("input[name*='left']" ).val();
+                let right = div.find("input[name*='right']" ).val();
 
                 context.clearRect(0,0,context.canvas.width,context.canvas.height);
                 context.beginPath();
@@ -1157,39 +1377,103 @@
                 context.moveTo(lineWidth, H - lineWidth);
                 context.lineTo(lado, H - lado);
 
-                context.font = "bold 18px Arial";
+                context.font = "bold 22px Arial";
                 context.textAlign = "center";
 
-                let x = 15;
-                let y = 26;
                 let line_w = 12;
+                let x = W / 2;
+                let y = (H / 2) + (line_w / 2);
+               
                 let red = '#E74C3C';
                 let blue = '#2874A6';
+                let color = 'black';
 
-                if (val == 'cruz_roja'){
-                    context.fillStyle = red;
-                    context.fillText("X", x, y, line_w);
+                switch(center){
+                    case 'cruz_roja':
+                        context.fillStyle = red;
+                        context.fillText("X", x, y, line_w);
+                        break;
+                    case 's_roja':
+                        context.fillStyle = red;
+                        context.fillText("S", x, y, line_w);
+                        break;
+                    case 'cruz_azul':
+                        context.fillStyle = blue;
+                        context.fillText("X", x, y, line_w);
+                        break;
+                    case 's_azul':
+                        context.fillStyle = blue;
+                        context.fillText("S", x, y, line_w);
+                        break;
+                    case 'ne_azul':
+                        context.fillStyle = blue;
+                        context.fillText("NE", x, y, line_w);
+                        break;
+                    case 'ne_roja':
+                        context.fillStyle = red;
+                        context.fillText("NE", x, y, line_w);
+                        break;
+                    default:
+                        break;
                 }
-                if (val == 's_roja'){
-                    context.fillStyle = red;
-                    context.fillText("S", x, y, line_w);
+
+                context.stroke();
+                context.beginPath();
+
+                context.strokeStyle = color;
+
+                switch(left){
+                    case 'linea':
+                        context.moveTo(lado / 2, (H / 2) - lado);
+                        context.lineTo(lado / 2, (H / 2) + lado);
+                        break;
+                    case 'punto':
+                        context.moveTo(lado / 2, H / 2);
+                        context.arc(lado / 2, H / 2, 2, 0, Math.PI*2, true);
+                        break;
+                    default:
+                        break;
                 }
-                if (val == 'cruz_azul'){
-                    context.fillStyle = blue;
-                    context.fillText("X", x, y, line_w);
+
+                switch(right){
+                    case 'linea':
+                        context.moveTo(W - (lado / 2), (H / 2) - lado);
+                        context.lineTo(W - (lado / 2), (H / 2) + lado);
+                        break;
+                    case 'punto':
+                        context.moveTo(W - (lado / 2) , H / 2);
+                        context.arc(W - (lado / 2) , H / 2, 2, 0, Math.PI*2, true);
+                        break;
+                    default:
+                        break;
                 }
-                if (val == 's_azul'){
-                    context.fillStyle = blue;
-                    context.fillText("S", x, y, line_w);
+
+                switch(top){
+                    case 'linea':
+                        context.moveTo((W / 2) - (lado / 2), lado / 2);
+                        context.lineTo((W / 2) + (lado / 2), lado / 2);
+                        break;
+                    case 'punto':
+                        context.moveTo(W / 2 , lado / 2);
+                        context.arc(W / 2, lado / 2, 2, 0, Math.PI*2, true);
+                        break;
+                    default:
+                        break;
                 }
-                if (val == 'ne_azul'){
-                    context.fillStyle = blue;
-                    context.fillText("NE", x, y, line_w);
+
+                switch(bot){
+                    case 'linea':
+                        context.moveTo((W / 2) - (lado / 2), H - (lado / 2));
+                        context.lineTo((W / 2) + (lado / 2), H - (lado / 2));
+                        break;
+                    case 'punto':
+                        context.moveTo(W / 2 , H - (lado / 2));
+                        context.arc(W / 2, H - (lado / 2), 2, 0, Math.PI*2, true);
+                        break;
+                    default:
+                        break;
                 }
-                if (val == 'ne_roja'){
-                    context.fillStyle = red;
-                    context.fillText("NE", x, y, line_w);
-                }
+
                 context.stroke();
             });
         }
@@ -1198,51 +1482,59 @@
             let x = event.offsetX;
             let y = event.offsetY;
 
+            let canvas = $(this);
+            let div = canvas.parent();
+
             let coord = 'X:'+x + ' - Y:'+y;
 
             if ((x > lado) && (x < W - lado) && (y > lado) && (y < H - lado))
-                alert('Center');
+            {
+                let input = div.find("input[name*='d']" );
+                console.log('value:'+input.val());
+                if (input.val() == 'cruz_roja')
+                    input.val('s_roja');
+                else if(input.val() == 's_roja')
+                    input.val('ne_roja');
+                else if(input.val() == 'ne_roja')
+                    input.val('cruz_azul');
+                else if(input.val() == 'cruz_azul')
+                    input.val('s_azul');
+                else if (input.val() == 's_azul')
+                    input.val('ne_azul');
+                else if (input.val() == 'ne_azul')
+                    input.val('');
+                else
+                    input.val('cruz_roja');
+            }
 
             if ((x < lado) && (y > lado) && (y < H - lado))
-                alert('Left');
+                cambiarValorLado(div.find("input[name*='left']"));
 
             if ((x > W - lado) && (y > lado) && (y < H - lado))
-                alert('Right');
+                cambiarValorLado(div.find("input[name*='right']"));
 
             if ((y < lado) && (x > lado) && (x < W - lado))
-                alert('Top');
+                cambiarValorLado(div.find("input[name*='top']"));
             
             if ((y > H - lado) && (x > lado) && (x < W - lado))
-                alert('Bot');
+                cambiarValorLado(div.find("input[name*='bot']"));
 
-            let canvas = $(this);
-            let div = canvas.parent();
-            let input = div.find('input');
-
-            console.log('value:'+input.val());
-
-            if (input.val() == 'cruz_roja')
-                input.val('s_roja');
-            else if(input.val() == 's_roja')
-                input.val('ne_roja');
-            else if(input.val() == 'ne_roja')
-                input.val('cruz_azul');
-            else if(input.val() == 'cruz_azul')
-                input.val('s_azul');
-            else if (input.val() == 's_azul')
-                input.val('ne_azul');
-            else if (input.val() == 'ne_azul')
-                input.val('');
-            else
-                input.val('cruz_roja');
             draw();
+        }
+
+        function cambiarValorLado(i){
+            if (i.val() == '')
+                i.val('linea');
+            else if (i.val() == 'linea')
+                i.val('punto');
+            else
+                i.val('');
         }
 
         function limpiarEstado(){
             let canvas = $(this);
             let div = canvas.parent();
             let input = div.find('input');
-            console.log('value:'+input.val());
             input.val('');
             draw();
             return false;
