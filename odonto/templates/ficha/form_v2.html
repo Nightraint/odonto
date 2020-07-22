@@ -1423,11 +1423,11 @@
                 context.strokeStyle = color;
 
                 switch(left){
-                    case 'linea':
+                    case 'l':
                         context.moveTo(lado / 2, (H / 2) - lado);
                         context.lineTo(lado / 2, (H / 2) + lado);
                         break;
-                    case 'punto':
+                    case 'p':
                         context.moveTo(lado / 2, H / 2);
                         context.arc(lado / 2, H / 2, 2, 0, Math.PI*2, true);
                         break;
@@ -1436,11 +1436,11 @@
                 }
 
                 switch(right){
-                    case 'linea':
+                    case 'l':
                         context.moveTo(W - (lado / 2), (H / 2) - lado);
                         context.lineTo(W - (lado / 2), (H / 2) + lado);
                         break;
-                    case 'punto':
+                    case 'p':
                         context.moveTo(W - (lado / 2) , H / 2);
                         context.arc(W - (lado / 2) , H / 2, 2, 0, Math.PI*2, true);
                         break;
@@ -1449,11 +1449,11 @@
                 }
 
                 switch(top){
-                    case 'linea':
+                    case 'l':
                         context.moveTo((W / 2) - (lado / 2), lado / 2);
                         context.lineTo((W / 2) + (lado / 2), lado / 2);
                         break;
-                    case 'punto':
+                    case 'p':
                         context.moveTo(W / 2 , lado / 2);
                         context.arc(W / 2, lado / 2, 2, 0, Math.PI*2, true);
                         break;
@@ -1462,11 +1462,11 @@
                 }
 
                 switch(bot){
-                    case 'linea':
+                    case 'l':
                         context.moveTo((W / 2) - (lado / 2), H - (lado / 2));
                         context.lineTo((W / 2) + (lado / 2), H - (lado / 2));
                         break;
-                    case 'punto':
+                    case 'p':
                         context.moveTo(W / 2 , H - (lado / 2));
                         context.arc(W / 2, H - (lado / 2), 2, 0, Math.PI*2, true);
                         break;
@@ -1524,9 +1524,9 @@
 
         function cambiarValorLado(i){
             if (i.val() == '')
-                i.val('linea');
-            else if (i.val() == 'linea')
-                i.val('punto');
+                i.val('l');
+            else if (i.val() == 'l')
+                i.val('p');
             else
                 i.val('');
         }
