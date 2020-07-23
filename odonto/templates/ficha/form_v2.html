@@ -279,6 +279,9 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="nav-archivos" role="tabpanel" aria-labelledby="nav-archivos-tab">
+                {% if imagenes_formset.forms|length == 1 %}
+                    <p>No se han cargado archivos en esta ficha.</p>
+                {% endif %}
                 {{ imagenes_formset.management_form }}
                 {% for imagen_form in imagenes_formset %}
                     <div class="imagenes-formset" style="margin-bottom:0.4em;">
@@ -330,6 +333,9 @@
                 {% endif %}
             </div>
             <div class="tab-pane fade" id="nav-historia" role="tabpanel" aria-labelledby="nav-historia-tab">
+                {% if consultas_formset.forms|length == 1 %}
+                    <p>No se han cargado consultas en esta ficha.</p>
+                {% endif %}
                 {{ consultas_formset.management_form }}
                 {% for form in consultas_formset %}
                     <div class="consultas-formset {% if form.initial %} separador-historias {% endif %}">
