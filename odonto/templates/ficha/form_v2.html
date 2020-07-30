@@ -222,7 +222,7 @@
         </ul>
         <div class="tab-content" id="nav-tabContent">
             <div class="tab-pane fade show active" id="nav-datos" role="tabpanel" aria-labelledby="nav-datos-tab">
-                <div class="row form-group-md">
+                <div class="form-row">
                     <div class="col-md-4">
                         {{ ficha_form.fecha.errors }}
                         {{ ficha_form.fecha.label_tag }} {{ ficha_form.fecha }}
@@ -245,7 +245,7 @@
                         {% endif %}
                     </div>
                 </div>
-                <div class="row form-group-md">
+                <div class="form-row">
                     <div class="col-md-4">
                         {{ ficha_form.obra_social.errors }}
                         {{ ficha_form.obra_social.label_tag }} {{ ficha_form.obra_social }}
@@ -316,7 +316,7 @@
                         </div>
                         {% if not imagen_form.initial %}
                             <label for="{{imagen_form.imagen.auto_id}}" class="label-seleccionar" style="display:block !important;cursor:pointer;">
-                                <div style="text-align:center;width:200px;" class="btn-add"><i class="fa fa-plus"></i> Agregar archivo</div>
+                                <div style="text-align:center;width:95px;" class="btn-add"><i class="fa fa-plus"></i> Agregar</div>
                             </label>
                         {% endif %}
                         {% if imagen_form.imagen.errors %}
@@ -381,7 +381,7 @@
                         <div class="div_nueva_consulta">
                         <label class="nueva_consulta">Nueva historia:</label>
                         <div class="form-row">
-                            <div class="col-md form-group">
+                            <div class="col-md-4 form-group">
                                 {{ form.fecha }}
                                 {% if form.fecha.errors %}
                                     {% for error in form.fecha.errors %}
@@ -389,7 +389,7 @@
                                     {% endfor %}
                                 {% endif %}
                             </div>
-                            <div class="col-md form-group">
+                            <div class="col-md-3 form-group">
                                 {{ form.nro_diente }}
                                 {% if form.nro_diente.errors %}
                                     {% for error in form.nro_diente.errors %}
@@ -397,7 +397,7 @@
                                     {% endfor %}
                                 {% endif %}
                             </div>
-                            <div class="col-md form-group" >
+                            <div class="col-md-5 form-group" >
                                 {{ form.norma_trabajo }}
                                 {% if form.norma_trabajo.errors %}
                                     {% for error in form.norma_trabajo.errors %}
@@ -406,8 +406,8 @@
                                 {% endif %}
                             </div>
                         </div>
-                        <div class="form-row">
-                            <div class="col-md mensaje">
+                        <div class="form-row mensaje-container" style="display:none;">
+                            <div class="mensaje col-md form-group">
                             </div>
                         </div>
                         <div class="form-row" style="padding-bottom:10px;">
@@ -1022,13 +1022,13 @@
                 deleteText: '',
                 prefix: "{{ imagenes_formset.prefix }}"
             });
-
+/*
             $('.consultas-formset').formset({
                 addText: '<button class="btn-add" type="button"><i class="fa fa-plus"></i> Agregar</button>',
                 deleteText: '',
                 prefix: "{{ consultas_formset.prefix }}"
             });
-
+*/
             $('.imagenes-formset').each(function(){
                 let filename = $(this).find('.filename').val();
                 let url = $(this).find('.url').val();
@@ -1265,8 +1265,10 @@
             let contenedor = $(select).closest('.div_nueva_consulta');
             let fecha = $(contenedor).find('.fecha-consulta').val();
             console.log('chequear norma: paciente: ' + paciente + ". norma: " + norma_trabajo);
-            let container_mensaje = $(contenedor).find('.mensaje');
-            container_mensaje.html('');
+            let mensaje = $(contenedor).find('.mensaje');
+            let container = mensaje.parent();
+            container.show();
+            mensaje.html('');
             if (isNaN(paciente) == false && isNaN(norma_trabajo) == false && fecha){
                 $.getJSON("/paciente/chequear_norma?paciente=" + paciente + "&norma_trabajo=" + norma_trabajo + "&fecha=" + fecha, function( json ) {
                     div_mensaje = document.createElement('div');
@@ -1277,17 +1279,17 @@
                     div_mensaje.innerHTML += '<strong id="resultado_chequear_norma"></strong>';
                     div_mensaje.innerHTML += '<label id="label_mensaje_chequear_norma"></label>';
 
-                    container_mensaje.append(div_mensaje);
+                    mensaje.append(div_mensaje);
                     
                     let clase = '';
                     if (json.result == true){
                         clase = 'alert-success';
-                        container_mensaje.find('#resultado_chequear_norma').append('Se puede aplicar.');
+                        mensaje.find('#resultado_chequear_norma').append('Se puede aplicar.');
                     }
                     else{
                         clase = 'alert-danger';
-                        container_mensaje.find('#resultado_chequear_norma').append('No se puede aplicar.');
-                        container_mensaje.find('#label_mensaje_chequear_norma').append(json.message);
+                        mensaje.find('#resultado_chequear_norma').append('No se puede aplicar.');
+                        mensaje.find('#label_mensaje_chequear_norma').append(json.message);
                     }
                     div_mensaje.classList.add(clase);
                 });
@@ -1386,13 +1388,16 @@
                 context.font = "bold 22px Arial";
                 context.textAlign = "center";
 
-                let line_w = 12;
+                let line_w = 14;
                 let x = W / 2;
                 let y = (H / 2) + (line_w / 2);
                
                 let red = '#E74C3C';
                 let blue = '#2874A6';
                 let color = 'black';
+
+                context.stroke();
+                context.beginPath();
 
                 switch(center){
                     case 'cruz_roja':
@@ -1419,11 +1424,13 @@
                         context.fillStyle = red;
                         context.fillText("NE", x, y, line_w);
                         break;
+                    case 'p':
+                        context.arc(W / 2 , H / 2, 4, 0, Math.PI*2, true);
+                        context.stroke();
                     default:
                         break;
                 }
-
-                context.stroke();
+                
                 context.beginPath();
 
                 context.strokeStyle = color;
@@ -1434,12 +1441,14 @@
                         context.lineTo(lado / 2, (H / 2) + lado);
                         break;
                     case 'p':
-                        context.moveTo(lado / 2, H / 2);
                         context.arc(lado / 2, H / 2, 2, 0, Math.PI*2, true);
                         break;
                     default:
                         break;
                 }
+
+                context.stroke();
+                context.beginPath();
 
                 switch(right){
                     case 'l':
@@ -1447,12 +1456,14 @@
                         context.lineTo(W - (lado / 2), (H / 2) + lado);
                         break;
                     case 'p':
-                        context.moveTo(W - (lado / 2) , H / 2);
                         context.arc(W - (lado / 2) , H / 2, 2, 0, Math.PI*2, true);
                         break;
                     default:
                         break;
                 }
+
+                context.stroke();
+                context.beginPath();
 
                 switch(top){
                     case 'l':
@@ -1460,12 +1471,14 @@
                         context.lineTo((W / 2) + (lado / 2), lado / 2);
                         break;
                     case 'p':
-                        context.moveTo(W / 2 , lado / 2);
                         context.arc(W / 2, lado / 2, 2, 0, Math.PI*2, true);
                         break;
                     default:
                         break;
                 }
+
+                context.stroke();
+                context.beginPath();
 
                 switch(bot){
                     case 'l':
@@ -1473,7 +1486,6 @@
                         context.lineTo((W / 2) + (lado / 2), H - (lado / 2));
                         break;
                     case 'p':
-                        context.moveTo(W / 2 , H - (lado / 2));
                         context.arc(W / 2, H - (lado / 2), 2, 0, Math.PI*2, true);
                         break;
                     default:
@@ -1496,21 +1508,35 @@
             if ((x > lado) && (x < W - lado) && (y > lado) && (y < H - lado))
             {
                 let input = div.find("input[name*='d']" );
-                console.log('value:'+input.val());
-                if (input.val() == 'cruz_roja')
-                    input.val('s_roja');
-                else if(input.val() == 's_roja')
-                    input.val('ne_roja');
-                else if(input.val() == 'ne_roja')
-                    input.val('cruz_azul');
-                else if(input.val() == 'cruz_azul')
-                    input.val('s_azul');
-                else if (input.val() == 's_azul')
-                    input.val('ne_azul');
-                else if (input.val() == 'ne_azul')
-                    input.val('');
-                else
-                    input.val('cruz_roja');
+                let valor = input.val();
+                console.log('value:'+valor);
+
+                switch(valor){
+                    case 'cruz_roja':
+                        input.val('s_roja');
+                        break;
+                    case 's_roja':
+                        input.val('ne_roja');
+                        break;
+                    case 'ne_roja':
+                        input.val('cruz_azul');
+                        break;
+                    case 'cruz_azul':
+                        input.val('s_azul');
+                        break;
+                    case 's_azul':
+                        input.val('ne_azul');
+                        break;
+                    case 'ne_azul':
+                        input.val('p');
+                        break;
+                    case 'p':
+                        input.val('');
+                        break;
+                    default:
+                        input.val('cruz_roja');
+                        break;
+                }
             }
 
             if ((x < lado) && (y > lado) && (y < H - lado))

@@ -894,7 +894,7 @@ class ConsultaForm(forms.Form):
     detalle = forms.CharField(
                 widget=forms.TextInput(attrs={
                     'placeholder': 'Detalle',
-                    'style' : 'display:inline-block;margin-top:7px;',
+                    'style' : 'display:inline-block;',
                 }),
                 required=False)
 
