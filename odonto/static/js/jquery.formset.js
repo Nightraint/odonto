@@ -102,9 +102,10 @@
                 } else {
                     // Otherwise, just insert the remove button as the
                     // last child element of the form's container:
-                    row.append('<a class="' + options.deleteCssClass + '" href="javascript:void(0)">' + options.deleteText +'</a>');
+                    row.append('<div><a class="' + options.deleteCssClass + '" href="javascript:void(0)">' + options.deleteText +'</a></div>');
                 }
-                row.find('a.' + options.deleteCssClass).click(function() {
+
+                row.find('a.' + options.deleteCssClass.replace(new RegExp(" ", "g"),'.')).click(function() {
                     var row = $(this).parents('.' + options.formCssClass),
                         del = row.find('input:hidden[id $= "-DELETE"]');
                     if (del.length) {

@@ -48,6 +48,7 @@ urlpatterns = [
     path('obra_social/<int:pk>', obra_social.get, name='get'),
 
     path('cuenta_corriente/crear', cuenta_corriente.Cuenta_CorrienteCrear.as_view(template_name = "cuenta_corriente/form.html") , name='cuenta_corriente_crear'),
+    path('cuenta_corriente/eliminar/<int:pk>', cuenta_corriente.Cuenta_CorrienteEliminar.as_view(), name='eliminar'),
     path('cuenta_corriente/editar/<int:pk>', cuenta_corriente.Cuenta_CorrienteEditar.as_view(template_name = "cuenta_corriente/form.html") , name='cuenta_corriente_editar'),
     path('cuenta_corriente/', cuenta_corriente.Cuenta_CorrienteList.as_view(template_name='cuenta_corriente/list.html'), name='cuenta_corriente_index'),
 

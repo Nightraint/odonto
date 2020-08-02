@@ -1867,3 +1867,9 @@ label{
   font-weight: bold;
   text-align: right;
 }
+
+.btn-action{
+  display: table-cell;
+  vertical-align: middle;
+  height: calc(2.25rem + 2px);
+}

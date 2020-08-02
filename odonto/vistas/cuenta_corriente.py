@@ -12,9 +12,10 @@ from django.db.models import F
 from odonto.vistas.util import CustomErrorList
 from django.contrib.messages.views import SuccessMessageMixin 
 from django.urls import reverse
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from odonto.forms import (Cuenta_CorrienteForm, CustomFilterForm, )
 from django.db import IntegrityError
+from django.contrib import messages
 
 class Cuenta_CorrienteListFilter(django_filters.FilterSet):
     filtro = django_filters.CharFilter(method='custom_filter')
@@ -100,3 +101,12 @@ class Cuenta_CorrienteEditar(LoginRequiredMixin, SuccessMessageMixin, UpdateView
         kwargs.update({'clinica_id': self.request.user.clinica.id})
         kwargs.update({'error_class': CustomErrorList})
         return kwargs
+
+class Cuenta_CorrienteEliminar(LoginRequiredMixin, SuccessMessageMixin, DeleteView): 
+    model = Cuenta_Corriente 
+    form = Cuenta_Corriente
+    fields = "__all__"
+    def get_success_url(self): 
+        success_message = 'Movimiento eliminado correctamente.'
+        messages.success (self.request, (success_message))       
+        return reverse('cuenta_corriente_index')

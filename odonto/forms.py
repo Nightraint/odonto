@@ -720,6 +720,8 @@ class TelefonoForm(forms.Form):
         super(TelefonoForm, self).__init__(*args, **kwargs)
         for visible in self.visible_fields():
             visible.field.widget.attrs['class'] = 'form-control'
+            if visible.initial:
+                visible.field.widget.attrs['readonly'] = True
 
 class BaseTelefonoFormSet(BaseFormSet):
     def clean(self):
@@ -744,6 +746,8 @@ class EmailForm(forms.Form):
         super(EmailForm, self).__init__(*args, **kwargs)
         for visible in self.visible_fields():
             visible.field.widget.attrs['class'] = 'form-control'
+            if visible.initial:
+                visible.field.widget.attrs['readonly'] = True
 
 class BaseEmailFormSet(BaseFormSet):
     def clean(self):

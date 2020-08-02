@@ -77,23 +77,32 @@
             <div class="card-header">Teléfonos</div>
             <div class="card-body">
                 {{ telefono_formset.management_form }}
-                {% for telefono_form in telefono_formset %}
+                {% for form in telefono_formset %}
                     <div class="telefono-formset form-row">
                         <div class="col form-group">
-                            {{ telefono_form.descripcion }}
-                            {% if telefono_form.descripcion.errors %}
-                                {% for error in telefono_form.descripcion.errors %}
+                            {{form.descripcion}}
+                            {% if form.descripcion.errors %}
+                                {% for error in form.descripcion.errors %}
                                     {{ error|escape }}
                                 {% endfor %}
                             {% endif %}
                         </div>
                         <div class="col form-group">
-                            {{ telefono_form.telefono }}
-                            {% if telefono_form.telefono.errors %}
-                                {% for error in telefono_form.telefono.errors %}
+                            {{form.telefono}}
+                            {% if form.telefono.errors %}
+                                {% for error in form.telefono.errors %}
                                     {{ error|escape }}
                                 {% endfor %}
                             {% endif %}
+                        </div>
+                        <div>
+                            <a onclick="editarFormset($(this),'telefono-formset');" href="javascript:void(0);" class="links btn-action">
+                                {% if form.initial %}
+                                    <i class="fa fa-pencil-square-o" aria-hidden="true" style="margin-left:10px;"></i>
+                                {% else %}
+                                    <i class="fa fa-check" aria-hidden="true" style="margin-left:10px;"></i>
+                                {% endif %}
+                            </a>
                         </div>
                     </div>
                 {% endfor %}
@@ -108,23 +117,32 @@
             <div class="card-header">Emails</div>
             <div class="card-body">
                 {{ email_formset.management_form }}
-                {% for email_form in email_formset %}
+                {% for form in email_formset %}
                     <div class="email-formset form-row">
                         <div class="col form-group">
-                            {{ email_form.descripcion }}
-                            {% if email_form.descripcion.errors %}
-                                {% for error in email_form.descripcion.errors %}
+                            {{ form.descripcion }}
+                            {% if form.descripcion.errors %}
+                                {% for error in form.descripcion.errors %}
                                     {{ error|escape }}
                                 {% endfor %}
                             {% endif %}
                         </div>
                         <div class="col form-group">
-                            {{ email_form.email }}
-                            {% if email_form.email.errors %}
-                                {% for error in email_form.email.errors %}
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                {% for error in form.email.errors %}
                                     {{ error|escape }}
                                 {% endfor %}
                             {% endif %}
+                        </div>
+                        <div>
+                            <a onclick="editarFormset($(this),'email-formset');" href="javascript:void(0);" class="links btn-action">
+                                {% if form.initial %}
+                                    <i class="fa fa-pencil-square-o" aria-hidden="true" style="margin-left:10px;"></i>
+                                {% else %}
+                                    <i class="fa fa-check" aria-hidden="true" style="margin-left:10px;"></i>
+                                {% endif %}
+                            </a>
                         </div>
                     </div>
                 {% endfor %}
@@ -196,14 +214,17 @@
 
             $('.telefono-formset').formset({
                 addText: '<button class="btn-add"><i class="fa fa-plus"></i> Agregar</button>',
-                deleteText: '<button class="btn-delete"><i class="fa fa-remove"></i></button>',
-                prefix: "{{ telefono_formset.prefix }}"
+                deleteText: '<i class="fa fa-trash" style="margin-left:10px";></i>',
+                prefix: '{{ telefono_formset.prefix }}',
+                deleteCssClass: 'links btn-action delete-link',
+                formCssClass: 'form-telefono',
             });
 
             $('.email-formset').formset({
                 addText: '<button class="btn-add"><i class="fa fa-plus"></i> Agregar</button>',
-                deleteText: '<button class="btn-delete"><i class="fa fa-remove"></i></button>',
-                prefix: "{{ email_formset.prefix }}"
+                deleteText: '<i class="fa fa-trash" style="margin-left:10px";></i>',
+                prefix: "{{ email_formset.prefix }}",
+                deleteCssClass: 'links btn-action delete-link',
             });
             
             $('.obras-sociales-formset').formset({
@@ -213,6 +234,23 @@
                 added:NuevaObraSocial
             });
         });
+
+        function editarFormset(link, cssClass){
+            let parent = link.parents('.'+cssClass);
+
+            parent.find('input').each(function(){
+                $(this).prop('readonly', !$(this).prop('readonly'));
+            });
+
+            let i = link.find('i');
+            if (i.attr('class') == 'fa fa-pencil-square-o'){
+                i.attr('class','fa fa-check');
+                let id = parent.find('input:first').attr('id');
+                focus(id);
+            }
+            else
+                i.attr('class','fa fa-pencil-square-o');
+        }
 
         NuevaObraSocial = ()=>{
             console.log('agregar obra social');
