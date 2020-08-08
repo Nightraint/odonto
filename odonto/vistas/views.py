@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django import forms
 from django.db import models
-from odonto.models import Obra_Social, Paciente, Norma_Trabajo, CustomUser, Odontologo, Ficha
 from django.http import JsonResponse
 from django.views import View
 from django.core.mail import send_mail
@@ -51,32 +50,6 @@ class SignUpView(View):
                 # TODO Display message and redirect to login
                 return HttpResponseRedirect('/login/?next=/')
             return render(request, self.template_name, {'form': form})
-
-class ContactAjax(View):
-    form_class = ContactForm
-    template_name = "contacto.html"
-
-    def get(self, *args, **kwargs):
-        form = self.form_class()
-        return render(self.request, self.template_name, {"contactForm": form})
-
-    def post(self, *args, **kwargs):
-        if self.request.method == "POST" and self.request.is_ajax():
-            form = self.form_class(self.request.POST)
-            form.save()
-            return JsonResponse({"success":True}, status=200)
-        return JsonResponse({"success":False}, status=400)
-
-def index(request):
-    return render(request, 'index.html',{})
-
-@login_required
-def obra_social_index(request):
-    lista = Obra_Social.objects.order_by('id')[:6]
-    context = {
-        'lista': lista,
-    }
-    return render(request, 'obra_social/index.html',context)
 
 def contacto(request):
     if request.method == "POST" and request.is_ajax():

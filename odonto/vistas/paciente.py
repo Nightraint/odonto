@@ -136,9 +136,11 @@ def chequear_norma(request):
             if (diferencia < dias):
                 result = False
                 if diferencia == 0:
-                    aplicada_hace = 'menos de un dia'
+                    aplicada_hace = 'menos de un día'
+                elif diferencia > 1:
+                    aplicada_hace = '%s días' % diferencia
                 else:
-                    aplicada_hace = '%s dias' % diferencia
+                    aplicada_hace = '%s día' % diferencia
         
         if meses:
             cantidad = meses
@@ -149,8 +151,10 @@ def chequear_norma(request):
                 result = False
                 if diferencia == 0:
                     aplicada_hace = 'menos de un mes'
-                else:
+                elif diferencia > 1:
                     aplicada_hace = '%s meses' % diferencia
+                else:
+                    aplicada_hace = '%s mes' % diferencia
         
         if años:
             cantidad = años
@@ -160,8 +164,10 @@ def chequear_norma(request):
                 result = False
                 if diferencia == 0:
                     aplicada_hace = 'menos de un año'
-                else:
+                elif diferencia > 1:
                     aplicada_hace = '% años' % diferencia
+                else:
+                    aplicada_hace = '% año' % diferencia
 
         if aplicada_hace:
             response_data['message'] = 'Se puede aplicar cada <b>%s %s</b> y ya se ha aplicado hace <b>%s</b> para este paciente.' % (cantidad,descripcion,aplicada_hace)

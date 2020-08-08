@@ -978,3 +978,56 @@ class Cuenta_CorrienteForm(forms.ModelForm):
 
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
+
+##################### CTA CTE #########################
+
+class CtaCteForm(forms.Form):  
+    id_cta_cte = forms.IntegerField(widget=forms.HiddenInput(),
+        required=False)
+
+    fecha = forms.DateTimeField(
+        input_formats=['%d/%m/%Y'], 
+        required=False,
+        widget=BootstrapDatePickerInput(attrs={
+                    'placeholder': 'Fecha',
+            },)
+    )
+
+    INGRESO_EGRESO = [
+        (1, 'Cobro'),
+        (2, 'Deuda')
+    ]
+
+    ingreso_egreso = forms.ChoiceField(
+        choices=INGRESO_EGRESO,
+        required=False,
+        widget=forms.Select(attrs={
+
+        })
+    )
+
+    concepto = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Detalle',
+        }),
+        required=False)
+    
+    importe = forms.DecimalField(
+        widget=forms.NumberInput(attrs={
+            'placeholder': 'Importe',
+        }),
+        required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(CtaCteForm, self).__init__(*args, **kwargs)
+        for visible in self.visible_fields():
+            visible.field.widget.attrs['class'] = 'form-control'
+            if visible.initial:
+                if visible.field.widget.input_type == 'select':
+                    visible.field.widget.attrs['class'] += ' select-readonly'
+                else:
+                    visible.field.widget.attrs['readonly'] = True
+
+class BaseCtaCteFormSet(BaseFormSet):
+    def clean(self):
+        pass

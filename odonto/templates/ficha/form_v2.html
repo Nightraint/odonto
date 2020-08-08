@@ -219,6 +219,9 @@
              <li class="nav-item">
                 <a class="nav-link" id="nav-odontograma-tab" data-toggle="tab" href="#nav-odontograma" role="tab" aria-controls="odontograma" aria-selected="false">Odontograma</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" id="nav-cta-cte-tab" data-toggle="tab" href="#nav-cta-cte" role="tab" aria-controls="cta-cte" aria-selected="false">Cuenta corriente</a>
+            </li>
         </ul>
         <div class="tab-content" id="nav-tabContent">
             <div class="tab-pane fade show active" id="nav-datos" role="tabpanel" aria-labelledby="nav-datos-tab">
@@ -990,6 +993,79 @@
                     </div>
                 </div>
             </div>
+            <div class="tab-pane fade" id="nav-cta-cte" role="tabpanel" aria-labelledby="nav-cta-cte-tab">
+                {% if ctacte_formset.forms|length == 1 %}
+                    <p>No hay movimientos para mostrar.</p>
+                {% endif %}
+                {{ ctacte_formset.management_form }}
+                {% for form in ctacte_formset %}
+                    <div class="ctacte-formset form-row">
+                         <div style="display:none;" id="id_ctacte">
+                            {{ form.id_cta_cte }}
+                        </div>
+                        <div class="col-md-3 form-group">
+                            {% if form.initial %}
+                                <span class="btn-action">{{form.initial.fecha}}</span>
+                            {% else %}
+                                {{ form.fecha }}
+                            {% endif %}
+                            {% if form.fecha.errors %}
+                                {% for error in form.fecha.errors %}
+                                    {{ error|escape }}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        {% if not form.initial %}
+                            <div class="col-md-2 form-group">
+                                {{ form.ingreso_egreso }}
+                                {% if form.ingreso_egreso.errors %}
+                                    {% for error in form.ingreso_egreso.errors %}
+                                        {{ error|escape }}
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                        <div class="col-md-5 form-group">
+                            {% if form.initial %}
+                                <span class="btn-action">{{form.initial.concepto}}</span>
+                            {% else %}
+                                {{ form.concepto }}
+                            {% endif %}
+                            {% if form.concepto.errors %}
+                                {% for error in form.concepto.errors %}
+                                    {{ error|escape }}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div class="col-md form-group {%if form.initial.ingreso_egreso == '1' %}importe-ingreso{%else%}importe-egreso{%endif%}"  style="display:inline-table;">
+                            {% if form.initial %}
+                                <span class="btn-action">{{form.initial.importe}}</span>
+                            {% else %}
+                                {{ form.importe }}
+                            {% endif %}
+                            {% if form.importe.errors %}
+                                {% for error in form.importe.errors %}
+                                    {{ error|escape }}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div>
+                            <a onclick="editarFormset($(this),'ctacte-formset');" href="javascript:void(0);" class="links btn-action">
+                                {% if form.initial %}
+                                    <i class="fa fa-pencil-square-o" aria-hidden="true" style="margin-left:10px;"></i>
+                                {% else %}
+                                    <i class="fa fa-check" aria-hidden="true" style="margin-left:10px;"></i>
+                                {% endif %}
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+                {% if ctacte_formset.non_form_errors %}
+                    {% for error in ctacte_formset.non_form_errors %}
+                        {{ error|escape }}
+                    {% endfor %}
+                {% endif %}
+            </div>
         </div>
         <p style="text-align:center;margin-top:10px;">
             <input type="submit" name="ficha-submit" class="btn-lila" value="Aceptar" />
@@ -1027,6 +1103,13 @@
                 addText: '<button class="btn-add" type="button"><i class="fa fa-plus"></i> Agregar</button>',
                 deleteText: '',
                 prefix: "{{ consultas_formset.prefix }}"
+            });
+
+             $('.ctacte-formset').formset({
+                addText: '<button class="btn-add"><i class="fa fa-plus"></i> Agregar</button>',
+                deleteText: '<i class="fa fa-trash" style="margin-left:10px";></i>',
+                prefix: "{{ ctacte_formset.prefix }}",
+                deleteCssClass: 'links btn-action delete-link',
             });
 
             $('.imagenes-formset').each(function(){

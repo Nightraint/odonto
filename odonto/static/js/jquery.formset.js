@@ -87,7 +87,7 @@
             },
 
             hasChildElements = function(row) {
-                return row.find('input,select,textarea,label').length > 0;
+                return row.find('input,select,textarea,label,span').length > 0;
             },
 
             insertDeleteLink = function(row) {

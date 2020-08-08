@@ -6,8 +6,10 @@ from odonto.forms import (FichaForm,
     BaseImagenFichaFormSet,
     ConsultaForm,
     BaseConsultaFormSet,
+    CtaCteForm,
+    BaseCtaCteFormSet
     )
-from odonto.models import Ficha, Imagen, Consulta
+from odonto.models import Ficha, Imagen, Consulta, Cuenta_Corriente
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView 
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -148,21 +150,27 @@ class FichaEliminar(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
 def crear(request):
     ImagenFichaFormSet = formset_factory(ImagenFichaForm, formset=BaseImagenFichaFormSet)
     ConsultaFormSet = formset_factory(wraps(ConsultaForm)(partial(ConsultaForm, clinica_id = request.user.clinica.id)), formset=BaseConsultaFormSet)
-    
+    CtaCteFormFormSet = formset_factory(CtaCteForm, formset=BaseCtaCteFormSet)
+
     if request.method == 'GET':
         ficha_form = FichaForm(clinica_id = request.user.clinica.id)
         imagenes_formset = ImagenFichaFormSet(prefix='imagenes')
         consultas_formset = ConsultaFormSet(prefix='consultas')
+        ctacte_formset = CtaCteFormFormSet(prefix='cta_cte')
     else:
-        imagenes_formset = ImagenFichaFormSet(request.POST,request.FILES,prefix='imagenes')
-        consultas_formset = ConsultaFormSet(request.POST,prefix='consultas')
-
+        imagenes_formset = ImagenFichaFormSet(request.POST, request.FILES, prefix='imagenes')
+        consultas_formset = ConsultaFormSet(request.POST, prefix='consultas')
+        ctacte_formset = CtaCteFormFormSet(request.POST, prefix='cta_cte')
         ficha_form = FichaForm(request.POST,clinica_id = request.user.clinica.id)
         instance = ficha_form.instance
 
         ficha_form.instance.clinica = request.user.clinica
 
-        if ficha_form.is_valid() and imagenes_formset.is_valid() and consultas_formset.is_valid():
+        if (ficha_form.is_valid() and
+            imagenes_formset.is_valid() and
+            consultas_formset.is_valid() and
+            ctacte_formset.is_valid()):
+
             ficha_form.save()
             
             nuevas_consultas = []
@@ -188,10 +196,24 @@ def crear(request):
                         imagen= imagen,
                         descripcion = descripcion))
 
+            nuevas_cta_cte = []
+            for form in ctacte_formset:
+                fecha = form.cleaned_data.get('fecha')
+                concepto = form.cleaned_data.get('concepto')
+                ingreso_egreso = form.cleaned_data.get('ingreso_egreso')
+                importe = form.cleaned_data.get('importe')
+                if importe:
+                    nuevas_cta_cte.append(Cuenta_Corriente(paciente=instance.paciente,
+                        fecha= fecha,
+                        concepto = concepto,
+                        ingreso_egreso = ingreso_egreso,
+                        importe = importe))
+
             try:
                 with transaction.atomic():
                     Consulta.objects.bulk_create(nuevas_consultas)
                     Imagen.objects.bulk_create(nuevas_imagenes)
+                    Cuenta_Corriente.objects.bulk_create(nuevas_cta_cte)
                     messages.success(request, 'Ficha creada correctamente')
                     return redirect(reverse('ficha_index'))
             except IntegrityError:
@@ -202,6 +224,7 @@ def crear(request):
         'ficha_form': ficha_form,
         'imagenes_formset': imagenes_formset,
         'consultas_formset': consultas_formset,
+        'ctacte_formset': ctacte_formset,
         'funcion' : 'Agregar',
     }
     return render(request, 'ficha/form_v2.html', context)
@@ -210,7 +233,8 @@ def crear(request):
 def editar(request,pk):
     ImagenFichaFormSet = formset_factory(ImagenFichaForm, formset=BaseImagenFichaFormSet)
     ConsultaFormSet = formset_factory(wraps(ConsultaForm)(partial(ConsultaForm, clinica_id = request.user.clinica.id)), formset=BaseConsultaFormSet)
-    
+    CtaCteFormFormSet = formset_factory(CtaCteForm, formset=BaseCtaCteFormSet)
+
     instance = get_object_or_404(Ficha, pk=pk)
 
     if request.method == 'GET':
@@ -232,17 +256,31 @@ def editar(request,pk):
                            'nro_diente': c.nro_diente,
                            'descripcion_norma_trabajo': c.norma_trabajo}
                             for c in consultas]
-        consultas_formset = ConsultaFormSet(prefix='consultas',initial=consultas_data)
+        consultas_formset = ConsultaFormSet(prefix='consultas', initial=consultas_data)
+
+        ctactes = Cuenta_Corriente.objects.filter(paciente = instance.paciente).order_by('id')
+        ctacte_data = [{'fecha': c.fecha,
+                           'concepto': c.concepto,
+                           'ingreso_egreso' : c.ingreso_egreso,
+                           'id_cta_cte': c.id,
+                           'importe': c.importe}
+                            for c in ctactes]
+        ctacte_formset = CtaCteFormFormSet(prefix='cta_cte', initial=ctacte_data)
     else:
         imagenes_formset = ImagenFichaFormSet(request.POST,request.FILES or None,prefix='imagenes')
         consultas_formset = ConsultaFormSet(request.POST,prefix='consultas')
+        ctacte_formset = CtaCteFormFormSet(request.POST,prefix='cta_cte')
         
         ficha_form = FichaForm(request.POST, request.FILES,instance=instance,clinica_id = request.user.clinica.id)
         instance = ficha_form.instance
 
         ficha_form.instance.clinica = request.user.clinica
 
-        if ficha_form.is_valid() and imagenes_formset.is_valid() and consultas_formset.is_valid():
+        if (ficha_form.is_valid() and
+            imagenes_formset.is_valid() and
+            consultas_formset.is_valid()and
+            ctacte_formset.is_valid()):
+
             ficha_form.save()
 
             nuevas_consultas = []
@@ -280,12 +318,32 @@ def editar(request,pk):
                         img = Imagen.objects.get(pk=id_img)
                         img.descripcion = descripcion
                         img.save()
+
+            nuevas_cta_cte = []
+            id_ctactes = []
+            for form in ctacte_formset:
+                fecha = form.cleaned_data.get('fecha')
+                concepto = form.cleaned_data.get('concepto')
+                ingreso_egreso = form.cleaned_data.get('ingreso_egreso')
+                importe = form.cleaned_data.get('importe')
+                id_cta_cte = form.cleaned_data.get('id_cta_cte')
+                if importe and not id_cta_cte:
+                    nuevas_cta_cte.append(Cuenta_Corriente(paciente=instance.paciente,
+                        fecha= fecha,
+                        concepto = concepto,
+                        ingreso_egreso = ingreso_egreso,
+                        importe = importe))
+                elif id_cta_cte:
+                    id_ctactes.append(id_cta_cte)
+
             try:
                 with transaction.atomic():
                     Imagen.objects.filter(ficha=instance).exclude(id__in=id_existentes).delete()
                     Imagen.objects.bulk_create(nuevas_imagenes)
                     #Consulta.objects.filter(ficha=instance).exclude(id__in=id_consultas).delete()
                     Consulta.objects.bulk_create(nuevas_consultas)
+                    Cuenta_Corriente.objects.filter(paciente=instance.paciente).exclude(id__in=id_ctactes).delete()
+                    Cuenta_Corriente.objects.bulk_create(nuevas_cta_cte)
                     messages.success(request, 'Ficha modificada correctamente')
                     return redirect(reverse('ficha_index'))
             except IntegrityError:
@@ -296,6 +354,7 @@ def editar(request,pk):
         'ficha_form': ficha_form,
         'imagenes_formset': imagenes_formset,
         'consultas_formset': consultas_formset,
+        'ctacte_formset': ctacte_formset,
         'funcion' : 'Editar',
     }
     return render(request, 'ficha/form_v2.html', context)

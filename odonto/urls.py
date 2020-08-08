@@ -17,8 +17,8 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.generic.base import TemplateView
 from django import views
-from . import views, settings
-from .vistas import paciente, odontologo, norma_trabajo, ficha, obra_social, plan, turno, tutorial, cuenta_corriente
+from . import settings
+from .vistas import paciente, odontologo, norma_trabajo, ficha, obra_social, plan, turno, tutorial, cuenta_corriente, views
 from django.contrib.auth import views as auth_views
 from odonto.forms import UserLoginForm, PasswordForm
 from django.contrib.staticfiles.urls import static

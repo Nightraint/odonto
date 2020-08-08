@@ -187,6 +187,28 @@
   $('textarea').on('input',function(){
       auto_grow(this);
   });
+
+  function editarFormset(link, cssClass){
+      let parent = link.parents('.'+cssClass);
+
+      parent.find('input').each(function(){
+          $(this).prop('readonly', !$(this).prop('readonly'));
+      });
+
+      parent.find('select').each(function(){
+        //$(this).attr("disabled", true);
+        $(this).toggleClass('select-readonly');
+      });
+
+      let i = link.find('i');
+      if (i.attr('class') == 'fa fa-pencil-square-o'){
+          i.attr('class','fa fa-check');
+          let id = parent.find('input:first').attr('id');
+          focus(id);
+      }
+      else
+          i.attr('class','fa fa-pencil-square-o');
+  }
 </script>
 {% block script %}
 {% endblock %}

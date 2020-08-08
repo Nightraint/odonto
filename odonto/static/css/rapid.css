@@ -1873,3 +1873,10 @@ label{
   vertical-align: middle;
   height: calc(2.25rem + 2px);
 }
+
+.select-readonly {
+  background-color: #e9ecef;
+  pointer-events: none;
+  touch-action: none;
+  opacity: 1;
+}
