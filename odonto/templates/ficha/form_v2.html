@@ -1005,8 +1005,9 @@
                         </div>
                         <div class="col-md-3 form-group">
                             {% if form.initial %}
-                                <span class="btn-action">{{form.initial.str_fecha}}</span>
+                                <span class="btn-action" id="span_{{form.fecha.auto_id}}">{{form.initial.fecha | date:"DATE_FORMAT"}}</span>
                             {% else %}
+                                <span class="btn-action" id="span_{{form.fecha.auto_id}}" style="display:none;"></span>
                                 {{ form.fecha }}
                             {% endif %}
                             {% if form.fecha.errors %}
@@ -1018,6 +1019,7 @@
                         {% if not form.initial %}
                             <div class="col-md-2 form-group">
                                 {{ form.ingreso_egreso }}
+                                <span class="btn-action" style="display:none;"></span>
                                 {% if form.ingreso_egreso.errors %}
                                     {% for error in form.ingreso_egreso.errors %}
                                         {{ error|escape }}
@@ -1029,6 +1031,7 @@
                             {% if form.initial %}
                                 <span class="btn-action">{{form.initial.concepto}}</span>
                             {% else %}
+                                <span class="btn-action" style="display:none;"></span>
                                 {{ form.concepto }}
                             {% endif %}
                             {% if form.concepto.errors %}
@@ -1041,6 +1044,7 @@
                             {% if form.initial %}
                                 <span class="btn-action">{{form.initial.importe}}</span>
                             {% else %}
+                                <span class="btn-action" style="display:none;"></span>
                                 {{ form.importe }}
                             {% endif %}
                             {% if form.importe.errors %}
@@ -1176,13 +1180,40 @@
 
         function editarCtaCte(link, cssClass){
             let parent = link.parents('.'+cssClass);
+            let input_fecha = parent.find('.datetimepicker-input');
+            let fecha = input_fecha.val();
+            let fecha_texto = fecha.substring(0,2) + ' ' + monthStr(fecha.substring(3,5)) + ' ' + fecha.substring(6,10);
+            console.log(fecha_texto);
+
+            let span_fecha = $('#span_' + input_fecha.attr('id'));
+            span_fecha.html(fecha_texto);
+            span_fecha.show();
+
+            input_fecha.parent().hide();
+
+            parent.find('select').each(function(){
+                let sel = $(this);
+                sel.hide();
+                let selected = sel.find('option:selected').text();
+                let span = sel.parent().find('span');
+                span.text(selected);
+                span.show();
+            });
+
+            parent.find('input').each(function(){
+                let input = $(this);
+                input.hide();
+                let txt = input.val();
+                let span = input.parent().find('span');
+                span.text(txt);
+                span.show();
+            });
 
             parent.find('input').each(function(){
                 $(this).prop('readonly', !$(this).prop('readonly'));
             });
 
             parent.find('select').each(function(){
-                //$(this).attr("disabled", true);
                 $(this).toggleClass('select-readonly');
             });
 
@@ -1194,6 +1225,37 @@
             }
             else
                 i.attr('class','fa fa-pencil-square-o');
+
+            //$('#nav-cta-cte .add-row').click();
+        }
+
+        function monthStr(monthNumber){
+            switch (monthNumber){
+                case '01':
+                    return 'Enero';
+                case '02':
+                    return 'Feb.';
+                case '03':
+                    return 'Marzo';
+                case '04':
+                    return 'Abril';
+                case '05':
+                    return 'Mayo';
+                case '06':
+                    return 'Junio';
+                case '07':
+                    return 'Julio';
+                case '08':
+                    return 'Ago.';
+                case '09':
+                    return 'Set.';
+                case '10':
+                    return 'Oct.';
+                case '11':
+                    return 'Nov.';
+                case '12':
+                    return 'Dic.';
+            }
         }
 
         function cambiarFecha(event) {

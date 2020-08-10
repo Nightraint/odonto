@@ -46,12 +46,9 @@
                 if (elem.parent()){
                     let parent = elem.parent();
                     let className = parent.attr('class');
-                    if(className == 'input-group date'){
-                        console.log(idRegex);
-                        console.log(replacement);
+                    if(className == 'input-group date fecha-hora'){
                         let btn = parent.find('.input-group-append');
                         btn.attr("data-target", btn.attr("data-target").replace(idRegex, replacement));
-                        console.log('Es div de fecha');
                         parent.attr("id", parent.attr("id").replace(idRegex, replacement));
                         elem.attr("data-target", elem.attr("data-target").replace(idRegex, replacement));
                         
@@ -73,15 +70,31 @@
                             oldDate
                           }) => {
                             if(date != null){
-                              console.log(date);
-                              console.log("Old date", oldDate);
                               let id = elem.attr("id");
-                              console.log('ID:' + id);
                               $("#"+id).change();
                             }
                         });
 
                         $('#'+elem.attr("id")).on('change', cambiarFecha);
+                    }
+                    if(className == 'input-group date solo-fecha'){
+                        let btn = parent.find('.input-group-append');
+                        btn.attr("data-target", btn.attr("data-target").replace(idRegex, replacement));
+                        parent.attr("id", parent.attr("id").replace(idRegex, replacement));
+                        elem.attr("data-target", elem.attr("data-target").replace(idRegex, replacement));
+                        
+                        let parent_of_parent = parent.parent();
+                        let copy = parent.clone();
+                        parent.remove();
+                        parent_of_parent.append(copy);
+
+                        $("#"+parent.attr("id")).datetimepicker({
+                            format: 'DD/MM/YYYY',
+                            constrainInput: false,
+                            autoclose:true,
+                            forceParse: false,
+                            locale: 'es'
+                        });
                     }
                 }
             },

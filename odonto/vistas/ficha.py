@@ -24,6 +24,7 @@ from django.db import IntegrityError, transaction
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect, render
 from functools import partial, wraps
+from django.utils.translation import ugettext_lazy as _, activate
 
 class FichaListFilter(django_filters.FilterSet):
     filtro = django_filters.CharFilter(method='custom_filter')
@@ -258,9 +259,9 @@ def editar(request,pk):
                             for c in consultas]
         consultas_formset = ConsultaFormSet(prefix='consultas', initial=consultas_data)
 
+    
         ctactes = Cuenta_Corriente.objects.filter(paciente = instance.paciente).order_by('id')
         ctacte_data = [{'fecha': c.fecha,
-                            'str_fecha': c.fecha.strftime('%d-%B-%Y'),
                             'concepto': c.concepto,
                             'ingreso_egreso' : c.ingreso_egreso,
                             'id_cta_cte': c.id,
