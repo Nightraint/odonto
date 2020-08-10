@@ -993,6 +993,10 @@ class CtaCteForm(forms.Form):
             },)
     )
 
+    str_fecha = forms.CharField(widget=forms.TextInput(),
+        required=False,
+        max_length=100)
+
     INGRESO_EGRESO = [
         (1, 'Cobro'),
         (2, 'Deuda')

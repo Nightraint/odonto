@@ -250,20 +250,21 @@ def editar(request,pk):
 
         consultas = Consulta.objects.filter(ficha = instance).order_by('id')
         consultas_data = [{'fecha': c.fecha,
-                           'detalle': c.detalle,
-                           'norma_trabajo' : c.norma_trabajo_id,
-                           'id_consulta': c.id,
-                           'nro_diente': c.nro_diente,
-                           'descripcion_norma_trabajo': c.norma_trabajo}
+                            'detalle': c.detalle,
+                            'norma_trabajo' : c.norma_trabajo_id,
+                            'id_consulta': c.id,
+                            'nro_diente': c.nro_diente,
+                            'descripcion_norma_trabajo': c.norma_trabajo}
                             for c in consultas]
         consultas_formset = ConsultaFormSet(prefix='consultas', initial=consultas_data)
 
         ctactes = Cuenta_Corriente.objects.filter(paciente = instance.paciente).order_by('id')
         ctacte_data = [{'fecha': c.fecha,
-                           'concepto': c.concepto,
-                           'ingreso_egreso' : c.ingreso_egreso,
-                           'id_cta_cte': c.id,
-                           'importe': c.importe}
+                            'str_fecha': c.fecha.strftime('%d-%B-%Y'),
+                            'concepto': c.concepto,
+                            'ingreso_egreso' : c.ingreso_egreso,
+                            'id_cta_cte': c.id,
+                            'importe': c.importe}
                             for c in ctactes]
         ctacte_formset = CtaCteFormFormSet(prefix='cta_cte', initial=ctacte_data)
     else:
