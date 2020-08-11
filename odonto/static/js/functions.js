@@ -25,13 +25,11 @@
 
 	})
 
-  $(".navbar-collapse a").on('click', function() {
-    $(".navbar-collapse.collapse").removeClass('in');
-  });
+	$(".navbar-collapse a").on('click', function() {
+		$(".navbar-collapse.collapse").removeClass('in');
+	});
 
 	$('.parallax-window').parallax({imageSrc: 'img/3.png'});
 
     wow = new WOW({}).init();
-
-
 })(jQuery);
