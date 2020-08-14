@@ -141,7 +141,9 @@
                         }
                     }
                     // If a post-delete callback was provided, call it with the deleted form:
-                    if (options.removed) options.removed(row);
+                    if (options.removed)
+                        options.removed(row);
+                        
                     return false;
                 });
             };

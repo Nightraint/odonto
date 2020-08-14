@@ -994,6 +994,7 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="nav-cta-cte" role="tabpanel" aria-labelledby="nav-cta-cte-tab">
+                <div class="cta-cte-saldo"><span id="saldo_cta_cte" style="font-weight:bold;"></span></div>
                 {% if ctacte_formset.forms|length == 1 %}
                     <p>No hay movimientos para mostrar.</p>
                 {% endif %}
@@ -1005,9 +1006,9 @@
                         </div>
                         <div class="col-md-3 form-group div-fecha">
                             {% if form.initial %}
-                                <span class="btn-action" id="span_{{form.fecha.auto_id}}">{{form.initial.fecha | date:"DATE_FORMAT"}}</span>
+                                <span class="span-cta-cte" id="span_{{form.fecha.auto_id}}">{{form.initial.fecha | date:"DATE_FORMAT"}}</span>
                             {% else %}
-                                <span class="btn-action" id="span_{{form.fecha.auto_id}}" style="display:none;"></span>
+                                <span class="span-cta-cte" id="span_{{form.fecha.auto_id}}" style="display:none;"></span>
                                 {{ form.fecha }}
                             {% endif %}
                             {% if form.fecha.errors %}
@@ -1026,9 +1027,9 @@
                         </div>
                         <div class="col-md-5 form-group div-concepto">
                             {% if form.initial %}
-                                <span class="btn-action">{{form.initial.concepto|default_if_none:''}}</span>
+                                <span class="span-cta-cte">{{form.initial.concepto|default_if_none:''}}</span>
                             {% else %}
-                                <span class="btn-action" style="display:none;"></span>
+                                <span class="span-cta-cte" style="display:none;"></span>
                                 {{ form.concepto }}
                             {% endif %}
                             {% if form.concepto.errors %}
@@ -1039,9 +1040,9 @@
                         </div>
                         <div class="col-md form-group div-importe"  style="display:inline-table;">
                             {% if form.initial %}
-                                <span class="btn-action {%if form.initial.ingreso_egreso == '1' %}importe-ingreso{%else%}importe-egreso{%endif%}">{{form.initial.importe}}</span>
+                                <span class="span-cta-cte {%if form.initial.ingreso_egreso == '1' %}importe-ingreso{%else%}importe-egreso{%endif%}">{{form.initial.importe}}</span>
                             {% else %}
-                                <span class="btn-action" style="display:none;"></span>
+                                <span class="span-cta-cte" style="display:none;"></span>
                                 {{ form.importe }}
                             {% endif %}
                             {% if form.importe.errors %}
@@ -1050,11 +1051,11 @@
                                 {% endfor %}
                             {% endif %}
                         </div>
-                        <div>
+                        <div style="width:25px;">
                             {% if not form.initial %}
-                            <a onclick="editarCtaCte($(this),'ctacte-formset');" href="javascript:void(0);" class="links btn-action">
-                                <i class="fa fa-check" aria-hidden="true" style="margin-left:10px;"></i>
-                            </a>
+                                <a onclick="editarCtaCte($(this),'ctacte-formset');" href="javascript:void(0);" class="links btn-action">
+                                    <i class="fa fa-check" aria-hidden="true" style="margin-left:10px;"></i>
+                                </a>
                             {% endif %}
                         </div>
                     </div>
@@ -1107,6 +1108,7 @@
                 deleteText: '<i class="fa fa-trash" style="margin-left:10px";></i>',
                 prefix: "{{ ctacte_formset.prefix }}",
                 deleteCssClass: 'links btn-action delete-link',
+                removed:calcularSaldoCtaCte,
             });
 
             $('.imagenes-formset').each(function(){
@@ -1137,6 +1139,7 @@
             });
 
             draw();
+            calcularSaldoCtaCte();
         });
 
         $('.fecha-consulta').on('change', cambiarFecha);
@@ -1151,26 +1154,25 @@
             let fecha_texto = fecha.substring(0,2) + ' ' + monthStr(fecha.substring(3,5)) + ' ' + fecha.substring(6,10);
             let span_fecha = parent.find('.div-fecha span');
             span_fecha.html(fecha_texto);
-            span_fecha.show();
-            input_fecha.parent().hide();
+            span_fecha.toggle();
+            input_fecha.parent().toggle();
 
             let div_select_ingreso_egreso = parent.find('.div-ingreso-egreso');
             let select_ingreso_egreso = div_select_ingreso_egreso.find('select');
-            div_select_ingreso_egreso.hide();
+            div_select_ingreso_egreso.toggle();
             let selected = select_ingreso_egreso.find('option:selected').text();
             let span = select_ingreso_egreso.parent().find('span');
             span.text(selected);
-            span.show();
+            span.toggle();
 
             let input_concepto = parent.find('.div-concepto input');
-            input_concepto.hide();
             let txt_concepto = input_concepto.val();
             let span_concepto = input_concepto.parent().find('span');
             span_concepto.text(txt_concepto);
-            span_concepto.show();
+            input_concepto.toggle();
+            span_concepto.toggle();
 
             let input_importe = parent.find('.div-importe input');
-            input_importe.hide();
             let txt_importe = input_importe.val();
             let span_importe = input_importe.parent().find('span');
             span_importe.removeClass('importe-ingreso').removeClass('importe-egreso');
@@ -1179,7 +1181,8 @@
             else
                 span_importe.addClass('importe-egreso');
             span_importe.text(parseFloat(txt_importe.replace(',','.')).toFixed(2).replace('.',','));
-            span_importe.show();
+            input_importe.toggle();
+            span_importe.toggle();
 
             let i = link.find('i');
             if (i.attr('class') == 'fa fa-pencil-square-o'){
@@ -1189,6 +1192,8 @@
             }
             else
                 i.attr('class','fa fa-pencil-square-o');
+            
+            calcularSaldoCtaCte();
         }
 
         function calcularSaldoCtaCte(){
@@ -1196,7 +1201,6 @@
             $('.ctacte-formset').each(function(){
                 let span_importe = $(this).find('.div-importe span');
                 let select_ingreso_egreso = $(this).find('.div-ingreso-egreso select');
-                console.log(saldo);
                 if (span_importe.html()){
                     if (select_ingreso_egreso.val() == 1)
                         saldo += parseFloat(span_importe.html().replace(',','.'));
@@ -1204,7 +1208,15 @@
                         saldo -= parseFloat(span_importe.html().replace(',','.'));
                 }
             });
-            console.log('Saldo: ' + parseFloat(saldo).toFixed(2));
+            console.log('Saldo: ' + saldo.toFixed(2));
+            let msg = '';
+            if (saldo > 0)
+                msg = 'El paciente tiene $' + Math.abs(saldo).toFixed(2) + ' a favor';
+            else if (saldo < 0)
+                msg = 'El paciente debe $' + Math.abs(saldo).toFixed(2);
+            else
+                msg = 'El saldo del paciente es $' + saldo.toFixed(2);
+            $('#saldo_cta_cte').html(msg);
         }
 
         function cambiarFecha(event) {
