@@ -1857,13 +1857,13 @@ label{
 }
 
 .importe-ingreso{
-  color:green;
+  color:#28B463;
   font-weight: bold;
   text-align: right;
 }
 
 .importe-egreso{
-  color:red;
+  color:#E74C3C;
   font-weight: bold;
   text-align: right;
 }
@@ -1879,4 +1879,26 @@ label{
   pointer-events: none;
   touch-action: none;
   opacity: 1;
+}
+
+.span-cta-cte{
+  display: table-cell;
+  vertical-align: middle;
+  height: calc(2.25rem + 2px);
+}
+
+.ctacte-formset .form-group{
+  margin-bottom: 0rem;
+}
+
+.ctacte-formset:last-of-type{
+  margin-bottom: 1rem;
+  margin-top:.5rem
+}
+
+.cta-cte-saldo{
+  color:#413e66;
+  text-align:center;
+  padding:10px;
+  font-size: large;
 }
