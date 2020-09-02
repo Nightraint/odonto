@@ -193,6 +193,10 @@
             margin-left: 30px;
             margin-top: 60px;
         }
+
+        .div-ingreso-egreso-hidden select{
+            display:none;
+        }
     </style>
 {% endblock %}
 
@@ -1017,7 +1021,7 @@
                                 {% endfor %}
                             {% endif %}
                         </div>
-                        <div class="col-md-2 form-group div-ingreso-egreso" {% if form.initial %} style="display:none;" {% endif %}>
+                        <div class="col-md-2 form-group div-ingreso-egreso {% if form.initial %}div-ingreso-egreso-hidden{% endif %}">
                             {{ form.ingreso_egreso }}
                             {% if form.ingreso_egreso.errors %}
                                 {% for error in form.ingreso_egreso.errors %}
@@ -1025,7 +1029,7 @@
                                 {% endfor %}
                             {% endif %}
                         </div>
-                        <div class="col-md-5 form-group div-concepto">
+                        <div class="col-md-4 form-group div-concepto">
                             {% if form.initial %}
                                 <span class="span-cta-cte">{{form.initial.concepto|default_if_none:''}}</span>
                             {% else %}
@@ -1038,7 +1042,7 @@
                                 {% endfor %}
                             {% endif %}
                         </div>
-                        <div class="col-md form-group div-importe"  style="display:inline-table;">
+                        <div class="col-md-2 form-group div-importe"  style="display:inline-table;">
                             {% if form.initial %}
                                 <span class="span-cta-cte {%if form.initial.ingreso_egreso == '1' %}importe-ingreso{%else%}importe-egreso{%endif%}">{{form.initial.importe}}</span>
                             {% else %}
@@ -1151,6 +1155,28 @@
 
             let input_fecha = parent.find('.datetimepicker-input');
             let fecha = input_fecha.val();
+
+            let input_concepto = parent.find('.div-concepto input');
+            let txt_concepto = input_concepto.val();
+
+            let input_importe = parent.find('.div-importe input');
+            let txt_importe = input_importe.val();
+
+            if (!fecha){
+                alert('Debe ingresar la fecha del movimiento.');
+                return;
+            }
+
+            if (!txt_concepto){
+                alert('Debe ingresar una descripción del movimiento.');
+                return;
+            }
+
+            if (!txt_importe){
+                alert('Debe ingresar el importe del movimiento.');
+                return;
+            }
+
             let fecha_texto = fecha.substring(0,2) + ' ' + monthStr(fecha.substring(3,5)) + ' ' + fecha.substring(6,10);
             let span_fecha = parent.find('.div-fecha span');
             span_fecha.html(fecha_texto);
@@ -1159,21 +1185,17 @@
 
             let div_select_ingreso_egreso = parent.find('.div-ingreso-egreso');
             let select_ingreso_egreso = div_select_ingreso_egreso.find('select');
-            div_select_ingreso_egreso.toggle();
+            div_select_ingreso_egreso.addClass('div-ingreso-egreso-hidden');
             let selected = select_ingreso_egreso.find('option:selected').text();
             let span = select_ingreso_egreso.parent().find('span');
             span.text(selected);
             span.toggle();
-
-            let input_concepto = parent.find('.div-concepto input');
-            let txt_concepto = input_concepto.val();
+            
             let span_concepto = input_concepto.parent().find('span');
             span_concepto.text(txt_concepto);
             input_concepto.toggle();
             span_concepto.toggle();
 
-            let input_importe = parent.find('.div-importe input');
-            let txt_importe = input_importe.val();
             let span_importe = input_importe.parent().find('span');
             span_importe.removeClass('importe-ingreso').removeClass('importe-egreso');
             if (select_ingreso_egreso.val() == 1)

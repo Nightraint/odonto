@@ -1027,6 +1027,7 @@ class CtaCteForm(forms.Form):
                     visible.field.widget.attrs['class'] += ' select-readonly'
                 else:
                     visible.field.widget.attrs['readonly'] = True
+            
 
 class BaseCtaCteFormSet(BaseFormSet):
     def clean(self):
