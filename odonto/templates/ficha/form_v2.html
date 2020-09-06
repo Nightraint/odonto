@@ -1185,7 +1185,7 @@
 
             let div_select_ingreso_egreso = parent.find('.div-ingreso-egreso');
             let select_ingreso_egreso = div_select_ingreso_egreso.find('select');
-            div_select_ingreso_egreso.addClass('div-ingreso-egreso-hidden');
+            div_select_ingreso_egreso.toggleClass('div-ingreso-egreso-hidden');
             let selected = select_ingreso_egreso.find('option:selected').text();
             let span = select_ingreso_egreso.parent().find('span');
             span.text(selected);
